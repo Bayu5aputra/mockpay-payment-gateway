@@ -1,24 +1,264 @@
-*.log
-.DS_Store
+# =========================
+# Laravel Core
+# =========================
+/vendor
+/node_modules
+
+# =========================
+# Environment Files
+# =========================
 .env
+.env.*
+!.env.example
 .env.backup
 .env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
-/node_modules
-/public/build
+.env.local
+.env.testing
+
+# =========================
+# Storage & Cache
+# =========================
+/storage/*.key
+/storage/framework/sessions/*
+/storage/framework/views/*
+/storage/framework/cache/data/*
+/storage/app/backups/*
+/storage/app/public/*
+!/storage/framework/.gitignore
+!/storage/framework/cache/.gitignore
+!/storage/framework/sessions/.gitignore
+!/storage/framework/views/.gitignore
+!/storage/app/.gitignore
+!/storage/app/public/.gitignore
+
+/storage/debugbar/*
+/storage/logs/*.log
+
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+
+# =========================
+# Database
+# =========================
+/database/database.sqlite
+/database/database.sqlite-journal
+/database/seeders/*.backup.sql
+/database/*.backup
+
+# =========================
+# Public Assets
+# =========================
 /public/hot
 /public/storage
-/storage/*.key
-/storage/pail
-/vendor
+/public/build
+/public/css
+/public/js
+!/public/.gitignore
+!/public/index.php
+
+# =========================
+# Testing
+# =========================
+.phpunit.result.cache
+.phpunit.cache
+/.phpunit.cache
+/coverage
+/tests/.phpunit.result.cache
+
+# =========================
+# Composer
+# =========================
+composer.lock
+composer.phar
+/auth.json
+
+# =========================
+# NPM/Yarn/PNPM
+# =========================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.lock-wscript
+
+# =========================
+# Logs
+# =========================
+*.log
+laravel.log
+error_log
+access_log
+
+# =========================
+# IDE & Editors
+# =========================
+.idea
+.vscode
+.sublime
+.fleet
+.nova
+.zed
+*.sublime-workspace
+*.sublime-project
+.project
+.classpath
+*.launch
+.settings/
+
+# =========================
+# OS Generated Files
+# =========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+[Tt]humbs.db
+desktop.ini
+*.swp
+*~
+
+# =========================
+# Development Tools
+# =========================
+.phpactor.json
+.php-cs-fixer.cache
+.php_cs.cache
+.phpcs-cache
+draft
+drafts
+scratch
+
+# =========================
+# Deployment & Build
+# =========================
+deploy.php
+deployer.log
+_ide_helper.php
+_ide_helper_models.php
+*.backup
+*.sql
+*.zip
+*.tar.gz
+*.rar
+
+# =========================
+# Laravel Specific
+# =========================
 Homestead.json
 Homestead.yaml
-Thumbs.db
+Vagrantfile
+
+# =========================
+# PHP Storm
+# =========================
+/.idea/*.xml
+/.idea/*.iml
+/.idea/php.xml
+/.idea/php-inspections-ea-ultimate.xml
+/.idea/workspace.xml
+/.idea/codeStyles/
+/.idea/inspectionProfiles/
+/.idea/shelf/
+
+# =========================
+# Visual Studio Code
+# =========================
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# =========================
+# Docker
+# =========================
+.docker
+docker-compose.override.yml
+docker-compose.prod.yml
+
+# =========================
+# MockPay Specific
+# =========================
+/storage/app/mock-receipts/*
+/storage/app/qr-codes/*
+/storage/app/barcodes/*
+/storage/app/export/*
+/storage/app/invoices/*
+/storage/app/webhook-logs/*
+
+# Test cards & sensitive data
+/test-cards.txt
+/sandbox-keys.txt
+/mock-accounts.txt
+
+# =========================
+# Temporary Files
+# =========================
+*.tmp
+*.temp
+*.bak
+*.sav
+*.old
+
+# =========================
+# Backup Files
+# =========================
+*.backup
+*.bkp
+backup/
+backups/
+
+# =========================
+# Session Files
+# =========================
+/storage/framework/sessions/*
+
+# =========================
+# Laravel Dusk
+# =========================
+/database/database.sqlite
+/database/database.sqlite-journal
+
+# =========================
+# SSL Certificates
+# =========================
+*.pem
+*.key
+*.crt
+*.csr
+
+# =========================
+# Documentation
+# =========================
+/docs/_build/
+/docs/.vuepress/dist
+/docs/.docusaurus/
+
+# =========================
+# API Documentation
+# =========================
+/storage/api-docs/*
+!/storage/api-docs/.gitignore
+
+# =========================
+# Email Testing
+# =========================
+/storage/framework/views/*.php
+/storage/framework/cache/data/*
+
+# =========================
+# User Uploads (Development)
+# =========================
+/storage/app/public/uploads/*
+!/storage/app/public/uploads/.gitignore
+
+# =========================
+# Laravel Telescope
+# =========================
+storage/telescope/*.json
