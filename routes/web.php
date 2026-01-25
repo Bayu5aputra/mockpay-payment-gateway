@@ -1,12 +1,30 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Public\HomeController;
+use App\Http\Controllers\Public\DocumentationController;
+use App\Http\Controllers\Public\PricingController;
+use App\Http\Controllers\Public\ContactController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
+// Public Routes
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/pricing', [PricingController::class, 'index'])->name('pricing');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact');
+
+// Documentation Routes
+Route::prefix('docs')->name('docs.')->group(function () {
+    Route::get('/', [DocumentationController::class, 'index'])->name('index');
+    Route::get('/getting-started', [DocumentationController::class, 'gettingStarted'])->name('getting-started');
+    Route::get('/authentication', [DocumentationController::class, 'authentication'])->name('authentication');
+    Route::get('/api-reference', [DocumentationController::class, 'apiReference'])->name('api-reference');
+    Route::get('/payment-methods', [DocumentationController::class, 'paymentMethods'])->name('payment-methods');
+    Route::get('/webhooks', [DocumentationController::class, 'webhooks'])->name('webhooks');
+    Route::get('/testing', [DocumentationController::class, 'testing'])->name('testing');
+    Route::get('/troubleshooting', [DocumentationController::class, 'troubleshooting'])->name('troubleshooting');
 });
 
+// Dashboard Routes (Protected)
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
