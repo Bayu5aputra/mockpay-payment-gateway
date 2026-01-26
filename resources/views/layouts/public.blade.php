@@ -9,16 +9,16 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900&display=swap" rel="stylesheet" />
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/landing.css', 'resources/js/app.js'])
 
     @stack('styles')
 </head>
 <body class="font-sans antialiased bg-white text-gray-900">
     <!-- Navigation -->
-    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
@@ -29,22 +29,22 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
                             </svg>
                         </div>
-                        <span class="text-xl font-bold text-gray-900">MockPay</span>
+                        <span class="text-xl font-bold text-white">MockPay</span>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-8">
-                    <a href="{{ route('home') }}" class="text-sm font-medium {{ request()->routeIs('home') ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900' }}">
+                    <a href="{{ route('home') }}" class="text-sm font-medium {{ request()->routeIs('home') ? 'text-purple-400' : 'text-gray-300 hover:text-white' }} transition-colors">
                         Home
                     </a>
-                    <a href="{{ route('docs.index') }}" class="text-sm font-medium {{ request()->routeIs('docs.*') ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900' }}">
+                    <a href="{{ route('docs.index') }}" class="text-sm font-medium {{ request()->routeIs('docs.*') ? 'text-purple-400' : 'text-gray-300 hover:text-white' }} transition-colors">
                         Documentation
                     </a>
-                    <a href="{{ route('pricing') }}" class="text-sm font-medium {{ request()->routeIs('pricing') ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900' }}">
+                    <a href="{{ route('pricing') }}" class="text-sm font-medium {{ request()->routeIs('pricing') ? 'text-purple-400' : 'text-gray-300 hover:text-white' }} transition-colors">
                         Pricing
                     </a>
-                    <a href="{{ route('contact') }}" class="text-sm font-medium {{ request()->routeIs('contact') ? 'text-purple-600' : 'text-gray-600 hover:text-gray-900' }}">
+                    <a href="{{ route('contact') }}" class="text-sm font-medium {{ request()->routeIs('contact') ? 'text-purple-400' : 'text-gray-300 hover:text-white' }} transition-colors">
                         Contact
                     </a>
                 </div>
@@ -52,14 +52,14 @@
                 <!-- Auth Links -->
                 <div class="hidden md:flex items-center space-x-4">
                     @auth
-                        <a href="{{ route('dashboard') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">
+                        <a href="{{ route('dashboard') }}" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                             Dashboard
                         </a>
                     @else
-                        <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 hover:text-gray-900">
+                        <a href="{{ route('login') }}" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
                             Sign In
                         </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-200">
+                        <a href="{{ route('register') }}" class="btn-primary inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
                             Get Started Free
                         </a>
                     @endauth
@@ -67,7 +67,7 @@
 
                 <!-- Mobile menu button -->
                 <div class="md:hidden">
-                    <button type="button" class="text-gray-600 hover:text-gray-900" x-data @click="$dispatch('toggle-mobile-menu')">
+                    <button type="button" class="text-gray-300 hover:text-white" x-data @click="$dispatch('toggle-mobile-menu')">
                         <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
@@ -77,29 +77,29 @@
         </div>
 
         <!-- Mobile menu -->
-        <div x-data="{ open: false }" @toggle-mobile-menu.window="open = !open" x-show="open" x-cloak class="md:hidden border-t border-gray-200">
+        <div x-data="{ open: false }" @toggle-mobile-menu.window="open = !open" x-show="open" x-cloak class="md:hidden border-t border-gray-800 bg-black">
             <div class="px-4 pt-2 pb-3 space-y-1">
-                <a href="{{ route('home') }}" class="block px-3 py-2 text-base font-medium {{ request()->routeIs('home') ? 'text-purple-600 bg-purple-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} rounded-lg">
+                <a href="{{ route('home') }}" class="block px-3 py-2 text-base font-medium {{ request()->routeIs('home') ? 'text-purple-400 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
                     Home
                 </a>
-                <a href="{{ route('docs.index') }}" class="block px-3 py-2 text-base font-medium {{ request()->routeIs('docs.*') ? 'text-purple-600 bg-purple-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} rounded-lg">
+                <a href="{{ route('docs.index') }}" class="block px-3 py-2 text-base font-medium {{ request()->routeIs('docs.*') ? 'text-purple-400 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
                     Documentation
                 </a>
-                <a href="{{ route('pricing') }}" class="block px-3 py-2 text-base font-medium {{ request()->routeIs('pricing') ? 'text-purple-600 bg-purple-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} rounded-lg">
+                <a href="{{ route('pricing') }}" class="block px-3 py-2 text-base font-medium {{ request()->routeIs('pricing') ? 'text-purple-400 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
                     Pricing
                 </a>
-                <a href="{{ route('contact') }}" class="block px-3 py-2 text-base font-medium {{ request()->routeIs('contact') ? 'text-purple-600 bg-purple-50' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50' }} rounded-lg">
+                <a href="{{ route('contact') }}" class="block px-3 py-2 text-base font-medium {{ request()->routeIs('contact') ? 'text-purple-400 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
                     Contact
                 </a>
                 @auth
-                    <a href="{{ route('dashboard') }}" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg">
+                    <a href="{{ route('dashboard') }}" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors">
                         Dashboard
                     </a>
                 @else
-                    <a href="{{ route('login') }}" class="block px-3 py-2 text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-lg">
+                    <a href="{{ route('login') }}" class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors">
                         Sign In
                     </a>
-                    <a href="{{ route('register') }}" class="block px-3 py-2 text-base font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg">
+                    <a href="{{ route('register') }}" class="block px-3 py-2 text-base font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg transition-colors">
                         Get Started Free
                     </a>
                 @endauth
@@ -108,7 +108,7 @@
     </nav>
 
     <!-- Page Content -->
-    <main>
+    <main class="pt-16">
         @yield('content')
     </main>
 
