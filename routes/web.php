@@ -6,6 +6,8 @@ use App\Http\Controllers\Public\DocumentationController;
 use App\Http\Controllers\Public\PricingController;
 use App\Http\Controllers\Public\ContactController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LegalController;
+
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -23,6 +25,11 @@ Route::prefix('docs')->name('docs.')->group(function () {
     Route::get('/testing', [DocumentationController::class, 'testing'])->name('testing');
     Route::get('/troubleshooting', [DocumentationController::class, 'troubleshooting'])->name('troubleshooting');
 });
+
+// Legal Pages
+Route::get('/privacy-policy', [LegalController::class, 'privacyPolicy'])->name('legal.privacy-policy');
+Route::get('/terms-of-service', [LegalController::class, 'termsOfService'])->name('legal.terms-of-service');
+Route::get('/cookie-policy', [LegalController::class, 'cookiePolicy'])->name('legal.cookie-policy');
 
 // Dashboard Routes (Protected)
 Route::get('/dashboard', function () {
