@@ -491,7 +491,7 @@
                                     </div>
                                     <div>
                                         <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Privacy Inquiries</p>
-                                        <p class="text-lg font-semibold text-gray-900">privacy@mockpay.com</p>
+                                        <p class="text-lg font-semibold text-gray-900">legal@m.next-it.my.id</p>
                                         <p class="text-sm text-gray-600 mt-1">For privacy-related questions and data rights requests</p>
                                     </div>
                                 </div>
@@ -504,7 +504,7 @@
                                     </div>
                                     <div>
                                         <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Official Website</p>
-                                        <p class="text-lg font-semibold text-gray-900">https://mockpay.com</p>
+                                        <p class="text-lg font-semibold text-gray-900">https://m.next-it.my.id/</p>
                                         <p class="text-sm text-gray-600 mt-1">Visit for latest updates and documentation</p>
                                     </div>
                                 </div>
@@ -517,7 +517,7 @@
                                     </div>
                                     <div>
                                         <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Technical Support</p>
-                                        <p class="text-lg font-semibold text-gray-900">support@mockpay.com</p>
+                                        <p class="text-lg font-semibold text-gray-900">support@m.next-it.my.id</p>
                                         <p class="text-sm text-gray-600 mt-1">For technical issues and service-related questions</p>
                                     </div>
                                 </div>

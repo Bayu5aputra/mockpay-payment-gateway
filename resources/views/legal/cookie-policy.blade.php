@@ -465,7 +465,7 @@
                     <section id="contact" class="mb-12">
                         <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Contact Us</h2>
                         <p class="text-gray-700 leading-relaxed text-base mb-6">
-                            If you have any questions about our use of cookies or other technologies, please contact us at:
+                            If you have any questions about this Privacy Policy or wish to exercise your rights, please contact us through our official channels:
                         </p>
                         <div class="bg-white border-2 border-gray-200 rounded-xl p-8">
                             <div class="space-y-6">
@@ -476,37 +476,44 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Email</p>
-                                        <p class="text-lg font-semibold text-gray-900">privacy@mockpay.com</p>
+                                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Privacy Inquiries</p>
+                                        <p class="text-lg font-semibold text-gray-900">legal@m.next-it.my.id</p>
+                                        <p class="text-sm text-gray-600 mt-1">For privacy-related questions and data rights requests</p>
                                     </div>
                                 </div>
 
                                 <div class="flex items-start">
                                     <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
                                         <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Address</p>
-                                        <p class="text-lg font-semibold text-gray-900">MockPay Headquarters</p>
-                                        <p class="text-base text-gray-600">Jl. Sudirman No. 123, Jakarta Pusat 10220, Indonesia</p>
+                                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Official Website</p>
+                                        <p class="text-lg font-semibold text-gray-900">https://m.next-it.my.id/</p>
+                                        <p class="text-sm text-gray-600 mt-1">Visit for latest updates and documentation</p>
                                     </div>
                                 </div>
 
                                 <div class="flex items-start">
                                     <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
                                         <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Phone</p>
-                                        <p class="text-lg font-semibold text-gray-900">+62 21 1234 5678</p>
+                                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Technical Support</p>
+                                        <p class="text-lg font-semibold text-gray-900">support@m.next-it.my.id</p>
+                                        <p class="text-sm text-gray-600 mt-1">For technical issues and service-related questions</p>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <p class="text-sm text-gray-600 text-center">
+                                <strong>Important Notice:</strong> By using MockPay's services, you acknowledge and agree that you have read, understood, and consent to all terms in this Privacy Policy. This document is available in English and Indonesian versions. In case of any discrepancy between versions, the English version shall prevail. This Privacy Policy is governed by Indonesian law, and users worldwide agree to its terms by using our services.
+                            </p>
                         </div>
                     </section>
                 </div>
