@@ -133,9 +133,9 @@
                 <div class="ml-3 text-sm">
                     <label for="terms" class="text-gray-700 cursor-pointer">
                         I agree to the
-                        <a href="#" class="font-medium text-purple-600 hover:text-purple-500">Terms of Service</a>
+                        <a href="{{ route('legal.terms-of-service') }}" class="font-medium text-purple-600 hover:text-purple-500">Terms of Service</a>
                         and
-                        <a href="#" class="font-medium text-purple-600 hover:text-purple-500">Privacy Policy</a>
+                        <a href="{{ route('legal.privacy-policy') }}" class="font-medium text-purple-600 hover:text-purple-500">Privacy Policy</a>
                     </label>
                 </div>
             </div>
