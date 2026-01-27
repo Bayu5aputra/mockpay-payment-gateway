@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'google_id',
+        'avatar',
+        'provider',
     ];
 
     /**
@@ -44,5 +47,26 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Check if user registered via OAuth
+     */
+    public function isOAuthUser(): bool
+    {
+        return !empty($this->provider);
+    }
+
+    /**
+     * Get user's avatar URL
+     */
+    public function getAvatarUrlAttribute(): string
+    {
+        if ($this->avatar) {
+            return $this->avatar;
+        }
+
+        // Default avatar using UI Avatars
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
     }
 }

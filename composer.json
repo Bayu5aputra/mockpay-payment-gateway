@@ -11,6 +11,7 @@
         "darkaonline/l5-swagger": "^10.1",
         "filament/filament": "^5.1",
         "laravel/framework": "^12.0",
+        "laravel/socialite": "^5.24",
         "laravel/tinker": "^2.10.1",
         "maatwebsite/excel": "^1.1",
         "picqer/php-barcode-generator": "^3.2",

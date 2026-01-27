@@ -9,7 +9,7 @@
         <div class="absolute top-20 left-10 w-72 h-72 blob blob-purple rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
         <div class="absolute top-40 right-10 w-72 h-72 blob blob-blue rounded-full mix-blend-multiply filter blur-3xl opacity-20 animation-delay-2000"></div>
         <div class="absolute -bottom-8 left-20 w-72 h-72 blob blob-purple rounded-full mix-blend-multiply filter blur-3xl opacity-20 animation-delay-4000"></div>
-        
+
         <!-- Floating Ornaments -->
         <div class="absolute top-32 left-1/4 animate-float">
             <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -128,7 +128,7 @@
                 </defs>
             </svg>
         </div>
-        
+
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="grid items-center gap-16 lg:grid-cols-2">
                 <!-- Left Column - Content -->
@@ -138,7 +138,7 @@
                             <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
                         </svg>
                         <span class="bg-gradient-to-r from-yellow-300 via-purple-300 to-cyan-300 bg-clip-text text-transparent font-semibold">
-                            CREATIVE PEOPLE
+                            XoNE Smart Studio
                         </span>
                     </div>
 
@@ -197,7 +197,7 @@
                                         <div class="h-8 w-32 bg-gradient-to-r from-purple-500/30 to-blue-500/30 rounded-lg"></div>
                                         <div class="h-8 w-8 bg-gradient-to-r from-blue-500/30 to-cyan-500/30 rounded-full"></div>
                                     </div>
-                                    
+
                                     <!-- Cards -->
                                     <div class="grid grid-cols-3 gap-3">
                                         <div class="payment-card relative h-24 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-blue-400/30 p-4 flex flex-col justify-between">
@@ -360,7 +360,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Column 2 -->
                     <div class="pt-16">
                         <div class="image-grid-item h-96 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-600 overflow-hidden shadow-2xl">
@@ -497,7 +497,7 @@
                         <div class="h-3 bg-gray-700 rounded-b-2xl shadow-2xl"></div>
                         <div class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-24 h-2 bg-gray-600 rounded-b-lg"></div>
                     </div>
-                    
+
                     <!-- Glow Effects -->
                     <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
                 </div>
@@ -568,7 +568,7 @@
                             <span class="text-sm font-bold text-gray-900 tracking-wide">POPULAR</span>
                         </div>
                     </div> -->
-                    
+
                     <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-500 rounded-3xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity"></div>
                     <div class="relative h-full rounded-3xl p-10 pt-12 shadow-2xl transition-all duration-300" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3);">
                         <div class="mb-8">
@@ -651,7 +651,7 @@
             <div class="absolute w-96 h-96 bg-white rounded-full top-0 -left-48 blur-3xl"></div>
             <div class="absolute w-96 h-96 bg-white rounded-full bottom-0 -right-48 blur-3xl"></div>
         </div>
-        
+
         <div class="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8 relative z-10">
             <h2 class="mb-6 text-5xl font-bold text-white leading-tight">
                 Ready to Start Testing?
