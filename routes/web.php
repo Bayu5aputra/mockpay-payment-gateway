@@ -5,6 +5,8 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\DocumentationController;
 use App\Http\Controllers\Public\PricingController;
 use App\Http\Controllers\Public\ContactController;
+use App\Http\Controllers\Dashboard\DashboardController;
+use App\Http\Controllers\Dashboard\ApiKeyController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LegalController;
 
@@ -32,11 +34,27 @@ Route::get('/terms-of-service', [LegalController::class, 'termsOfService'])->nam
 Route::get('/cookie-policy', [LegalController::class, 'cookiePolicy'])->name('legal.cookie-policy');
 
 // Dashboard Routes (Protected)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+    // Developer Dashboard Routes
+    Route::prefix('dashboard/developers')->name('dashboard.developers.')->group(function () {
+        Route::get('/', [DashboardController::class, 'developers'])->name('index');
+        Route::get('/api-docs', [DashboardController::class, 'apiDocs'])->name('api-docs');
+        Route::get('/code-examples', [DashboardController::class, 'codeExamples'])->name('code-examples');
+        Route::get('/simulator', [DashboardController::class, 'simulator'])->name('simulator');
+        Route::get('/logs', [DashboardController::class, 'logs'])->name('logs');
+    });
+
+    // API Keys Management
+    Route::prefix('dashboard/api-keys')->name('dashboard.api-keys.')->group(function () {
+        Route::get('/', [ApiKeyController::class, 'index'])->name('index');
+        Route::post('/', [ApiKeyController::class, 'store'])->name('store');
+        Route::delete('/{apiKey}', [ApiKeyController::class, 'destroy'])->name('destroy');
+        Route::post('/{apiKey}/regenerate', [ApiKeyController::class, 'regenerate'])->name('regenerate');
+    });
+
+    // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
