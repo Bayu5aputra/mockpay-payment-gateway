@@ -3,86 +3,104 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\ApiKey;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class ApiKeyController extends Controller
 {
     /**
-     * Display a listing of API keys
+     * Display API keys list
+     * GET /dashboard/settings/api-keys
      */
     public function index()
     {
-        // Mock API keys data
-        $apiKeys = [
-            [
-                'id' => 1,
-                'name' => 'Production Key',
-                'key' => 'mpk_prod_' . Str::random(32),
-                'environment' => 'production',
-                'is_active' => true,
-                'last_used_at' => now()->subHours(2),
-                'created_at' => now()->subDays(30)
-            ],
-            [
-                'id' => 2,
-                'name' => 'Development Key',
-                'key' => 'mpk_test_' . Str::random(32),
-                'environment' => 'sandbox',
-                'is_active' => true,
-                'last_used_at' => now()->subMinutes(15),
-                'created_at' => now()->subDays(5)
-            ]
-        ];
+        $merchant = Auth::user();
+        $apiKeys = ApiKey::where('merchant_id', $merchant->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('dashboard.settings.api-keys', compact('apiKeys'));
     }
 
     /**
-     * Store a new API key
+     * Generate new API key
+     * POST /dashboard/settings/api-keys
      */
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:100',
-            'environment' => 'required|in:sandbox,production'
+            'name' => 'required|string|max:255',
+            'environment' => 'required|in:sandbox,production',
         ]);
 
-        // Generate new API key
-        $prefix = $request->environment === 'production' ? 'mpk_prod_' : 'mpk_test_';
-        $apiKey = $prefix . Str::random(32);
+        $merchant = Auth::user();
 
-        // In real implementation, save to database
-        // ApiKey::create([...]);
+        try {
+            $prefix = $request->environment === 'sandbox' ? 'sandbox_sk_' : 'live_sk_';
+            $key = $prefix . Str::random(32);
 
-        return redirect()->route('dashboard.api-keys.index')
-            ->with('success', 'API Key created successfully!')
-            ->with('new_api_key', $apiKey);
+            $apiKey = ApiKey::create([
+                'merchant_id' => $merchant->id,
+                'name' => $request->name,
+                'key' => $key,
+                'environment' => $request->environment,
+                'is_active' => true,
+            ]);
+
+            return redirect()->back()->with([
+                'success' => 'API key generated successfully',
+                'new_key' => $key,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to generate API key: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Delete an API key
+     * Revoke API key
+     * DELETE /dashboard/settings/api-keys/{id}
      */
     public function destroy($id)
     {
-        // In real implementation, delete from database
-        // ApiKey::findOrFail($id)->delete();
+        $merchant = Auth::user();
+        $apiKey = ApiKey::where('merchant_id', $merchant->id)
+            ->where('id', $id)
+            ->firstOrFail();
 
-        return redirect()->route('dashboard.api-keys.index')
-            ->with('success', 'API Key deleted successfully!');
+        try {
+            $apiKey->update(['is_active' => false]);
+
+            return redirect()->back()->with('success', 'API key revoked successfully');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to revoke API key: ' . $e->getMessage());
+        }
     }
 
     /**
-     * Regenerate an API key
+     * Rotate API key
+     * POST /dashboard/settings/api-keys/{id}/rotate
      */
-    public function regenerate($id)
+    public function rotate($id)
     {
-        // In real implementation, regenerate key in database
-        $newKey = 'mpk_prod_' . Str::random(32);
+        $merchant = Auth::user();
+        $apiKey = ApiKey::where('merchant_id', $merchant->id)
+            ->where('id', $id)
+            ->firstOrFail();
 
-        return redirect()->route('dashboard.api-keys.index')
-            ->with('success', 'API Key regenerated successfully!')
-            ->with('new_api_key', $newKey);
+        try {
+            $prefix = $apiKey->environment === 'sandbox' ? 'sandbox_sk_' : 'live_sk_';
+            $newKey = $prefix . Str::random(32);
+
+            $apiKey->update(['key' => $newKey]);
+
+            return redirect()->back()->with([
+                'success' => 'API key rotated successfully',
+                'new_key' => $newKey,
+            ]);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to rotate API key: ' . $e->getMessage());
+        }
     }
 }

@@ -3,47 +3,72 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
 
 class SettlementController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $transactionService;
+
+    public function __construct(TransactionService $transactionService)
     {
-        //
+        $this->transactionService = $transactionService;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Get settlement list
+     * GET /api/v1/settlements
      */
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        //
-    }
+        try {
+            $merchant = $request->user();
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+            $filters = [
+                'status' => 'settlement',
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'search' => $request->search,
+                'order_by' => $request->order_by ?? 'settled_at',
+                'order_direction' => $request->order_direction ?? 'desc',
+            ];
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+            $perPage = $request->per_page ?? 15;
+            $settlements = $this->transactionService->getTransactionsByMerchant(
+                $merchant->id,
+                $filters,
+                $perPage
+            );
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            $data = $settlements->map(function ($transaction) {
+                return [
+                    'transaction_id' => $transaction->transaction_id,
+                    'order_id' => $transaction->order_id,
+                    'amount' => $transaction->amount,
+                    'fee' => $transaction->fee,
+                    'total_amount' => $transaction->total_amount,
+                    'payment_method' => $transaction->payment_method,
+                    'payment_channel' => $transaction->payment_channel,
+                    'settled_at' => $transaction->settled_at ? $transaction->settled_at->toIso8601String() : null,
+                ];
+            });
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $data,
+                'pagination' => [
+                    'total' => $settlements->total(),
+                    'per_page' => $settlements->perPage(),
+                    'current_page' => $settlements->currentPage(),
+                    'last_page' => $settlements->lastPage(),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to get settlements: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

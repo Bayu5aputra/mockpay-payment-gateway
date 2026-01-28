@@ -3,47 +3,85 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class RefundController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $transactionService;
+
+    public function __construct(TransactionService $transactionService)
     {
-        //
+        $this->transactionService = $transactionService;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Create refund request
+     * POST /api/v1/refund
      */
-    public function store(Request $request)
+    public function create(Request $request)
     {
-        //
-    }
+        $validator = Validator::make($request->all(), [
+            'transaction_id' => 'required|string',
+            'reason' => 'nullable|string|max:500',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        try {
+            $merchant = $request->user();
+            $transaction = $this->transactionService->getByTransactionId($request->transaction_id);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            if (!$transaction) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Transaction not found'
+                ], 404);
+            }
+
+            if ($transaction->merchant_id !== $merchant->id) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Unauthorized access'
+                ], 403);
+            }
+
+            if (!$transaction->canBeRefunded()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Transaction cannot be refunded. Only settled transactions can be refunded.'
+                ], 400);
+            }
+
+            $this->transactionService->refundTransaction(
+                $transaction,
+                $request->reason ?? 'Refund requested by merchant'
+            );
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Refund processed successfully',
+                'data' => [
+                    'transaction_id' => $transaction->transaction_id,
+                    'order_id' => $transaction->order_id,
+                    'amount' => $transaction->amount,
+                    'status' => $transaction->fresh()->status,
+                    'refunded_at' => $transaction->fresh()->refunded_at->toIso8601String(),
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to process refund: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
