@@ -3,17 +3,15 @@
 @section('title', 'Documentation - MockPay')
 
 @section('doc-content')
-<div class="prose prose-lg max-w-none">
-    <!-- Header Section -->
+<div class="bg-white rounded-lg shadow-md p-8">
     <div class="text-center mb-12">
-        <h1>MockPay Documentation</h1>
-        <p class="lead">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">MockPay Documentation</h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
             Welcome to MockPay documentation. Learn how to integrate and test payment systems with our realistic dummy payment gateway.
         </p>
     </div>
 
-    <!-- Search Bar -->
-    <div class="max-w-2xl mx-auto mb-12 not-prose">
+    <div class="max-w-2xl mx-auto mb-12">
         <form action="{{ route('docs.search') }}" method="GET">
             <div class="relative">
                 <input type="text" 
@@ -29,8 +27,7 @@
         </form>
     </div>
 
-    <!-- Quick Start Info Box -->
-    <div class="bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-12">
         <div class="flex">
             <div class="flex-shrink-0">
                 <svg class="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
@@ -46,68 +43,62 @@
         </div>
     </div>
 
-    <!-- Documentation Sections Grid -->
-    <div class="my-12 not-prose">
-        <h2>Documentation Sections</h2>
-        <div class="grid md:grid-cols-2 gap-6 my-8">
-            @foreach($sections as $section)
-            <div class="bg-white border border-gray-200 rounded-lg p-6 hover:border-purple-300 hover:shadow-lg transition-all">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    {{ $section['title'] }}
-                </h3>
-                <ul class="space-y-2">
-                    @foreach($section['items'] as $item)
-                    <li>
-                        <a href="{{ $item['url'] }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
-                            {{ $item['title'] }}
-                        </a>
-                    </li>
-                    @endforeach
-                </ul>
-            </div>
-            @endforeach
+    <div class="grid md:grid-cols-2 gap-6 mb-12">
+        @foreach($sections as $section)
+        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:border-purple-300 hover:shadow-lg transition-all">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+                {{ $section['title'] }}
+            </h3>
+            <ul class="space-y-2">
+                @foreach($section['items'] as $item)
+                <li>
+                    <a href="{{ $item['url'] }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                        {{ $item['title'] }}
+                    </a>
+                </li>
+                @endforeach
+            </ul>
+        </div>
+        @endforeach
 
-            <!-- Quick Links -->
-            <div class="bg-white border border-gray-200 rounded-lg p-6 hover:border-green-300 hover:shadow-lg transition-all">
-                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                    </svg>
-                    Quick Links
-                </h3>
-                <ul class="space-y-2">
-                    <li>
-                        <a href="{{ route('docs.getting-started') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
-                            Getting Started Guide
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('docs.examples') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
-                            Code Examples
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('docs.testing') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
-                            Testing Guide
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('docs.faq') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
-                            FAQ
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        <div class="bg-white border border-gray-200 rounded-lg p-6 hover:border-green-300 hover:shadow-lg transition-all">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                Quick Links
+            </h3>
+            <ul class="space-y-2">
+                <li>
+                    <a href="{{ route('docs.getting-started') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                        Getting Started Guide
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('docs.examples') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                        Code Examples
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('docs.testing') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                        Testing Guide
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('docs.faq') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                        FAQ
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 
-    <!-- Key Features Section -->
-    <h2>Key Features</h2>
+    <h2 class="text-3xl font-bold text-gray-900 mb-6">Key Features</h2>
 
-    <div class="grid md:grid-cols-2 gap-6 my-8 not-prose">
+    <div class="grid md:grid-cols-2 gap-6 mb-12">
         <div class="border border-gray-200 rounded-lg p-6">
             <div class="flex items-center mb-3">
                 <div class="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center mr-3">
@@ -157,10 +148,9 @@
         </div>
     </div>
 
-    <!-- Popular Topics -->
-    <h2>Popular Topics</h2>
+    <h2 class="text-3xl font-bold text-gray-900 mb-6">Popular Topics</h2>
 
-    <div class="grid md:grid-cols-3 gap-4 my-8 not-prose">
+    <div class="grid md:grid-cols-3 gap-4 mb-12">
         <a href="{{ route('docs.getting-started') }}" class="block p-6 bg-white border border-gray-200 rounded-lg hover:border-purple-300 hover:shadow-lg transition-all">
             <h3 class="text-lg font-semibold text-gray-900 mb-2">Getting Started</h3>
             <p class="text-sm text-gray-600">Learn the basics and create your first transaction</p>
@@ -192,8 +182,7 @@
         </a>
     </div>
 
-    <!-- CTA Section -->
-    <div class="mt-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-xl p-8 text-white text-center not-prose">
+    <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-xl p-8 text-white text-center mb-12">
         <h2 class="text-3xl font-bold mb-4">Ready to Start Testing?</h2>
         <p class="text-xl mb-6">Create your free account and get your API keys in minutes</p>
         <div class="flex justify-center gap-4">
@@ -206,17 +195,16 @@
         </div>
     </div>
 
-    <!-- Need Help Section -->
-    <div class="mt-12">
-        <h2>Need Help?</h2>
-        <p>
+    <div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Need Help?</h2>
+        <p class="text-gray-700 mb-4">
             Can't find what you're looking for? Here are some helpful resources:
         </p>
-        <ul>
-            <li><a href="{{ route('docs.troubleshooting') }}">Troubleshooting Guide</a> - Common issues and solutions</li>
-            <li><a href="{{ route('contact') }}">Contact Support</a> - Get help from our team</li>
-            <li><a href="#">Community Forum</a> - Ask questions and share knowledge</li>
-            <li><a href="#">GitHub Repository</a> - View source code and examples</li>
+        <ul class="space-y-2">
+            <li><a href="{{ route('docs.troubleshooting') }}" class="text-blue-600 hover:underline">Troubleshooting Guide</a> - Common issues and solutions</li>
+            <li><a href="{{ route('contact') }}" class="text-blue-600 hover:underline">Contact Support</a> - Get help from our team</li>
+            <li><a href="#" class="text-blue-600 hover:underline">Community Forum</a> - Ask questions and share knowledge</li>
+            <li><a href="#" class="text-blue-600 hover:underline">GitHub Repository</a> - View source code and examples</li>
         </ul>
     </div>
 </div>
