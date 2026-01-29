@@ -4,12 +4,32 @@
 
 @section('doc-content')
 <div class="prose prose-lg max-w-none">
-    <h1>MockPay Documentation</h1>
-    
-    <p class="lead">
-        Welcome to MockPay documentation. Learn how to integrate and test payment systems with our realistic dummy payment gateway.
-    </p>
+    <!-- Header Section -->
+    <div class="text-center mb-12">
+        <h1>MockPay Documentation</h1>
+        <p class="lead">
+            Welcome to MockPay documentation. Learn how to integrate and test payment systems with our realistic dummy payment gateway.
+        </p>
+    </div>
 
+    <!-- Search Bar -->
+    <div class="max-w-2xl mx-auto mb-12 not-prose">
+        <form action="{{ route('docs.search') }}" method="GET">
+            <div class="relative">
+                <input type="text" 
+                       name="q" 
+                       placeholder="Search documentation..." 
+                       class="w-full px-6 py-4 pr-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <button type="submit" class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Quick Start Info Box -->
     <div class="bg-blue-50 border-l-4 border-blue-500 p-6 my-8">
         <div class="flex">
             <div class="flex-shrink-0">
@@ -26,19 +46,65 @@
         </div>
     </div>
 
-    <h2>What is MockPay?</h2>
-    
-    <p>
-        MockPay is a full-featured dummy payment gateway designed specifically for developers. It simulates all major Indonesian payment methods without involving real money, making it perfect for:
-    </p>
+    <!-- Documentation Sections Grid -->
+    <div class="my-12 not-prose">
+        <h2>Documentation Sections</h2>
+        <div class="grid md:grid-cols-2 gap-6 my-8">
+            @foreach($sections as $section)
+            <div class="bg-white border border-gray-200 rounded-lg p-6 hover:border-purple-300 hover:shadow-lg transition-all">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    {{ $section['title'] }}
+                </h3>
+                <ul class="space-y-2">
+                    @foreach($section['items'] as $item)
+                    <li>
+                        <a href="{{ $item['url'] }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                            {{ $item['title'] }}
+                        </a>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
+            @endforeach
 
-    <ul>
-        <li>Development and testing of e-commerce applications</li>
-        <li>Integration testing without production credentials</li>
-        <li>Training and educational purposes</li>
-        <li>Demonstrating payment flows to stakeholders</li>
-    </ul>
+            <!-- Quick Links -->
+            <div class="bg-white border border-gray-200 rounded-lg p-6 hover:border-green-300 hover:shadow-lg transition-all">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    Quick Links
+                </h3>
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{{ route('docs.getting-started') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                            Getting Started Guide
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('docs.examples') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                            Code Examples
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('docs.testing') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                            Testing Guide
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('docs.faq') }}" class="text-blue-600 hover:text-blue-800 hover:underline text-sm">
+                            FAQ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
 
+    <!-- Key Features Section -->
     <h2>Key Features</h2>
 
     <div class="grid md:grid-cols-2 gap-6 my-8 not-prose">
@@ -91,6 +157,7 @@
         </div>
     </div>
 
+    <!-- Popular Topics -->
     <h2>Popular Topics</h2>
 
     <div class="grid md:grid-cols-3 gap-4 my-8 not-prose">
@@ -125,17 +192,32 @@
         </a>
     </div>
 
-    <h2>Need Help?</h2>
+    <!-- CTA Section -->
+    <div class="mt-12 bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-xl p-8 text-white text-center not-prose">
+        <h2 class="text-3xl font-bold mb-4">Ready to Start Testing?</h2>
+        <p class="text-xl mb-6">Create your free account and get your API keys in minutes</p>
+        <div class="flex justify-center gap-4">
+            <a href="{{ route('register') }}" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Get Started Free
+            </a>
+            <a href="{{ route('docs.api-reference') }}" class="bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                View API Reference
+            </a>
+        </div>
+    </div>
 
-    <p>
-        Can't find what you're looking for? Here are some helpful resources:
-    </p>
-
-    <ul>
-        <li><a href="{{ route('docs.troubleshooting') }}">Troubleshooting Guide</a> - Common issues and solutions</li>
-        <li><a href="{{ route('contact') }}">Contact Support</a> - Get help from our team</li>
-        <li><a href="#">Community Forum</a> - Ask questions and share knowledge</li>
-        <li><a href="#">GitHub Repository</a> - View source code and examples</li>
-    </ul>
+    <!-- Need Help Section -->
+    <div class="mt-12">
+        <h2>Need Help?</h2>
+        <p>
+            Can't find what you're looking for? Here are some helpful resources:
+        </p>
+        <ul>
+            <li><a href="{{ route('docs.troubleshooting') }}">Troubleshooting Guide</a> - Common issues and solutions</li>
+            <li><a href="{{ route('contact') }}">Contact Support</a> - Get help from our team</li>
+            <li><a href="#">Community Forum</a> - Ask questions and share knowledge</li>
+            <li><a href="#">GitHub Repository</a> - View source code and examples</li>
+        </ul>
+    </div>
 </div>
 @endsection

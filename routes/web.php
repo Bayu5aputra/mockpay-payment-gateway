@@ -6,8 +6,8 @@ use App\Http\Controllers\Public\DocumentationController;
 use App\Http\Controllers\Public\PricingController;
 use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Dashboard\TransactionController;
-use App\Http\Controllers\Dashboard\SettlementController;
+use App\Http\Controllers\Dashboard\TransactionController as DashboardTransactionController;
+use App\Http\Controllers\Dashboard\SettlementController as DashboardSettlementController;
 use App\Http\Controllers\Dashboard\ApiKeyController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\MerchantController;
@@ -44,6 +44,7 @@ Route::prefix('docs')->name('docs.')->group(function () {
     Route::get('/payment-methods', [DocumentationController::class, 'paymentMethods'])->name('payment-methods');
     Route::get('/webhooks', [DocumentationController::class, 'webhooks'])->name('webhooks');
     Route::get('/testing', [DocumentationController::class, 'testing'])->name('testing');
+    Route::get('/troubleshooting', [DocumentationController::class, 'troubleshooting'])->name('troubleshooting');
     Route::get('/examples', [DocumentationController::class, 'examples'])->name('examples');
     Route::get('/faq', [DocumentationController::class, 'faq'])->name('faq');
     Route::get('/search', [DocumentationController::class, 'search'])->name('search');
@@ -127,38 +128,94 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
     // TRANSACTIONS
     // ==========================================
     Route::prefix('transactions')->name('transactions.')->group(function () {
-        Route::get('/', [TransactionController::class, 'index'])->name('index');
-        Route::get('/{transaction_id}', [TransactionController::class, 'show'])->name('show');
-        Route::post('/{transaction_id}/cancel', [TransactionController::class, 'cancel'])->name('cancel');
-        Route::post('/{transaction_id}/refund', [TransactionController::class, 'refund'])->name('refund');
-        Route::post('/{transaction_id}/resend-webhook', [TransactionController::class, 'resendWebhook'])->name('resend-webhook');
-        Route::get('/export/csv', [TransactionController::class, 'export'])->name('export');
+        Route::get('/', [DashboardTransactionController::class, 'index'])->name('index');
+        Route::get('/{transaction_id}', [DashboardTransactionController::class, 'show'])->name('show');
+        Route::post('/{transaction_id}/cancel', [DashboardTransactionController::class, 'cancel'])->name('cancel');
+        Route::post('/{transaction_id}/refund', [DashboardTransactionController::class, 'refund'])->name('refund');
+        Route::post('/{transaction_id}/resend-webhook', [DashboardTransactionController::class, 'resendWebhook'])->name('resend-webhook');
+        Route::get('/export/csv', [DashboardTransactionController::class, 'export'])->name('export');
     });
 
     // ==========================================
     // SETTLEMENTS
     // ==========================================
     Route::prefix('settlements')->name('settlements.')->group(function () {
-        Route::get('/', [SettlementController::class, 'index'])->name('index');
-        Route::get('/{date}', [SettlementController::class, 'show'])->name('show');
-        Route::get('/{date}/download', [SettlementController::class, 'download'])->name('download');
+        Route::get('/', [DashboardSettlementController::class, 'index'])->name('index');
+        Route::get('/{date}', [DashboardSettlementController::class, 'show'])->name('show');
+        Route::get('/{date}/download', [DashboardSettlementController::class, 'download'])->name('download');
         
         // Bank Account Settings
-        Route::get('/bank-account', [SettlementController::class, 'bankAccount'])->name('bank-account');
-        Route::put('/bank-account', [SettlementController::class, 'updateBankAccount'])->name('bank-account.update');
+        Route::get('/bank-account', [DashboardSettlementController::class, 'bankAccount'])->name('bank-account');
+        Route::put('/bank-account', [DashboardSettlementController::class, 'updateBankAccount'])->name('bank-account.update');
         
         // Withdrawal Request
-        Route::post('/withdraw', [SettlementController::class, 'requestWithdrawal'])->name('withdraw');
+        Route::post('/withdraw', [DashboardSettlementController::class, 'requestWithdrawal'])->name('withdraw');
+    });
+
+    // ==========================================
+    // DEVELOPER TOOLS
+    // ==========================================
+    Route::prefix('developers')->name('developers.')->group(function () {
+        Route::get('/', function () {
+            return view('dashboard.developers.index');
+        })->name('index');
+        
+        Route::get('/api-docs', function () {
+            return view('dashboard.developers.api-docs');
+        })->name('api-docs');
+        
+        Route::get('/code-examples', function () {
+            $examples = [
+                'php' => [
+                    'examples' => [
+                        'create_payment' => [
+                            'title' => 'Create Payment',
+                            'code' => file_get_contents(resource_path('examples/php/create-payment.php'))
+                        ]
+                    ]
+                ],
+                'javascript' => [
+                    'examples' => [
+                        'create_payment' => [
+                            'title' => 'Create Payment',
+                            'code' => file_get_contents(resource_path('examples/javascript/create-payment.js'))
+                        ]
+                    ]
+                ],
+                'python' => [
+                    'examples' => [
+                        'create_payment' => [
+                            'title' => 'Create Payment',
+                            'code' => file_get_contents(resource_path('examples/python/create-payment.py'))
+                        ]
+                    ]
+                ]
+            ];
+            return view('dashboard.developers.code-examples', compact('examples'));
+        })->name('code-examples');
+        
+        Route::get('/simulator', function () {
+            return view('dashboard.developers.simulator');
+        })->name('simulator');
+        
+        Route::get('/logs', function () {
+            $logs = [
+                ['id' => 1, 'timestamp' => now(), 'method' => 'POST', 'endpoint' => '/api/v1/payment/create', 'status_code' => 200, 'response_time' => '145ms', 'ip_address' => '192.168.1.1'],
+                ['id' => 2, 'timestamp' => now()->subMinutes(5), 'method' => 'GET', 'endpoint' => '/api/v1/transactions', 'status_code' => 200, 'response_time' => '89ms', 'ip_address' => '192.168.1.1'],
+                ['id' => 3, 'timestamp' => now()->subMinutes(10), 'method' => 'POST', 'endpoint' => '/api/v1/refund', 'status_code' => 400, 'response_time' => '102ms', 'ip_address' => '192.168.1.1'],
+            ];
+            return view('dashboard.developers.logs', compact('logs'));
+        })->name('logs');
     });
 
     // ==========================================
     // API KEYS
     // ==========================================
-    Route::prefix('settings/api-keys')->name('settings.api-keys.')->group(function () {
+    Route::prefix('api-keys')->name('api-keys.')->group(function () {
         Route::get('/', [ApiKeyController::class, 'index'])->name('index');
         Route::post('/', [ApiKeyController::class, 'store'])->name('store');
         Route::delete('/{id}', [ApiKeyController::class, 'destroy'])->name('destroy');
-        Route::post('/{id}/rotate', [ApiKeyController::class, 'rotate'])->name('rotate');
+        Route::post('/{id}/regenerate', [ApiKeyController::class, 'rotate'])->name('regenerate');
     });
 
     // ==========================================
@@ -186,26 +243,26 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')
     // ==========================================
     // MERCHANT PROFILE
     // ==========================================
-    Route::prefix('profile')->name('profile.')->group(function () {
-        Route::get('/', [MerchantController::class, 'profile'])->name('index');
-        Route::put('/', [MerchantController::class, 'updateProfile'])->name('update');
+    Route::prefix('merchant')->name('merchant.')->group(function () {
+        Route::get('/profile', [MerchantController::class, 'profile'])->name('profile');
+        Route::put('/profile', [MerchantController::class, 'updateProfile'])->name('profile.update');
         Route::put('/password', [MerchantController::class, 'updatePassword'])->name('password.update');
     });
 
     // ==========================================
     // COMPANY INFORMATION
     // ==========================================
-    Route::prefix('company')->name('company.')->group(function () {
-        Route::get('/', [MerchantController::class, 'company'])->name('index');
-        Route::put('/', [MerchantController::class, 'updateCompany'])->name('update');
+    Route::prefix('merchant')->name('merchant.')->group(function () {
+        Route::get('/company', [MerchantController::class, 'company'])->name('company');
+        Route::put('/company', [MerchantController::class, 'updateCompany'])->name('company.update');
     });
 
     // ==========================================
     // PROFILE (User Account)
     // ==========================================
-    Route::get('/account', [ProfileController::class, 'edit'])->name('account.edit');
-    Route::patch('/account', [ProfileController::class, 'update'])->name('account.update');
-    Route::delete('/account', [ProfileController::class, 'destroy'])->name('account.destroy');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // Include Auth Routes

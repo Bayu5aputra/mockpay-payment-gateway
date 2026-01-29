@@ -14,7 +14,7 @@ class DocumentationController extends Controller
     public function index()
     {
         $sections = $this->getDocumentationSections();
-        return view('public.documentation.index', compact('sections'));
+        return view('public.docs.index', compact('sections'));
     }
 
     /**
@@ -23,7 +23,7 @@ class DocumentationController extends Controller
      */
     public function gettingStarted()
     {
-        return view('public.documentation.getting-started');
+        return view('public.docs.getting-started');
     }
 
     /**
@@ -32,7 +32,7 @@ class DocumentationController extends Controller
      */
     public function authentication()
     {
-        return view('public.documentation.authentication');
+        return view('public.docs.authentication');
     }
 
     /**
@@ -86,7 +86,7 @@ class DocumentationController extends Controller
             ],
         ];
 
-        return view('public.documentation.api-reference', compact('endpoints'));
+        return view('public.docs.api-reference', compact('endpoints'));
     }
 
     /**
@@ -128,7 +128,7 @@ class DocumentationController extends Controller
             ],
         ];
 
-        return view('public.documentation.payment-methods', compact('methods'));
+        return view('public.docs.payment-methods', compact('methods'));
     }
 
     /**
@@ -164,7 +164,7 @@ class DocumentationController extends Controller
             ],
         ];
 
-        return view('public.documentation.webhooks', compact('events'));
+        return view('public.docs.webhooks', compact('events'));
     }
 
     /**
@@ -212,7 +212,16 @@ class DocumentationController extends Controller
             ],
         ];
 
-        return view('public.documentation.testing', compact('testCards'));
+        return view('public.docs.testing', compact('testCards'));
+    }
+
+    /**
+     * Display troubleshooting guide
+     * GET /docs/troubleshooting
+     */
+    public function troubleshooting()
+    {
+        return view('public.docs.troubleshooting');
     }
 
     /**
@@ -244,7 +253,7 @@ class DocumentationController extends Controller
             ],
         ];
 
-        return view('public.documentation.examples', compact('examples'));
+        return view('public.docs.examples', compact('examples'));
     }
 
     /**
@@ -296,7 +305,7 @@ class DocumentationController extends Controller
             ],
         ];
 
-        return view('public.documentation.faq', compact('faqs'));
+        return view('public.docs.faq', compact('faqs'));
     }
 
     /**
@@ -311,7 +320,7 @@ class DocumentationController extends Controller
         // For now, return empty results
         $results = [];
 
-        return view('public.documentation.search', compact('query', 'results'));
+        return view('public.docs.search', compact('query', 'results'));
     }
 
     /**
