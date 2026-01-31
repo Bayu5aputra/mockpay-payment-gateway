@@ -59,7 +59,7 @@ class LoginRequest extends FormRequest
         $password = $this->input('password');
         $remember = $this->boolean('remember');
 
-        // First, try to find user in merchants table
+        // First, try to find merchant
         $merchant = Merchant::where('email', $email)->first();
         
         if ($merchant && Hash::check($password, $merchant->password)) {
@@ -90,7 +90,7 @@ class LoginRequest extends FormRequest
         RateLimiter::hit($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => __('These credentials do not match our records.'),
+            'email' => 'These credentials do not match our records.',
         ]);
     }
 

@@ -24,7 +24,10 @@ class ConfirmablePasswordController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        if (! Auth::guard('web')->validate([
+        // Check which guard is being used
+        $guard = Auth::guard('merchant')->check() ? 'merchant' : 'web';
+        
+        if (!Auth::guard($guard)->validate([
             'email' => $request->user()->email,
             'password' => $request->password,
         ])) {
@@ -35,6 +38,11 @@ class ConfirmablePasswordController extends Controller
 
         $request->session()->put('auth.password_confirmed_at', time());
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Redirect based on guard
+        if ($guard === 'merchant') {
+            return redirect()->intended(route('dashboard.index'));
+        }
+        
+        return redirect()->intended(route('client.dashboard'));
     }
 }

@@ -59,23 +59,30 @@
                 </div>
 
                 <!-- Auth Links -->
-                <div class="hidden md:flex items-center space-x-4">
-                    @auth
-                        <a href="{{ route('dashboard') }}"
-                            class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-                            Dashboard
-                        </a>
-                    @else
-                        <a href="{{ route('login') }}"
-                            class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
-                            Sign In
-                        </a>
-                        <a href="{{ route('register') }}"
-                            class="btn-primary inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
-                            Get Started Free
-                        </a>
-                    @endauth
-                </div>
+<div class="hidden md:flex items-center space-x-4">
+    @auth
+        @if(Auth::guard('merchant')->check())
+            <a href="{{ route('dashboard.index') }}"
+                class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Dashboard
+            </a>
+        @else
+            <a href="{{ route('client.dashboard') }}"
+                class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+                Dashboard
+            </a>
+        @endif
+    @else
+        <a href="{{ route('login') }}"
+            class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+            Sign In
+        </a>
+        <a href="{{ route('register') }}"
+            class="btn-primary inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+            Get Started Free
+        </a>
+    @endauth
+</div>
 
                 <!-- Mobile menu button -->
                 <div class="md:hidden">

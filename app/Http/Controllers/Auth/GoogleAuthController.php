@@ -46,7 +46,7 @@ class GoogleAuthController extends Controller
             if ($user) {
                 // User exists, just login
                 Auth::login($user, true);
-                return redirect()->intended('dashboard')->with('success', 'Welcome back, ' . $user->name . '!');
+                return redirect()->intended(route('client.dashboard'))->with('success', 'Welcome back, ' . $user->name . '!');
             }
 
             // Check if user exists with this email
@@ -62,7 +62,7 @@ class GoogleAuthController extends Controller
                 ]);
 
                 Auth::login($user, true);
-                return redirect()->intended('dashboard')->with('success', 'Google account linked successfully!');
+                return redirect()->intended(route('client.dashboard'))->with('success', 'Google account linked successfully!');
             }
 
             // Create new user
@@ -77,7 +77,7 @@ class GoogleAuthController extends Controller
             ]);
 
             Auth::login($user, true);
-            return redirect()->intended('dashboard')->with('success', 'Account created successfully!');
+            return redirect()->intended(route('client.dashboard'))->with('success', 'Account created successfully!');
 
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
             Log::error('Google OAuth Invalid State Error: ' . $e->getMessage());

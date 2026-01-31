@@ -33,11 +33,11 @@ class AuthenticatedSessionController extends Controller
         
         if ($guard === 'merchant') {
             // Redirect merchant to merchant dashboard
-            return redirect()->intended(route('dashboard.index', absolute: false));
+            return redirect()->intended(route('dashboard.index'));
         }
         
         // Redirect user/client to client dashboard
-        return redirect()->intended(route('client.dashboard', absolute: false));
+        return redirect()->intended(route('client.dashboard'));
     }
 
     /**

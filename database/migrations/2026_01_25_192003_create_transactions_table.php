@@ -57,12 +57,14 @@ return new class extends Migration
             $table->timestamp('paid_at')->nullable();
             $table->timestamp('settled_at')->nullable();
             $table->timestamp('cancelled_at')->nullable();
+            $table->timestamp('refunded_at')->nullable();
             
             // Request info
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             
             $table->timestamps();
+            $table->softDeletes(); // TAMBAHKAN INI
             
             // Indexes
             $table->index('transaction_id');
