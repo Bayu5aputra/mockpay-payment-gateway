@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,11 +16,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Create demo user/client
+        User::create([
+            'name' => 'Demo Client',
+            'email' => 'client@mockpay.test',
+            'password' => Hash::make('password'),
+            'email_verified_at' => now(),
         ]);
+
+        echo "✓ Demo client created: client@mockpay.test / password\n";
+
+        // Seed payment channels
+        $this->call(PaymentChannelSeeder::class);
+        
+        // Seed demo merchant
+        $this->call(DemoMerchantSeeder::class);
     }
 }

@@ -19,6 +19,7 @@ use App\Http\Controllers\Payment\CreditCardController;
 use App\Http\Controllers\Payment\RetailController;
 use App\Http\Controllers\LegalController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Client\ClientDashboardController;
 
 // ==========================================
 // PUBLIC ROUTES
@@ -119,8 +120,26 @@ Route::prefix('payment/simulate')->name('payment.simulate.')->group(function () 
 // DASHBOARD ROUTES (PROTECTED)
 // ==========================================
 
-Route::middleware(['auth', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
+// ==========================================
+// CLIENT/USER DASHBOARD ROUTES (PROTECTED)
+// ==========================================
+
+Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(function () {
+    // Client Dashboard Home
+    Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
     
+    // TODO: Add more client routes here
+    // - Payment gateway configuration
+    // - Transaction history
+    // - API settings
+    // - Account settings
+});
+
+// ==========================================
+// MERCHANT DASHBOARD ROUTES (PROTECTED)
+// ==========================================
+
+Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {    
     // Dashboard Home
     Route::get('/', [DashboardController::class, 'index'])->name('index');
 

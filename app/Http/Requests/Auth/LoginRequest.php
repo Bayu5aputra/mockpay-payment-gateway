@@ -2,9 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
+use App\Models\Merchant;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -44,6 +47,7 @@ class LoginRequest extends FormRequest
 
     /**
      * Attempt to authenticate the request's credentials.
+     * Checks both users and merchants tables.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -51,15 +55,59 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $email = $this->input('email');
+        $password = $this->input('password');
+        $remember = $this->boolean('remember');
 
-            throw ValidationException::withMessages([
-                'email' => __('These credentials do not match our records.'),
-            ]);
+        // First, try to find user in merchants table
+        $merchant = Merchant::where('email', $email)->first();
+        
+        if ($merchant && Hash::check($password, $merchant->password)) {
+            // Check if merchant is active
+            if ($merchant->status !== 'active') {
+                throw ValidationException::withMessages([
+                    'email' => 'Your merchant account is not active. Please contact support.',
+                ]);
+            }
+
+            // Login as merchant
+            Auth::guard('merchant')->login($merchant, $remember);
+            RateLimiter::clear($this->throttleKey());
+            return;
         }
 
-        RateLimiter::clear($this->throttleKey());
+        // If not found in merchants, try users table
+        $user = User::where('email', $email)->first();
+        
+        if ($user && Hash::check($password, $user->password)) {
+            // Login as user
+            Auth::guard('web')->login($user, $remember);
+            RateLimiter::clear($this->throttleKey());
+            return;
+        }
+
+        // If no match found
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => __('These credentials do not match our records.'),
+        ]);
+    }
+
+    /**
+     * Check which guard is authenticated and return the guard name
+     */
+    public function getAuthenticatedGuard(): ?string
+    {
+        if (Auth::guard('merchant')->check()) {
+            return 'merchant';
+        }
+        
+        if (Auth::guard('web')->check()) {
+            return 'web';
+        }
+
+        return null;
     }
 
     /**

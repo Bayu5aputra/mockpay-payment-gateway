@@ -28,7 +28,16 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Determine redirect based on authenticated guard
+        $guard = $request->getAuthenticatedGuard();
+        
+        if ($guard === 'merchant') {
+            // Redirect merchant to merchant dashboard
+            return redirect()->intended(route('dashboard.index', absolute: false));
+        }
+        
+        // Redirect user/client to client dashboard
+        return redirect()->intended(route('client.dashboard', absolute: false));
     }
 
     /**
@@ -36,7 +45,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Logout from both guards
         Auth::guard('web')->logout();
+        Auth::guard('merchant')->logout();
 
         $request->session()->invalidate();
 

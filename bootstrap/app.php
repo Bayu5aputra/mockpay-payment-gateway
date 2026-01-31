@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'client' => \App\Http\Middleware\RedirectIfNotClient::class,
+            'merchant' => \App\Http\Middleware\RedirectIfNotMerchant::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
