@@ -1,27 +1,41 @@
 <x-app-layout>
     <div class="p-8">
-        <!-- Welcome Section -->
         @php
             $merchantUser = Auth::guard('merchant')->user();
         @endphp
-        <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome back, {{ $merchantUser?->name }}!</h1>
-            <p class="text-gray-600">Here's what's happening with your payments {{ $period === 'today' ? 'today' : 'this period' }}.</p>
+        <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <p class="text-xs uppercase tracking-widest text-slate-400">Platform Admin</p>
+                <h1 class="text-3xl font-bold text-gray-900 mt-2">Welcome back, {{ $merchantUser?->name }}!</h1>
+                <p class="text-gray-600">Overview of platform usage {{ $period === 'today' ? 'today' : 'this period' }}.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('dashboard.upgrade-requests.index') }}" class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition">
+                    Review Upgrade Requests
+                </a>
+                <a href="{{ route('dashboard.customers.index') }}" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white transition">
+                    View Clients
+                </a>
+            </div>
         </div>
 
-        <!-- Stats Grid -->
+        <div class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-4 text-blue-900">
+            <p class="text-sm">
+                Merchant accounts manage users, plan approvals, and overall usage. Client teams control their own simulation outcomes and integrations.
+            </p>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Total Transactions -->
-            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600 mb-1">Total Transactions</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Total Simulations</p>
                         <p class="text-3xl font-bold text-gray-900">{{ number_format($statistics['total_transactions']) }}</p>
                         <p class="text-sm {{ $changes['transactions'] >= 0 ? 'text-green-600' : 'text-red-600' }} mt-2">
                             {{ $changes['transactions'] >= 0 ? '+' : '' }}{{ number_format($changes['transactions'], 2) }}% from last period
                         </p>
                     </div>
-                    <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
                         <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                         </svg>
@@ -29,15 +43,14 @@
                 </div>
             </div>
 
-            <!-- Successful Payments -->
-            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600 mb-1">Successful Payments</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Successful Simulations</p>
                         <p class="text-3xl font-bold text-gray-900">{{ number_format($statistics['settlement']) }}</p>
                         <p class="text-sm text-green-600 mt-2">{{ number_format($statistics['success_rate'], 2) }}% success rate</p>
                     </div>
-                    <div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center">
+                    <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
                         <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -45,17 +58,16 @@
                 </div>
             </div>
 
-            <!-- Total Revenue -->
-            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-purple-500">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600 mb-1">Total Revenue</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Simulated Volume</p>
                         <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($statistics['total_amount'], 0, ',', '.') }}</p>
                         <p class="text-sm {{ $changes['amount'] >= 0 ? 'text-green-600' : 'text-red-600' }} mt-2">
                             {{ $changes['amount'] >= 0 ? '+' : '' }}{{ number_format($changes['amount'], 2) }}% from last period
                         </p>
                     </div>
-                    <div class="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center">
                         <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -63,15 +75,14 @@
                 </div>
             </div>
 
-            <!-- Pending Settlements -->
-            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-amber-500">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600 mb-1">Pending Settlements</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Pending Transactions</p>
                         <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($statistics['pending_amount'] ?? 0, 0, ',', '.') }}</p>
                         <p class="text-sm text-gray-600 mt-2">{{ number_format($statistics['pending']) }} transactions</p>
                     </div>
-                    <div class="w-14 h-14 bg-amber-100 rounded-lg flex items-center justify-center">
+                    <div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center">
                         <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -81,14 +92,14 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-emerald-500">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600 mb-1">Pending Upgrade Requests</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Pending Upgrade Requests</p>
                         <p class="text-3xl font-bold text-gray-900">{{ number_format($pendingUpgradeCount) }}</p>
                         <p class="text-sm text-gray-600 mt-2">Needs review</p>
                     </div>
-                    <div class="w-14 h-14 bg-emerald-100 rounded-lg flex items-center justify-center">
+                    <div class="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center">
                         <svg class="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -96,14 +107,14 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-indigo-500">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600 mb-1">Total Clients</p>
+                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Total Clients</p>
                         <p class="text-3xl font-bold text-gray-900">{{ number_format($activeClients) }}</p>
                         <p class="text-sm text-gray-600 mt-2">Registered accounts</p>
                     </div>
-                    <div class="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    <div class="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center">
                         <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
@@ -112,12 +123,10 @@
             </div>
         </div>
 
-        <!-- Charts and Recent Transactions -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <!-- Transaction Chart -->
-            <div class="lg:col-span-2 bg-white rounded-xl shadow-md p-6">
+            <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900">Transaction Overview</h2>
+                    <h2 class="text-xl font-bold text-gray-900">Simulation Overview</h2>
                     <div class="flex space-x-2">
                         <button class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">7 Days</button>
                         <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">30 Days</button>
@@ -154,9 +163,8 @@
                 </div>
             </div>
 
-            <!-- Payment Methods Distribution -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Payment Methods</h2>
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-6">Method Distribution</h2>
                 @if(count($distribution) === 0)
                     <p class="text-sm text-gray-500">No payment method data yet.</p>
                 @else
@@ -181,10 +189,9 @@
             </div>
         </div>
 
-        <!-- Recent Transactions -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
-                <h2 class="text-xl font-bold text-gray-900">Recent Transactions</h2>
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
+                <h2 class="text-xl font-bold text-gray-900">Recent Simulations</h2>
                 <a href="{{ route('dashboard.transactions.index') }}" class="text-purple-600 hover:text-purple-700 font-medium text-sm">View All</a>
             </div>
             <div class="overflow-x-auto">
@@ -236,51 +243,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <a href="{{ route('dashboard.transactions.index') }}" class="block bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-lg">Transactions</h3>
-                        <p class="text-blue-100 text-sm">View all transactions</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ route('dashboard.customers.index') }}" class="block bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-lg">Clients</h3>
-                        <p class="text-purple-100 text-sm">Manage users</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ route('dashboard.upgrade-requests.index') }}" class="block bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
-                <div class="flex items-center space-x-4">
-                    <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-lg">Upgrade Requests</h3>
-                        <p class="text-emerald-100 text-sm">Review payments</p>
-                    </div>
-                </div>
-            </a>
         </div>
     </div>
 </x-app-layout>

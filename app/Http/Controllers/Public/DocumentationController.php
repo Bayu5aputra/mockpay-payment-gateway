@@ -288,6 +288,14 @@ class DocumentationController extends Controller
                 'answer' => 'MockPay sends webhook notifications to your specified URL when transaction status changes. You can test webhook integration using tools like webhook.site or ngrok for local development.'
             ],
             [
+                'question' => 'Are accounts and data isolated per client?',
+                'answer' => 'Yes. MockPay is multi-tenant SaaS and each client, user, and guest account is isolated from others.'
+            ],
+            [
+                'question' => 'Who controls transaction simulation outcomes?',
+                'answer' => 'Clients control their own simulation outcomes and webhook settings. Merchant accounts only handle user management, plan approvals, and usage monitoring.'
+            ],
+            [
                 'question' => 'Is there an API rate limit?',
                 'answer' => 'Yes, there\'s a reasonable rate limit to ensure fair usage. The free tier allows sufficient requests for testing purposes. Contact us if you need higher limits.'
             ],

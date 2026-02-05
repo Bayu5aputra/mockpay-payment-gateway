@@ -1,8 +1,11 @@
-@extends('layouts.docs')
+﻿@extends('layouts.docs')
 
 @section('title', 'Authentication - MockPay Documentation')
 
 @section('doc-content')
+@php
+    $baseUrl = rtrim(config('app.url'), '/');
+@endphp
 <div class="bg-white rounded-lg shadow-md p-8">
     <nav class="mb-8">
         <ol class="flex items-center space-x-2 text-sm">
@@ -16,7 +19,21 @@
 
     <p class="text-gray-700 mb-8">
         MockPay API uses Bearer token authentication. All API requests must include your Server Key in the Authorization header.
+        Keys are scoped to your client account, and all data is isolated per client.
     </p>
+
+    <section class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Get Your API Keys</h2>
+        <p class="text-gray-700 mb-4">
+            API keys are available for logged-in clients. If you are running locally, register an account and generate keys from the dashboard.
+        </p>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700 ml-4">
+            <li>Register at <a href="{{ route('register') }}" class="text-blue-600 hover:underline">{{ route('register') }}</a></li>
+            <li>Login at <a href="{{ route('login') }}" class="text-blue-600 hover:underline">{{ route('login') }}</a></li>
+            <li>Open Client Dashboard > API Keys</li>
+            <li>Generate a new Server Key</li>
+        </ol>
+    </section>
 
     <section class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">Authentication Header</h2>
@@ -30,10 +47,10 @@
 
     <section class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">Example Request</h2>
-        
+
         <h3 class="text-xl font-semibold text-gray-900 mb-3">cURL</h3>
         <div class="bg-gray-900 text-gray-100 rounded-lg p-6 mb-6 overflow-x-auto">
-            <pre><code>curl -X POST https://mockpay.test/api/v1/payment/create \
+            <pre><code>curl -X POST {{ $baseUrl }}/api/v1/payment/create \
   -H "Authorization: Bearer sandbox_sk_test_xxxxxxxxxx" \
   -H "Content-Type: application/json" \
   -d '{"order_id": "ORDER-123", "amount": 100000}'</code></pre>
@@ -46,7 +63,7 @@
 $response = Http::withHeaders([
     'Authorization' => 'Bearer ' . $apiKey,
     'Content-Type' => 'application/json',
-])->post('https://mockpay.test/api/v1/payment/create', [
+])->post('{{ $baseUrl }}/api/v1/payment/create', [
     'order_id' => 'ORDER-123',
     'amount' => 100000
 ]);</code></pre>
@@ -56,7 +73,7 @@ $response = Http::withHeaders([
         <div class="bg-gray-900 text-gray-100 rounded-lg p-6 mb-6 overflow-x-auto">
             <pre><code>const apiKey = 'sandbox_sk_test_xxxxxxxxxx';
 
-const response = await fetch('https://mockpay.test/api/v1/payment/create', {
+const response = await fetch('{{ $baseUrl }}/api/v1/payment/create', {
     method: 'POST',
     headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -72,7 +89,7 @@ const response = await fetch('https://mockpay.test/api/v1/payment/create', {
 
     <section class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">Error Responses</h2>
-        
+
         <h3 class="text-xl font-semibold text-gray-900 mb-3">401 Unauthorized</h3>
         <p class="text-gray-700 mb-4">Missing or invalid API key:</p>
         <div class="bg-gray-900 text-gray-100 rounded-lg p-6 mb-6 overflow-x-auto">
@@ -100,7 +117,7 @@ const response = await fetch('https://mockpay.test/api/v1/payment/create', {
 
     <section class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">Best Practices</h2>
-        
+
         <div class="space-y-4">
             <div class="flex items-start">
                 <svg class="w-6 h-6 text-green-600 mr-3 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

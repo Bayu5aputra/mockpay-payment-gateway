@@ -43,6 +43,22 @@
         </div>
     </div>
 
+    <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-12">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-4a1 1 0 100 2 1 1 0 000-2zm1 4a1 1 0 00-2 0v5a1 1 0 102 0V10z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-green-800">Guest vs Client</h3>
+                <div class="mt-2 text-sm text-green-700">
+                    <p>Guest users can browse docs and use payment simulators. To call the API you need an account and an API key from the Client Dashboard. All client data is isolated per account.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="grid md:grid-cols-2 gap-6 mb-12">
         @foreach($sections as $section)
         <div class="bg-white border border-gray-200 rounded-lg p-6 hover:border-purple-300 hover:shadow-lg transition-all">
@@ -184,7 +200,7 @@
 
     <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-xl p-8 text-white text-center mb-12">
         <h2 class="text-3xl font-bold mb-4">Ready to Start Testing?</h2>
-        <p class="text-xl mb-6">Create your free account and get your API keys in minutes</p>
+        <p class="text-xl mb-6">You can explore docs as a guest, and create an account when you need API keys</p>
         <div class="flex justify-center gap-4">
             <a href="{{ route('register') }}" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
                 Get Started Free
@@ -203,8 +219,8 @@
         <ul class="space-y-2">
             <li><a href="{{ route('docs.troubleshooting') }}" class="text-blue-600 hover:underline">Troubleshooting Guide</a> - Common issues and solutions</li>
             <li><a href="{{ route('contact') }}" class="text-blue-600 hover:underline">Contact Support</a> - Get help from our team</li>
-            <li><a href="#" class="text-blue-600 hover:underline">Community Forum</a> - Ask questions and share knowledge</li>
-            <li><a href="#" class="text-blue-600 hover:underline">GitHub Repository</a> - View source code and examples</li>
+            <li><a href="{{ route('docs.getting-started') }}" class="text-blue-600 hover:underline">Getting Started</a> - Setup and first API call</li>
+            <li><a href="{{ route('docs.api-reference') }}" class="text-blue-600 hover:underline">API Reference</a> - List of available endpoints</li>
         </ul>
     </div>
 </div>

@@ -13,7 +13,16 @@
     </nav>
 
     <h1 class="text-4xl font-bold text-gray-900 mb-6">API Reference</h1>
-    <p class="text-gray-700 mb-8">Complete reference for all MockPay API endpoints</p>
+    <p class="text-gray-700 mb-4">Complete reference for all MockPay API endpoints</p>
+    <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-8">
+        <p class="text-sm text-gray-700 mb-2">
+            Base URL: <code class="bg-gray-100 px-2 py-1 rounded text-xs">{{ rtrim(config('app.url'), '/') }}/api/v1</code>
+        </p>
+        <p class="text-sm text-gray-700">
+            All endpoints require an API key in the Authorization header.
+            See <a href="{{ route('docs.authentication') }}" class="text-blue-600 hover:underline">Authentication</a> for details.
+        </p>
+    </div>
 
     @foreach($endpoints as $endpoint)
     <div class="mb-8 pb-8 border-b border-gray-200 last:border-0">

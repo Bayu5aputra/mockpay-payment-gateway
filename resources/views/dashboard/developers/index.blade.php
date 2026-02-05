@@ -2,8 +2,8 @@
     <div class="p-8">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Developer Tools</h1>
-            <p class="text-gray-600">Tools untuk integrasi API: dokumentasi, contoh kode, simulator, webhook, dan log.</p>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Platform Tools</h1>
+            <p class="text-gray-600">Monitor platform usage, webhook delivery, and API key activity. Client integrations are managed by each client.</p>
         </div>
 
         <!-- Quick Stats -->
@@ -66,10 +66,10 @@
         </div>
 
         <div class="bg-white rounded-xl shadow-md p-6 mb-8">
-            <h2 class="text-lg font-semibold text-gray-900 mb-2">Apa itu Developer Tools?</h2>
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">What are Platform Tools?</h2>
             <p class="text-gray-600">
-                Developer Tools dipakai merchant untuk integrasi API MockPay: melihat dokumentasi, contoh kode,
-                melakukan simulasi transaksi, memonitor webhook, dan mengelola API keys.
+                These tools help admins monitor platform activity, webhook delivery, and API key usage.
+                Client teams handle their own integrations and simulation outcomes in the client dashboard.
             </p>
         </div>
 
@@ -135,7 +135,7 @@
                             </svg>
                         </div>
                         <h3 class="text-2xl font-bold text-white mb-2">Webhook Logs</h3>
-                        <p class="text-amber-100">Monitor pengiriman webhook transaksi</p>
+                        <p class="text-amber-100">Monitor webhook delivery for client transactions</p>
                     </div>
                 </div>
             </a>
@@ -175,7 +175,7 @@
 
         <!-- Getting Started Guide -->
         <div class="bg-white rounded-xl shadow-md p-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Quick Start Guide</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Client Quick Start</h2>
 
             <div class="space-y-6">
                 <!-- Step 1 -->
@@ -184,8 +184,8 @@
                         1
                     </div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 mb-2">Get Your API Key</h3>
-                        <p class="text-gray-600">Navigate to API Keys section and generate your first API key. You'll need this for authentication.</p>
+                        <h3 class="font-semibold text-gray-900 mb-2">Get an API Key</h3>
+                        <p class="text-gray-600">Clients generate API keys from the Client Dashboard to authenticate requests.</p>
                     </div>
                 </div>
 
@@ -195,8 +195,8 @@
                         2
                     </div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 mb-2">Choose Your Language</h3>
-                        <p class="text-gray-600">Check our code examples in PHP, JavaScript, Python, and more. Copy and customize for your needs.</p>
+                        <h3 class="font-semibold text-gray-900 mb-2">Choose a Language</h3>
+                        <p class="text-gray-600">Share code examples with client teams for faster integration.</p>
                     </div>
                 </div>
 
@@ -206,8 +206,8 @@
                         3
                     </div>
                     <div>
-                        <h3 class="font-semibold text-gray-900 mb-2">Test Your Integration</h3>
-                        <p class="text-gray-600">Use our payment simulator to test different scenarios without processing real payments.</p>
+                        <h3 class="font-semibold text-gray-900 mb-2">Test the Integration</h3>
+                        <p class="text-gray-600">Clients use simulators to set outcomes and validate their flows.</p>
                     </div>
                 </div>
 
@@ -218,7 +218,7 @@
                     </div>
                     <div>
                         <h3 class="font-semibold text-gray-900 mb-2">Monitor & Debug</h3>
-                        <p class="text-gray-600">Track all your API requests in real-time and debug issues using our comprehensive logging system.</p>
+                        <p class="text-gray-600">Use logs to verify webhook delivery and API usage across tenants.</p>
                     </div>
                 </div>
             </div>

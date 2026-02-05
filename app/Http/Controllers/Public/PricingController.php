@@ -17,12 +17,12 @@ class PricingController extends Controller
             [
                 'name' => 'Free',
                 'price' => 'Rp 0',
-                'period' => 'per bulan',
-                'description' => 'Untuk testing dan development ringan',
+                'period' => 'per month',
+                'description' => 'For lightweight testing and development',
                 'features' => [
-                    '10 dummy transaksi per hari',
-                    'Semua metode pembayaran',
-                    'Dashboard dasar',
+                    '10 simulated transactions per day',
+                    'All payment methods',
+                    'Basic dashboard',
                     'Webhook system',
                     'API documentation',
                     'Sandbox environment',
@@ -34,15 +34,15 @@ class PricingController extends Controller
             [
                 'name' => 'Pro',
                 'price' => 'Rp 150.000',
-                'period' => 'per bulan',
-                'description' => 'Untuk tim dan integrasi yang aktif',
+                'period' => 'per month',
+                'description' => 'For active teams and integrations',
                 'features' => [
-                    'Unlimited dummy transaksi',
-                    'Semua metode pembayaran',
+                    'Unlimited simulated transactions',
+                    'All payment methods',
                     'Advanced analytics',
                     'Priority support',
                     'Webhook logs & retry',
-                    'Export transaksi',
+                    'Transaction export',
                 ],
                 'cta' => 'Upgrade to Pro',
                 'cta_url' => '/register?plan=pro',
@@ -50,11 +50,11 @@ class PricingController extends Controller
             ],
             [
                 'name' => 'Enterprise',
-                'price' => 'Mulai Rp 1.000.000',
-                'period' => 'per bulan',
-                'description' => 'Untuk kebutuhan khusus dan skala besar',
+                'price' => 'From Rp 1.000.000',
+                'period' => 'per month',
+                'description' => 'For custom needs and large-scale operations',
                 'features' => [
-                    'Unlimited dummy transaksi',
+                    'Unlimited simulated transactions',
                     'Custom API limits',
                     'Dedicated support',
                     'SLA 99.9%',
@@ -70,34 +70,42 @@ class PricingController extends Controller
         $faqs = [
             [
                 'question' => 'Is the Free plan really free forever?',
-                'answer' => 'Ya, Free plan selalu gratis untuk testing, dengan limit 10 transaksi dummy per hari.'
+                'answer' => 'Yes. The Free plan is always free for testing, with a limit of 10 simulated transactions per day.'
             ],
             [
                 'question' => 'Can I upgrade or downgrade my plan?',
-                'answer' => 'Ya, Anda bisa upgrade kapan saja. Perubahan berlaku setelah approval.'
+                'answer' => 'Yes. You can upgrade anytime. Changes take effect after approval.'
             ],
             [
                 'question' => 'What payment methods do you accept?',
-                'answer' => 'Pembayaran upgrade dilakukan manual via transfer bank sesuai instruksi invoice.'
+                'answer' => 'Upgrades are handled manually via bank transfer based on the invoice instructions.'
             ],
             [
                 'question' => 'Do you offer refunds?',
-                'answer' => 'MockPay adalah layanan dummy; proses refund mengikuti kebijakan internal.'
+                'answer' => 'MockPay is a sandbox service; refunds follow our internal policy.'
             ],
             [
                 'question' => 'What are the API rate limits?',
-                'answer' => 'Free: 10 transaksi dummy per hari. Pro/Enterprise: unlimited.'
+                'answer' => 'Free: 10 simulated transactions per day. Pro/Enterprise: unlimited.'
             ],
             [
                 'question' => 'Can I test before committing to a paid plan?',
-                'answer' => 'Ya, gunakan Free plan untuk testing sebelum upgrade.'
+                'answer' => 'Yes. Use the Free plan to test before upgrading.'
+            ],
+            [
+                'question' => 'Are accounts and data isolated per client?',
+                'answer' => 'Yes. MockPay is multi-tenant SaaS and each client, user, and guest account is isolated from others.'
+            ],
+            [
+                'question' => 'Who controls the outcome of simulated transactions?',
+                'answer' => 'Clients control their own simulation outcomes through their dashboard and API tools. Platform admins only review plans and usage.'
             ],
         ];
 
         $comparison = [
             [
-                'feature' => 'Dummy Transactions',
-                'free' => '10 / hari',
+                'feature' => 'Simulated Transactions',
+                'free' => '10 / day',
                 'pro' => 'Unlimited',
                 'enterprise' => 'Unlimited',
             ],

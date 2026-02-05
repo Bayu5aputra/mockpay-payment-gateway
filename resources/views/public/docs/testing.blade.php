@@ -1,4 +1,4 @@
-@extends('layouts.docs')
+﻿@extends('layouts.docs')
 
 @section('title', 'Testing Guide - MockPay Documentation')
 
@@ -38,7 +38,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $card['type'] }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
                                 @if($card['result'] == 'Success') bg-green-100 text-green-800
                                 @elseif($card['result'] == 'Failed') bg-red-100 text-red-800
                                 @else bg-yellow-100 text-yellow-800
@@ -62,7 +62,7 @@
     <section id="tools" class="mb-12">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">Simulation Tools</h2>
         <p class="text-gray-700 mb-4">
-            Use our built-in simulation tools to test different payment methods:
+            Use our built-in simulation tools to test different payment methods. These pages are public and do not require login.
         </p>
         <div class="grid md:grid-cols-2 gap-4">
             <a href="{{ route('payment.simulate.va') }}" class="border border-gray-200 rounded-lg p-4 hover:border-blue-600 hover:shadow-md transition-all">
@@ -88,19 +88,19 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-4">Common Test Scenarios</h2>
         <div class="space-y-4">
             <div class="border-l-4 border-green-500 bg-green-50 p-4">
-                <h3 class="font-semibold text-gray-900 mb-2">✓ Successful Payment</h3>
+                <h3 class="font-semibold text-gray-900 mb-2">Successful Payment</h3>
                 <p class="text-sm text-gray-700">Use card 4111111111111111 or pay any VA/QRIS transaction through simulator</p>
             </div>
             <div class="border-l-4 border-red-500 bg-red-50 p-4">
-                <h3 class="font-semibold text-gray-900 mb-2">✗ Failed Payment</h3>
+                <h3 class="font-semibold text-gray-900 mb-2">Failed Payment</h3>
                 <p class="text-sm text-gray-700">Use card 4000000000000002 for declined transactions</p>
             </div>
             <div class="border-l-4 border-yellow-500 bg-yellow-50 p-4">
-                <h3 class="font-semibold text-gray-900 mb-2">⏱ Expired Transaction</h3>
+                <h3 class="font-semibold text-gray-900 mb-2">Expired Transaction</h3>
                 <p class="text-sm text-gray-700">Wait for transaction expiry time (default 24 hours) or manually expire</p>
             </div>
             <div class="border-l-4 border-blue-500 bg-blue-50 p-4">
-                <h3 class="font-semibold text-gray-900 mb-2">🔒 3D Secure</h3>
+                <h3 class="font-semibold text-gray-900 mb-2">3D Secure</h3>
                 <p class="text-sm text-gray-700">Use card 4111111111110000 and OTP: 112233</p>
             </div>
         </div>

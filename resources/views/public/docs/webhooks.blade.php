@@ -14,8 +14,8 @@
 
     <h1 class="text-4xl font-bold text-gray-900 mb-6">Webhooks</h1>
     <p class="text-gray-700 mb-8">
-        Webhooks allow MockPay to notify your application when transaction status changes. 
-        Configure your webhook URL in the dashboard settings.
+        Webhooks allow MockPay to notify your application when transaction status changes.
+        Configure your webhook URL in your client dashboard settings. Webhooks are scoped to your client account.
     </p>
 
     <section id="overview" class="mb-12">

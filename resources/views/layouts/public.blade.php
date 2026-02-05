@@ -16,40 +16,101 @@
     @vite(['resources/css/app.css', 'resources/css/landing.css', 'resources/js/app.js'])
 
     @stack('styles')
+    <style>
+        .nav-jello:hover {
+            animation: nav-jello 0.9s both;
+        }
+
+        .nav-rubber:hover {
+            animation: nav-rubber 0.9s both;
+        }
+
+        @keyframes nav-jello {
+            0% {
+                transform: scale3d(1, 1, 1);
+            }
+            30% {
+                transform: scale3d(1.25, 0.75, 1);
+            }
+            40% {
+                transform: scale3d(0.75, 1.25, 1);
+            }
+            50% {
+                transform: scale3d(1.15, 0.85, 1);
+            }
+            65% {
+                transform: scale3d(0.95, 1.05, 1);
+            }
+            75% {
+                transform: scale3d(1.05, 0.95, 1);
+            }
+            100% {
+                transform: scale3d(1, 1, 1);
+            }
+        }
+
+        @keyframes nav-rubber {
+            0% {
+                transform: scale3d(1, 1, 1);
+            }
+            30% {
+                transform: scale3d(1.25, 0.75, 1);
+            }
+            40% {
+                transform: scale3d(0.75, 1.25, 1);
+            }
+            50% {
+                transform: scale3d(1.15, 0.85, 1);
+            }
+            65% {
+                transform: scale3d(0.95, 1.05, 1);
+            }
+            75% {
+                transform: scale3d(1.05, 0.95, 1);
+            }
+            100% {
+                transform: scale3d(1, 1, 1);
+            }
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased bg-white text-gray-900">
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-gray-800">
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-xl border-b border-white/5 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
+        <div class="h-0.5 w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="{{ route('home') }}" class="flex items-center space-x-3">
                         <div
-                            class="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                            class="w-11 h-11 bg-gradient-to-br from-cyan-500 to-indigo-600 rounded-xl flex items-center justify-center ring-1 ring-white/10 shadow-[0_10px_30px_rgba(59,130,246,0.35)] nav-jello">
                             <img src="{{ asset('logo.png') }}" alt="MockPay" class="w-6 h-6 object-contain">
                         </div>
-                        <span class="text-xl font-bold text-white">MockPay</span>
+                        <div class="flex flex-col leading-tight">
+                            <span class="text-lg font-semibold text-white tracking-wide">MockPay</span>
+                            <span class="text-xs text-cyan-200/80 uppercase tracking-[0.2em]">Gateway Sandbox</span>
+                        </div>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="{{ route('home') }}"
-                        class="text-sm font-medium {{ request()->routeIs('home') ? 'text-purple-400' : 'text-gray-300 hover:text-white' }} transition-colors">
+                        class="text-sm font-semibold {{ request()->routeIs('home') ? 'text-cyan-200' : 'text-slate-300 hover:text-white' }} transition-colors">
                         Home
                     </a>
                     <a href="{{ route('docs.index') }}"
-                        class="text-sm font-medium {{ request()->routeIs('docs.*') ? 'text-purple-400' : 'text-gray-300 hover:text-white' }} transition-colors">
+                        class="text-sm font-semibold {{ request()->routeIs('docs.*') ? 'text-cyan-200' : 'text-slate-300 hover:text-white' }} transition-colors">
                         Documentation
                     </a>
                     <a href="{{ route('pricing') }}"
-                        class="text-sm font-medium {{ request()->routeIs('pricing') ? 'text-purple-400' : 'text-gray-300 hover:text-white' }} transition-colors">
+                        class="text-sm font-semibold {{ request()->routeIs('pricing') ? 'text-cyan-200' : 'text-slate-300 hover:text-white' }} transition-colors">
                         Pricing
                     </a>
                     <a href="{{ route('contact') }}"
-                        class="text-sm font-medium {{ request()->routeIs('contact') ? 'text-purple-400' : 'text-gray-300 hover:text-white' }} transition-colors">
+                        class="text-sm font-semibold {{ request()->routeIs('contact') ? 'text-cyan-200' : 'text-slate-300 hover:text-white' }} transition-colors">
                         Contact
                     </a>
                 </div>
@@ -70,11 +131,11 @@
         @endif
     @else
         <a href="{{ route('login') }}"
-            class="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+            class="text-sm font-semibold text-slate-300 hover:text-white transition-colors">
             Sign In
         </a>
         <a href="{{ route('register') }}"
-            class="btn-primary inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl">
+            class="btn-primary inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-700 text-white text-sm font-semibold rounded-xl hover:from-cyan-400 hover:to-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl nav-rubber">
             Get Started Free
         </a>
     @endauth

@@ -150,7 +150,7 @@
                             </span>
                         </h1>
                         <p class="hero-subtitle text-gray-300 max-w-2xl mx-auto lg:mx-0 drop-shadow-lg">
-                            Test your payment integration safely with our dummy payment gateway. Fast, free, and reliable for developers.
+                            SaaS payment sandbox for developers. Simulate transactions, control outcomes per client, and keep every account fully isolated.
                         </p>
                     </div>
 
@@ -251,14 +251,14 @@
     <section class="bg-white py-20">
         <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-                Payment gateway doesn't have to be difficult.
+                Payment testing shouldn't slow teams down.
                 <br>
                 <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    We're here to help.
+                    MockPay keeps it clean and isolated.
                 </span>
             </h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                We will help you in creating an application by providing a dummy payment gateway that's easy to integrate and test
+                A multi-tenant sandbox where each client controls their own simulation outcomes and data stays isolated by default.
             </p>
         </div>
     </section>
@@ -453,17 +453,17 @@
                     <div class="space-y-6">
                         <button class="w-full max-w-md text-left group">
                             <div class="px-8 py-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold shadow-xl hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105">
-                                <span class="text-lg">INSTANT PAYMENT TESTING</span>
+                                <span class="text-lg">TENANT-ISOLATED SANDBOX</span>
                             </div>
                         </button>
                         <button class="w-full max-w-md text-left group">
                             <div class="px-8 py-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold shadow-xl hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105">
-                                <span class="text-lg">COMPREHENSIVE ANALYTICS</span>
+                                <span class="text-lg">CLIENT-CONTROLLED SIMULATIONS</span>
                             </div>
                         </button>
                         <button class="w-full max-w-md text-left group">
                             <div class="px-8 py-5 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold shadow-xl hover:shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105">
-                                <span class="text-lg">WEBHOOK INTEGRATION</span>
+                                <span class="text-lg">WEBHOOK & API INTEGRATION</span>
                             </div>
                         </button>
                     </div>
@@ -536,19 +536,19 @@
                                 <svg class="w-6 h-6 mr-3 text-cyan-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">10 dummy transaksi per hari</span>
+                                <span class="text-white text-base">10 simulated transactions per day</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-cyan-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Semua metode pembayaran</span>
+                                <span class="text-white text-base">All payment methods</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-cyan-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Dokumentasi dasar & API docs</span>
+                                <span class="text-white text-base">Docs and API reference</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-cyan-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -575,7 +575,7 @@
                             <h3 class="text-3xl font-bold text-white mb-4">PRO</h3>
                             <div class="flex items-baseline mb-2">
                                 <span class="text-5xl font-black text-white">Rp 150.000</span>
-                                <span class="text-2xl font-black text-white">/bulan</span>
+                                <span class="text-2xl font-black text-white">/month</span>
                             </div>
                             <div class="h-1 w-20 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full"></div>
                         </div>
@@ -584,7 +584,7 @@
                                 <svg class="w-6 h-6 mr-3 text-blue-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Unlimited dummy transaksi</span>
+                                <span class="text-white text-base">Unlimited simulated transactions</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-blue-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -609,7 +609,7 @@
                         <div class="mb-8">
                             <h3 class="text-3xl font-bold text-white mb-4">ENTERPRISE</h3>
                             <div class="mb-2">
-                                <span class="text-3xl font-black text-white">Mulai Rp 1.000.000/bulan</span>
+                                <span class="text-3xl font-black text-white">From Rp 1.000.000/month</span>
                             </div>
                             <div class="h-1 w-20 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
                         </div>
@@ -618,7 +618,7 @@
                                 <svg class="w-6 h-6 mr-3 text-purple-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Unlimited dummy transaksi</span>
+                                <span class="text-white text-base">Unlimited simulated transactions</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-purple-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">

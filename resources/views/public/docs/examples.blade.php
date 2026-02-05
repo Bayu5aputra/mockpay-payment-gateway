@@ -1,8 +1,11 @@
-@extends('layouts.docs')
+﻿@extends('layouts.docs')
 
 @section('title', 'Code Examples - MockPay Documentation')
 
 @section('doc-content')
+@php
+    $baseUrl = rtrim(config('app.url'), '/');
+@endphp
 <div class="bg-white rounded-lg shadow-md p-8">
     <nav class="mb-8">
         <ol class="flex items-center space-x-2 text-sm">
@@ -13,7 +16,10 @@
     </nav>
 
     <h1 class="text-4xl font-bold text-gray-900 mb-6">Code Examples</h1>
-    <p class="text-gray-700 mb-8">Ready-to-use code snippets in various programming languages</p>
+    <p class="text-gray-700 mb-4">Ready-to-use code snippets in various programming languages</p>
+    <p class="text-sm text-gray-600 mb-8">
+        Replace the base URL with your <code class="bg-gray-100 px-2 py-1 rounded text-xs">APP_URL</code>. Current base URL: <code class="bg-gray-100 px-2 py-1 rounded text-xs">{{ $baseUrl }}</code>
+    </p>
 
     @foreach($examples as $example)
     <div class="mb-8 pb-8 border-b border-gray-200 last:border-0">
@@ -24,7 +30,7 @@
             </button>
         </div>
         <div class="bg-gray-900 text-gray-100 rounded-lg p-6 overflow-x-auto">
-            <pre id="code-{{ $loop->index }}"><code class="language-{{ $example['language'] }}">{{ $example['code'] }}</code></pre>
+            <pre id="code-{{ $loop->index }}"><code class="language-{{ $example['language'] }}">{{ str_replace(['https://mockpay.test', 'http://mockpay.test'], $baseUrl, $example['code']) }}</code></pre>
         </div>
     </div>
     @endforeach
@@ -34,7 +40,7 @@
 function copyCode(index) {
     const codeElement = document.getElementById('code-' + index);
     const text = codeElement.textContent;
-    
+
     navigator.clipboard.writeText(text).then(function() {
         alert('Code copied to clipboard!');
     }, function(err) {
