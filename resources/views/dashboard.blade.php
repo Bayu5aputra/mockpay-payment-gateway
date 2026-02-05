@@ -8,11 +8,19 @@
                     <p class="text-purple-100 text-lg">Here's what's happening with your payment gateway today.</p>
                 </div>
                 <div class="hidden lg:block">
-                    @if(Auth::user()->avatar)
-                        <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="w-20 h-20 rounded-full border-4 border-white shadow-lg">
+                    @if(Auth::user()->avatar_url)
+                        <img
+                            src="{{ Auth::user()->avatar_url }}"
+                            alt="{{ Auth::user()->name }}"
+                            class="w-20 h-20 rounded-full border-4 border-white shadow-lg object-cover"
+                            onerror="this.classList.add('hidden'); this.nextElementSibling?.classList.remove('hidden');"
+                        >
+                        <div class="hidden w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold border-4 border-white shadow-lg">
+                            {{ Auth::user()->initials }}
+                        </div>
                     @else
                         <div class="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-3xl font-bold border-4 border-white shadow-lg">
-                            {{ substr(Auth::user()->name, 0, 1) }}
+                            {{ Auth::user()->initials }}
                         </div>
                     @endif
                 </div>

@@ -65,14 +65,38 @@ class User extends Authenticatable
     /**
      * Get user's avatar URL
      */
-    public function getAvatarUrlAttribute(): string
+    public function getAvatarUrlAttribute(): ?string
     {
         if ($this->avatar) {
-            return $this->avatar;
+            $avatar = $this->avatar;
+            if (str_starts_with($avatar, 'http://')) {
+                return 'https://' . substr($avatar, 7);
+            }
+            return $avatar;
         }
 
-        // Default avatar using UI Avatars
-        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
+        return null;
+    }
+
+    /**
+     * Get user's initials for avatar fallback
+     */
+    public function getInitialsAttribute(): string
+    {
+        $name = trim((string) $this->name);
+        if ($name === '') {
+            return '?';
+        }
+
+        $parts = preg_split('/\s+/', $name);
+        if (!$parts || count($parts) === 0) {
+            return '?';
+        }
+
+        $first = strtoupper(mb_substr($parts[0], 0, 1));
+        $last = count($parts) > 1 ? strtoupper(mb_substr($parts[count($parts) - 1], 0, 1)) : '';
+
+        return $first . $last;
     }
 
     public function upgradeRequests()

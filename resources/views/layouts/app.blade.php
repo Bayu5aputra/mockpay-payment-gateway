@@ -27,9 +27,7 @@
                 <!-- Logo -->
                 <div class="h-20 flex items-center justify-center border-b border-gray-200 bg-gradient-to-r from-purple-600 to-indigo-600">
                     <div class="flex items-center space-x-2">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
-                        </svg>
+                        <img src="{{ asset('logo.png') }}" alt="MockPay" class="w-8 h-8 object-contain">
                         <span class="text-2xl font-bold text-white">MockPay</span>
                     </div>
                 </div>
@@ -63,6 +61,13 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                             </svg>
                             <span class="font-medium">Customers</span>
+                        </a>
+
+                        <a href="{{ route('dashboard.invitations.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->routeIs('dashboard.invitations.*') ? 'bg-purple-50 text-purple-600' : 'text-gray-700 hover:bg-gray-100' }} transition-colors duration-200 mb-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                            <span class="font-medium">Invitations</span>
                         </a>
 
                         <a href="{{ route('dashboard.upgrade-requests.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->routeIs('dashboard.upgrade-requests.*') ? 'bg-purple-50 text-purple-600' : 'text-gray-700 hover:bg-gray-100' }} transition-colors duration-200 mb-1">
@@ -201,11 +206,19 @@
                             <!-- Profile Dropdown -->
                             <div x-data="{ open: false }" class="relative">
                                 <button @click="open = !open" class="flex items-center space-x-3 focus:outline-none">
-                                    @if($authUser && $authUser->avatar)
-                                        <img src="{{ $authUser->avatar }}" alt="{{ $authUser->name }}" class="w-10 h-10 rounded-full border-2 border-purple-200 hover:border-purple-400 transition-colors duration-200">
+                                    @if($authUser && $authUser->avatar_url)
+                                        <img
+                                            src="{{ $authUser->avatar_url }}"
+                                            alt="{{ $authUser->name }}"
+                                            class="w-10 h-10 rounded-full border-2 border-purple-200 hover:border-purple-400 transition-colors duration-200 object-cover"
+                                            onerror="this.classList.add('hidden'); this.nextElementSibling?.classList.remove('hidden');"
+                                        >
+                                        <div class="hidden w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white font-semibold border-2 border-purple-200 hover:border-purple-400 transition-colors duration-200">
+                                            {{ $authUser->initials }}
+                                        </div>
                                     @else
                                         <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white font-semibold border-2 border-purple-200 hover:border-purple-400 transition-colors duration-200">
-                                            {{ $authUser ? substr($authUser->name, 0, 1) : '?' }}
+                                            {{ $authUser?->initials ?? '?' }}
                                         </div>
                                     @endif
                                     <div class="text-left hidden md:block">
@@ -220,7 +233,7 @@
                                 <!-- Dropdown Menu -->
                                 <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-20 border border-gray-200">
                                     @if ($isMerchant)
-                                        <a href="{{ route('dashboard.profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200">
+                                        <a href="{{ route('dashboard.merchant.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200">
                                             <div class="flex items-center space-x-2">
                                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -230,7 +243,7 @@
                                         </a>
                                     @endif
                                     @if ($isMerchant)
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200">
+                                    <a href="{{ route('dashboard.settings.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition-colors duration-200">
                                         <div class="flex items-center space-x-2">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>

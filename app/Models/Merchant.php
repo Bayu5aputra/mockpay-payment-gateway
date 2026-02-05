@@ -79,6 +79,11 @@ class Merchant extends Authenticatable
         return $this->hasMany(ApiKey::class);
     }
 
+    public function invitationsSent(): HasMany
+    {
+        return $this->hasMany(MerchantInvitation::class, 'invited_by');
+    }
+
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);
@@ -233,5 +238,42 @@ class Merchant extends Authenticatable
     public function getPendingTransactionsAmount(): float
     {
         return $this->transactions()->where('status', 'pending')->sum('amount');
+    }
+
+    /**
+     * Get merchant avatar URL (uses logo if available)
+     */
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if ($this->logo) {
+            $logo = $this->logo;
+            if (str_starts_with($logo, 'http://')) {
+                return 'https://' . substr($logo, 7);
+            }
+            return $logo;
+        }
+
+        return null;
+    }
+
+    /**
+     * Get merchant initials for avatar fallback
+     */
+    public function getInitialsAttribute(): string
+    {
+        $name = trim((string) $this->name);
+        if ($name === '') {
+            return '?';
+        }
+
+        $parts = preg_split('/\s+/', $name);
+        if (!$parts || count($parts) === 0) {
+            return '?';
+        }
+
+        $first = strtoupper(mb_substr($parts[0], 0, 1));
+        $last = count($parts) > 1 ? strtoupper(mb_substr($parts[count($parts) - 1], 0, 1)) : '';
+
+        return $first . $last;
     }
 }

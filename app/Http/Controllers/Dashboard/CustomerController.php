@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,28 +17,33 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        $merchant = Auth::user();
+        $merchant = Auth::guard('merchant')->user();
 
         $search = $request->search;
 
-        $customers = Transaction::where('merchant_id', $merchant->id)
-            ->whereNotNull('customer_email')
+        $customers = User::query()
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('customer_name', 'like', "%{$search}%")
-                        ->orWhere('customer_email', 'like', "%{$search}%")
-                        ->orWhere('customer_phone', 'like', "%{$search}%");
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
                 });
             })
             ->select([
-                'customer_email',
-                DB::raw('MAX(customer_name) as customer_name'),
-                DB::raw('MAX(customer_phone) as customer_phone'),
-                DB::raw('COUNT(*) as total_transactions'),
-                DB::raw('SUM(amount) as total_amount'),
-                DB::raw('MAX(created_at) as last_transaction_at'),
+                'users.id',
+                'users.name',
+                'users.email',
             ])
-            ->groupBy('customer_email')
+            ->addSelect([
+                'total_transactions' => Transaction::selectRaw('COUNT(*)')
+                    ->whereColumn('transactions.user_id', 'users.id')
+                    ->where('merchant_id', $merchant->id),
+                'total_amount' => Transaction::selectRaw('COALESCE(SUM(amount), 0)')
+                    ->whereColumn('transactions.user_id', 'users.id')
+                    ->where('merchant_id', $merchant->id),
+                'last_transaction_at' => Transaction::selectRaw('MAX(created_at)')
+                    ->whereColumn('transactions.user_id', 'users.id')
+                    ->where('merchant_id', $merchant->id),
+            ])
             ->orderByDesc('last_transaction_at')
             ->paginate(15)
             ->withQueryString();
@@ -51,27 +57,29 @@ class CustomerController extends Controller
      */
     public function show(string $customer)
     {
-        $merchant = Auth::user();
+        $merchant = Auth::guard('merchant')->user();
         $email = $this->decodeCustomer($customer);
 
         if (!$email) {
             abort(404, 'Customer not found');
         }
 
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            abort(404, 'Customer not found');
+        }
+
         $transactions = Transaction::where('merchant_id', $merchant->id)
-            ->where('customer_email', $email)
+            ->where('user_id', $user->id)
             ->orderByDesc('created_at')
             ->paginate(15)
             ->withQueryString();
 
-        if ($transactions->isEmpty()) {
-            abort(404, 'Customer not found');
-        }
-
         $customerInfo = [
             'email' => $email,
-            'name' => $transactions->first()->customer_name,
-            'phone' => $transactions->first()->customer_phone,
+            'name' => $user->name,
+            'phone' => null,
         ];
 
         $stats = [

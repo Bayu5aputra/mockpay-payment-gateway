@@ -24,11 +24,7 @@
             <!-- Logo -->
             <div class="h-20 flex items-center justify-center border-b border-gray-200 bg-gradient-to-r from-purple-600 to-indigo-600">
                 <div class="flex items-center space-x-2">
-                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z">
-                        </path>
-                    </svg>
+                    <img src="{{ asset('logo.png') }}" alt="MockPay" class="w-8 h-8 object-contain">
                     <span class="text-2xl font-bold text-white">MockPay</span>
                 </div>
             </div>
@@ -73,6 +69,14 @@
                         </path>
                     </svg>
                     <span class="font-medium">Contact</span>
+                </a>
+                <a href="{{ route('client.settings.profile') }}"
+                    class="flex items-center space-x-3 px-4 py-3 rounded-lg {{ request()->routeIs('client.settings.profile') ? 'bg-purple-50 text-purple-600' : 'text-gray-700 hover:bg-gray-100' }} transition-colors duration-200 mb-1">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                    <span class="font-medium">Profile Settings</span>
                 </a>
             </nav>
 

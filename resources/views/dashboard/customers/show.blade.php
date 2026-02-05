@@ -42,7 +42,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        @foreach ($transactions as $transaction)
+                        @forelse ($transactions as $transaction)
                             @php
                                 $statusMap = [
                                     'settlement' => ['label' => 'Settlement', 'class' => 'bg-green-100 text-green-800'],
@@ -70,7 +70,11 @@
                                     <a href="{{ route('dashboard.transactions.show', $transaction->transaction_id) }}" class="text-purple-600 hover:text-purple-700 font-medium">View</a>
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-6 py-8 text-center text-sm text-gray-500">No transactions yet.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

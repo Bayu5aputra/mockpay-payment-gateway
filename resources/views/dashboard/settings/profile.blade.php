@@ -18,11 +18,19 @@
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <h2 class="text-xl font-bold text-gray-900 mb-6">Profile Picture</h2>
                     <div class="text-center">
-                        @if(Auth::user()->avatar)
-                            <img src="{{ Auth::user()->avatar }}" alt="{{ Auth::user()->name }}" class="w-40 h-40 rounded-full mx-auto mb-4 border-4 border-purple-200">
+                        @if(Auth::user()->avatar_url)
+                            <img
+                                src="{{ Auth::user()->avatar_url }}"
+                                alt="{{ Auth::user()->name }}"
+                                class="w-40 h-40 rounded-full mx-auto mb-4 border-4 border-purple-200 object-cover"
+                                onerror="this.classList.add('hidden'); this.nextElementSibling?.classList.remove('hidden');"
+                            >
+                            <div class="hidden w-40 h-40 rounded-full mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-5xl font-bold border-4 border-purple-200">
+                                {{ Auth::user()->initials }}
+                            </div>
                         @else
                             <div class="w-40 h-40 rounded-full mx-auto mb-4 bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center text-white text-5xl font-bold border-4 border-purple-200">
-                                {{ substr(Auth::user()->name, 0, 1) }}
+                                {{ Auth::user()->initials }}
                             </div>
                         @endif
                         <button class="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 mb-2">

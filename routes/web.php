@@ -25,6 +25,8 @@ use App\Http\Controllers\Client\UpgradeRequestController as ClientUpgradeRequest
 use App\Http\Controllers\Client\ApiKeyController as ClientApiKeyController;
 use App\Http\Controllers\Client\DeveloperToolsController as ClientDeveloperToolsController;
 use App\Http\Controllers\Client\SettingController as ClientSettingController;
+use App\Http\Controllers\Dashboard\MerchantInvitationController as DashboardMerchantInvitationController;
+use App\Http\Controllers\MerchantInvitationController;
 
 // ==========================================
 // PUBLIC ROUTES
@@ -181,6 +183,9 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
     });
 
     Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/profile', [ClientSettingController::class, 'profile'])->name('profile');
+        Route::put('/profile', [ClientSettingController::class, 'updateProfile'])->name('profile.update');
+
         Route::get('/webhooks', [ClientSettingController::class, 'webhooks'])->name('webhooks');
         Route::put('/webhooks', [ClientSettingController::class, 'updateWebhooks'])->name('webhooks.update');
         Route::post('/webhooks/generate-secret', [ClientSettingController::class, 'generateWebhookSecret'])->name('webhooks.generate-secret');
@@ -203,6 +208,9 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
 Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {    
     // Dashboard Home
     Route::get('/', [DashboardController::class, 'index'])->name('index');
+    Route::get('/profile', function () {
+        return redirect()->route('dashboard.merchant.profile');
+    })->name('profile.redirect');
 
     // ==========================================
     // TRANSACTIONS
@@ -283,6 +291,17 @@ Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('das
     });
 
     // ==========================================
+    // MERCHANT INVITATIONS
+    // ==========================================
+    Route::prefix('invitations')->name('invitations.')->group(function () {
+        Route::get('/', [DashboardMerchantInvitationController::class, 'index'])->name('index');
+        Route::post('/', [DashboardMerchantInvitationController::class, 'store'])->name('store');
+        Route::delete('/{invitation}', [DashboardMerchantInvitationController::class, 'destroy'])->name('destroy');
+        Route::post('/{invitation}/delete', [DashboardMerchantInvitationController::class, 'destroy'])->name('delete');
+        Route::post('/test-email', [DashboardMerchantInvitationController::class, 'testEmail'])->name('test-email');
+    });
+
+    // ==========================================
     // COMPANY INFORMATION
     // ==========================================
     Route::prefix('merchant')->name('merchant.')->group(function () {
@@ -290,13 +309,22 @@ Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('das
         Route::put('/company', [MerchantController::class, 'updateCompany'])->name('company.update');
     });
 
-    // ==========================================
-    // PROFILE (User Account)
-    // ==========================================
+});
+
+// ==========================================
+// PROFILE (User Account)
+// ==========================================
+Route::middleware(['auth:web'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// ==========================================
+// MERCHANT INVITATION ACCEPTANCE (PUBLIC)
+// ==========================================
+Route::get('/merchant-invitations/{token}', [MerchantInvitationController::class, 'showAccept'])->name('merchant-invitations.accept');
+Route::post('/merchant-invitations/{token}', [MerchantInvitationController::class, 'accept'])->name('merchant-invitations.accept.submit');
 
 // Include Auth Routes
 require __DIR__.'/auth.php';
