@@ -21,9 +21,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'plan',
+        'plan_ends_at',
         'google_id',
         'avatar',
         'provider',
+        'webhook_url',
+        'webhook_secret',
     ];
 
     /**
@@ -46,6 +50,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'plan_ends_at' => 'datetime',
         ];
     }
 
@@ -68,5 +73,64 @@ class User extends Authenticatable
 
         // Default avatar using UI Avatars
         return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
+    }
+
+    public function upgradeRequests()
+    {
+        return $this->hasMany(UpgradeRequest::class);
+    }
+
+    public function apiKeys()
+    {
+        return $this->hasMany(ClientApiKey::class);
+    }
+
+    public function isPro(): bool
+    {
+        return $this->effectivePlan() === 'pro';
+    }
+
+    public function isEnterprise(): bool
+    {
+        return $this->effectivePlan() === 'enterprise';
+    }
+
+    public function isFree(): bool
+    {
+        return $this->effectivePlan() === 'free';
+    }
+
+    public function isPlanExpired(): bool
+    {
+        if (!$this->plan_ends_at) {
+            return false;
+        }
+
+        return $this->plan_ends_at->isPast();
+    }
+
+    public function effectivePlan(): string
+    {
+        $plan = $this->plan ?? 'free';
+
+        if (in_array($plan, ['pro', 'enterprise'], true) && $this->isPlanExpired()) {
+            return 'free';
+        }
+
+        return $plan;
+    }
+
+    public function hasActivePaidPlan(): bool
+    {
+        return in_array($this->effectivePlan(), ['pro', 'enterprise'], true);
+    }
+
+    public function dailyTransactionLimit(): ?int
+    {
+        if ($this->effectivePlan() === 'free') {
+            return (int) config('mockpay.limits.free_daily_transactions', 10);
+        }
+
+        return null;
     }
 }

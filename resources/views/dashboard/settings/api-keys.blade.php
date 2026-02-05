@@ -8,27 +8,27 @@
 
         <!-- Success Message -->
         @if(session('success'))
-        <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
-            <div class="flex items-center">
-                <svg class="w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-            <p class="text-green-800 font-medium">{{ session('success') }}</p>
-        </div>
-
-        @if(session('new_api_key'))
-        <div class="mt-4 bg-white border border-green-200 rounded-lg p-4">
-            <p class="text-sm text-gray-700 mb-2 font-semibold">Your new API Key (save this, it won't be shown again):</p>
-            <div class="flex items-center space-x-2">
-                <code id="newApiKey" class="flex-1 bg-gray-100 px-4 py-2 rounded font-mono text-sm text-gray-900">{{ session('new_api_key') }}</code>
-                <button onclick="copyToClipboard('newApiKey')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
-                    Copy
-                </button>
+                    <p class="text-green-800 font-medium">{{ session('success') }}</p>
+                </div>
             </div>
-        </div>
+
+            @if(session('new_api_key'))
+                <div class="mt-4 bg-white border border-green-200 rounded-lg p-4">
+                    <p class="text-sm text-gray-700 mb-2 font-semibold">Your new API Key (save this, it won't be shown again):</p>
+                    <div class="flex items-center space-x-2">
+                        <code id="newApiKey" class="flex-1 bg-gray-100 px-4 py-2 rounded font-mono text-sm text-gray-900">{{ session('new_api_key') }}</code>
+                        <button onclick="copyToClipboard('newApiKey')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            @endif
         @endif
-    </div>
-    @endif
 
     <!-- Create New API Key -->
     <div class="bg-white rounded-xl shadow-md p-8 mb-8">
@@ -70,13 +70,13 @@
                 <div class="flex items-center justify-between">
                     <div class="flex-1">
                         <div class="flex items-center space-x-3 mb-2">
-                            <h4 class="text-lg font-semibold text-gray-900">{{ $apiKey['name'] }}</h4>
-                            @if($apiKey['environment'] === 'production')
+                            <h4 class="text-lg font-semibold text-gray-900">{{ $apiKey->key_name }}</h4>
+                            @if($apiKey->environment === 'production')
                             <span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Production</span>
                             @else
                             <span class="px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Sandbox</span>
                             @endif
-                            @if($apiKey['is_active'])
+                            @if($apiKey->is_active)
                             <span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>
                             @else
                             <span class="px-3 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Inactive</span>
@@ -84,10 +84,10 @@
                         </div>
 
                         <div class="flex items-center space-x-2 mb-3">
-                            <code id="apiKey{{ $apiKey['id'] }}" class="bg-gray-100 px-4 py-2 rounded font-mono text-sm text-gray-900">
-                                {{ substr($apiKey['key'], 0, 20) }}••••••••••••
+                            <code id="apiKey{{ $apiKey->id }}" class="bg-gray-100 px-4 py-2 rounded font-mono text-sm text-gray-900">
+                                {{ $apiKey->getMaskedKey() }}
                             </code>
-                            <button onclick="copyToClipboard('apiKey{{ $apiKey['id'] }}')" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm font-medium">
+                            <button onclick="copyToClipboard('apiKey{{ $apiKey->id }}')" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm font-medium">
                                 Copy
                             </button>
                         </div>
@@ -97,28 +97,28 @@
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                Created {{ $apiKey['created_at']->diffForHumans() }}
+                                Created {{ $apiKey->created_at->diffForHumans() }}
                             </div>
-                            @if($apiKey['last_used_at'])
+                            @if($apiKey->last_used_at)
                             <div class="flex items-center">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                Last used {{ $apiKey['last_used_at']->diffForHumans() }}
+                                Last used {{ $apiKey->last_used_at->diffForHumans() }}
                             </div>
                             @endif
                         </div>
                     </div>
 
                     <div class="flex items-center space-x-2">
-                        <form action="{{ route('dashboard.api-keys.regenerate', $apiKey['id']) }}" method="POST" class="inline">
+                        <form action="{{ route('dashboard.api-keys.regenerate', $apiKey->id) }}" method="POST" class="inline">
                             @csrf
                             <button type="submit" onclick="return confirm('This will invalidate the current key. Continue?')" class="px-4 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 text-sm font-medium">
                                 Regenerate
                             </button>
                         </form>
 
-                        <form action="{{ route('dashboard.api-keys.destroy', $apiKey['id']) }}" method="POST" class="inline">
+                        <form action="{{ route('dashboard.api-keys.destroy', $apiKey->id) }}" method="POST" class="inline">
                             @csrf
                             @method('DELETE')
                             <button type="submit" onclick="return confirm('Are you sure you want to delete this API key?')" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">
@@ -166,7 +166,6 @@
         const text = element.textContent;
 
         navigator.clipboard.writeText(text).then(() => {
-            // Show success feedback
             const originalText = event.target.textContent;
             event.target.textContent = 'Copied!';
             event.target.classList.add('bg-green-600');
@@ -179,3 +178,5 @@
     }
 </script>
 @endpush
+
+</x-app-layout>

@@ -29,7 +29,7 @@ class PaymentService
     /**
      * Create a new payment transaction
      */
-    public function createPayment(array $data, $merchantId)
+    public function createPayment(array $data)
     {
         DB::beginTransaction();
 
@@ -50,7 +50,8 @@ class PaymentService
 
             // Create transaction
             $transaction = Transaction::create([
-                'merchant_id' => $merchantId,
+                'merchant_id' => $data['merchant_id'] ?? null,
+                'user_id' => $data['user_id'] ?? null,
                 'payment_channel_id' => $paymentChannel->id,
                 'transaction_id' => $this->generateTransactionId(),
                 'order_id' => $data['order_id'],

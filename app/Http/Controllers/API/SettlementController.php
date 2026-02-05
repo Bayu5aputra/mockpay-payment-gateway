@@ -22,7 +22,7 @@ class SettlementController extends Controller
     public function index(Request $request)
     {
         try {
-            $merchant = $request->user();
+            $client = $request->user();
 
             $filters = [
                 'status' => 'settlement',
@@ -34,8 +34,8 @@ class SettlementController extends Controller
             ];
 
             $perPage = $request->per_page ?? 15;
-            $settlements = $this->transactionService->getTransactionsByMerchant(
-                $merchant->id,
+            $settlements = $this->transactionService->getTransactionsByUser(
+                $client->id,
                 $filters,
                 $perPage
             );

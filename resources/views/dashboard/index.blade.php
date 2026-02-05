@@ -1,10 +1,12 @@
-# 1. resources/views/dashboard/index.blade.php
 <x-app-layout>
     <div class="p-8">
         <!-- Welcome Section -->
+        @php
+            $merchantUser = Auth::guard('merchant')->user();
+        @endphp
         <div class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome back, {{ Auth::user()->name }}!</h1>
-            <p class="text-gray-600">Here's what's happening with your payments today.</p>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Welcome back, {{ $merchantUser?->name }}!</h1>
+            <p class="text-gray-600">Here's what's happening with your payments {{ $period === 'today' ? 'today' : 'this period' }}.</p>
         </div>
 
         <!-- Stats Grid -->
@@ -14,8 +16,10 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-600 mb-1">Total Transactions</p>
-                        <p class="text-3xl font-bold text-gray-900">1,234</p>
-                        <p class="text-sm text-green-600 mt-2">+12% from last month</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ number_format($statistics['total_transactions']) }}</p>
+                        <p class="text-sm {{ $changes['transactions'] >= 0 ? 'text-green-600' : 'text-red-600' }} mt-2">
+                            {{ $changes['transactions'] >= 0 ? '+' : '' }}{{ number_format($changes['transactions'], 2) }}% from last period
+                        </p>
                     </div>
                     <div class="w-14 h-14 bg-blue-100 rounded-lg flex items-center justify-center">
                         <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,8 +34,8 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-600 mb-1">Successful Payments</p>
-                        <p class="text-3xl font-bold text-gray-900">1,156</p>
-                        <p class="text-sm text-green-600 mt-2">93.7% success rate</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ number_format($statistics['settlement']) }}</p>
+                        <p class="text-sm text-green-600 mt-2">{{ number_format($statistics['success_rate'], 2) }}% success rate</p>
                     </div>
                     <div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center">
                         <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -46,8 +50,10 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-600 mb-1">Total Revenue</p>
-                        <p class="text-3xl font-bold text-gray-900">Rp 45.2M</p>
-                        <p class="text-sm text-green-600 mt-2">+18% from last month</p>
+                        <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($statistics['total_amount'], 0, ',', '.') }}</p>
+                        <p class="text-sm {{ $changes['amount'] >= 0 ? 'text-green-600' : 'text-red-600' }} mt-2">
+                            {{ $changes['amount'] >= 0 ? '+' : '' }}{{ number_format($changes['amount'], 2) }}% from last period
+                        </p>
                     </div>
                     <div class="w-14 h-14 bg-purple-100 rounded-lg flex items-center justify-center">
                         <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -62,12 +68,44 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-600 mb-1">Pending Settlements</p>
-                        <p class="text-3xl font-bold text-gray-900">Rp 8.5M</p>
-                        <p class="text-sm text-gray-600 mt-2">23 transactions</p>
+                        <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($statistics['pending_amount'] ?? 0, 0, ',', '.') }}</p>
+                        <p class="text-sm text-gray-600 mt-2">{{ number_format($statistics['pending']) }} transactions</p>
                     </div>
                     <div class="w-14 h-14 bg-amber-100 rounded-lg flex items-center justify-center">
                         <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-emerald-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Pending Upgrade Requests</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ number_format($pendingUpgradeCount) }}</p>
+                        <p class="text-sm text-gray-600 mt-2">Needs review</p>
+                    </div>
+                    <div class="w-14 h-14 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-indigo-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600 mb-1">Total Clients</p>
+                        <p class="text-3xl font-bold text-gray-900">{{ number_format($activeClients) }}</p>
+                        <p class="text-sm text-gray-600 mt-2">Registered accounts</p>
+                    </div>
+                    <div class="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
                     </div>
                 </div>
@@ -86,23 +124,32 @@
                         <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">90 Days</button>
                     </div>
                 </div>
+                @php
+                    $max = max(array_merge($chartData['transactions'] ?? [0], $chartData['success'] ?? [0], [1]));
+                @endphp
                 <div class="h-80 flex items-end justify-between space-x-2">
-                    <div class="flex-1 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: 65%"></div>
-                    <div class="flex-1 bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg" style="height: 45%"></div>
-                    <div class="flex-1 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: 85%"></div>
-                    <div class="flex-1 bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg" style="height: 55%"></div>
-                    <div class="flex-1 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: 75%"></div>
-                    <div class="flex-1 bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg" style="height: 95%"></div>
-                    <div class="flex-1 bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: 70%"></div>
+                    @forelse($chartData['transactions'] as $index => $value)
+                        @php
+                            $success = $chartData['success'][$index] ?? 0;
+                            $heightSuccess = $max > 0 ? round(($success / $max) * 100) : 0;
+                            $heightTotal = $max > 0 ? round(($value / $max) * 100) : 0;
+                        @endphp
+                        <div class="flex-1 flex flex-col justify-end space-y-2">
+                            <div class="bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg" style="height: {{ $heightSuccess }}%"></div>
+                            <div class="bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: {{ $heightTotal }}%"></div>
+                        </div>
+                    @empty
+                        <div class="text-center text-gray-500 w-full">No data yet.</div>
+                    @endforelse
                 </div>
                 <div class="flex items-center justify-center space-x-6 mt-6">
                     <div class="flex items-center">
                         <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                        <span class="text-sm text-gray-600">Successful</span>
+                        <span class="text-sm text-gray-600">Total</span>
                     </div>
                     <div class="flex items-center">
                         <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-                        <span class="text-sm text-gray-600">Pending</span>
+                        <span class="text-sm text-gray-600">Successful</span>
                     </div>
                 </div>
             </div>
@@ -110,44 +157,27 @@
             <!-- Payment Methods Distribution -->
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h2 class="text-xl font-bold text-gray-900 mb-6">Payment Methods</h2>
-                <div class="space-y-4">
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">Virtual Account</span>
-                            <span class="text-sm font-bold text-gray-900">45%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-blue-500 h-2 rounded-full" style="width: 45%"></div>
-                        </div>
+                @if(count($distribution) === 0)
+                    <p class="text-sm text-gray-500">No payment method data yet.</p>
+                @else
+                    <div class="space-y-4">
+                        @foreach($distribution as $item)
+                            @php
+                                $name = $item['method'] ? ucwords(str_replace('_', ' ', $item['method'])) : 'Unknown';
+                                $percentage = $item['percentage'] ?? 0;
+                            @endphp
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-sm font-medium text-gray-700">{{ $name }}</span>
+                                    <span class="text-sm font-bold text-gray-900">{{ number_format($percentage, 2) }}%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $percentage }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">E-Wallet</span>
-                            <span class="text-sm font-bold text-gray-900">30%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-green-500 h-2 rounded-full" style="width: 30%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">Credit Card</span>
-                            <span class="text-sm font-bold text-gray-900">20%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-purple-500 h-2 rounded-full" style="width: 20%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm font-medium text-gray-700">QRIS</span>
-                            <span class="text-sm font-bold text-gray-900">5%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-amber-500 h-2 rounded-full" style="width: 5%"></div>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
         </div>
 
@@ -155,7 +185,7 @@
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
             <div class="px-6 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
                 <h2 class="text-xl font-bold text-gray-900">Recent Transactions</h2>
-                <a href="#" class="text-purple-600 hover:text-purple-700 font-medium text-sm">View All</a>
+                <a href="{{ route('dashboard.transactions.index') }}" class="text-purple-600 hover:text-purple-700 font-medium text-sm">View All</a>
             </div>
             <div class="overflow-x-auto">
                 <table class="w-full">
@@ -170,46 +200,39 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">TRX-20260129-00001</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">John Doe</td>
-                            <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp 500,000</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">BCA VA</td>
-                            <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Success</span></td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Jan 29, 2026 10:30</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">TRX-20260129-00002</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">Jane Smith</td>
-                            <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp 750,000</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">GoPay</td>
-                            <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">Pending</span></td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Jan 29, 2026 09:15</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">TRX-20260129-00003</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">Bob Wilson</td>
-                            <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp 1,250,000</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Credit Card</td>
-                            <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Success</span></td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Jan 29, 2026 08:45</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">TRX-20260129-00004</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">Alice Brown</td>
-                            <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp 350,000</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">QRIS</td>
-                            <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Success</span></td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Jan 28, 2026 16:20</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-6 py-4 text-sm font-medium text-gray-900">TRX-20260128-00005</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">Charlie Davis</td>
-                            <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp 2,000,000</td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Mandiri VA</td>
-                            <td class="px-6 py-4"><span class="px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Expired</span></td>
-                            <td class="px-6 py-4 text-sm text-gray-600">Jan 28, 2026 14:30</td>
-                        </tr>
+                        @forelse($recentTransactions as $transaction)
+                            @php
+                                $statusMap = [
+                                    'pending' => ['label' => 'Pending', 'class' => 'bg-amber-100 text-amber-800'],
+                                    'processing' => ['label' => 'Processing', 'class' => 'bg-blue-100 text-blue-800'],
+                                    'settlement' => ['label' => 'Success', 'class' => 'bg-green-100 text-green-800'],
+                                    'failed' => ['label' => 'Failed', 'class' => 'bg-red-100 text-red-800'],
+                                    'expired' => ['label' => 'Expired', 'class' => 'bg-gray-100 text-gray-800'],
+                                    'cancelled' => ['label' => 'Cancelled', 'class' => 'bg-gray-100 text-gray-800'],
+                                    'refund' => ['label' => 'Refunded', 'class' => 'bg-purple-100 text-purple-800'],
+                                ];
+                                $status = $statusMap[$transaction->status] ?? ['label' => ucfirst($transaction->status), 'class' => 'bg-gray-100 text-gray-800'];
+                                $method = $transaction->payment_method ? ucwords(str_replace('_', ' ', $transaction->payment_method)) : '-';
+                            @endphp
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 text-sm font-medium text-gray-900">
+                                    <a href="{{ route('dashboard.transactions.show', $transaction->transaction_id) }}" class="text-purple-600 hover:text-purple-700">
+                                        {{ $transaction->transaction_id }}
+                                    </a>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $transaction->customer_name }}</td>
+                                <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp {{ number_format($transaction->amount, 0, ',', '.') }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-600">{{ $method }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $status['class'] }}">{{ $status['label'] }}</span>
+                                </td>
+                                <td class="px-6 py-4 text-sm text-gray-600">{{ $transaction->created_at->format('M d, Y H:i') }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-6 text-center text-gray-500">No transactions yet.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -217,44 +240,44 @@
 
         <!-- Quick Actions -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-            <a href="{{ route('dashboard.developers.index') }}" class="block bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
+            <a href="{{ route('dashboard.transactions.index') }}" class="block bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
                 <div class="flex items-center space-x-4">
                     <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-lg">Developer Tools</h3>
-                        <p class="text-blue-100 text-sm">API docs & testing</p>
+                        <h3 class="font-semibold text-lg">Transactions</h3>
+                        <p class="text-blue-100 text-sm">View all transactions</p>
                     </div>
                 </div>
             </a>
 
-            <a href="{{ route('dashboard.api-keys.index') }}" class="block bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
+            <a href="{{ route('dashboard.customers.index') }}" class="block bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
                 <div class="flex items-center space-x-4">
                     <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-lg">API Keys</h3>
-                        <p class="text-purple-100 text-sm">Manage your keys</p>
+                        <h3 class="font-semibold text-lg">Clients</h3>
+                        <p class="text-purple-100 text-sm">Manage users</p>
                     </div>
                 </div>
             </a>
 
-            <a href="#" class="block bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
+            <a href="{{ route('dashboard.upgrade-requests.index') }}" class="block bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
                 <div class="flex items-center space-x-4">
                     <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
                     <div>
-                        <h3 class="font-semibold text-lg">Calculator</h3>
-                        <p class="text-green-100 text-sm">Fee calculator</p>
+                        <h3 class="font-semibold text-lg">Upgrade Requests</h3>
+                        <p class="text-emerald-100 text-sm">Review payments</p>
                     </div>
                 </div>
             </a>

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Merchant;
 use App\Services\PaymentService;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -54,12 +56,30 @@ class PaymentController extends Controller
         }
 
         try {
-            $merchant = $request->user();
+            $client = $request->user();
+            $merchant = Merchant::query()->first();
+
+            $dailyLimit = $client->dailyTransactionLimit();
+            if ($dailyLimit !== null) {
+                $todayCount = $this->transactionService->getUserDailyTransactionCount(
+                    $client->id,
+                    Carbon::now()
+                );
+
+                if ($todayCount >= $dailyLimit) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Daily transaction limit reached for Free plan',
+                        'limit' => $dailyLimit,
+                        'current' => $todayCount,
+                    ], 429);
+                }
+            }
 
             // Check if order_id already exists for this merchant
             $existingTransaction = $this->transactionService->getByOrderId(
                 $request->order_id,
-                $merchant->id
+                $client->id
             );
 
             if ($existingTransaction) {
@@ -70,8 +90,16 @@ class PaymentController extends Controller
                 ], 409);
             }
 
+            if (!$merchant) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Merchant configuration not found'
+                ], 500);
+            }
+
             $paymentData = [
-                'merchant_id' => $merchant->id,
+                'merchant_id' => $merchant?->id,
+                'user_id' => $client->id,
                 'order_id' => $request->order_id,
                 'amount' => $request->amount,
                 'currency' => $request->currency ?? 'IDR',
@@ -81,7 +109,7 @@ class PaymentController extends Controller
                 'customer_email' => $request->input('customer.email'),
                 'customer_phone' => $request->input('customer.phone'),
                 'description' => $request->description,
-                'callback_url' => $request->callback_url ?? $merchant->webhook_url,
+                'callback_url' => $request->callback_url ?? $client->webhook_url,
                 'metadata' => $request->metadata,
             ];
 

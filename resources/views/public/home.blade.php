@@ -526,8 +526,8 @@
                         <div class="mb-8">
                             <h3 class="text-3xl font-bold text-white mb-4">FREE</h3>
                             <div class="flex items-baseline mb-2">
-                                <span class="text-5xl font-black text-white">$0</span>
-                                <span class="text-2xl font-black text-white">.0</span>
+                                <span class="text-5xl font-black text-white">Rp 0</span>
+                                <span class="text-2xl font-black text-white"></span>
                             </div>
                             <div class="h-1 w-20 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full"></div>
                         </div>
@@ -536,19 +536,19 @@
                                 <svg class="w-6 h-6 mr-3 text-cyan-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Unlimited API testing calls</span>
+                                <span class="text-white text-base">10 dummy transaksi per hari</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-cyan-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">All payment methods</span>
+                                <span class="text-white text-base">Semua metode pembayaran</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-cyan-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Basic documentation</span>
+                                <span class="text-white text-base">Dokumentasi dasar & API docs</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-cyan-300 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -574,8 +574,8 @@
                         <div class="mb-8">
                             <h3 class="text-3xl font-bold text-white mb-4">PRO</h3>
                             <div class="flex items-baseline mb-2">
-                                <span class="text-5xl font-black text-white">$5</span>
-                                <span class="text-2xl font-black text-white">.0</span>
+                                <span class="text-5xl font-black text-white">Rp 150.000</span>
+                                <span class="text-2xl font-black text-white">/bulan</span>
                             </div>
                             <div class="h-1 w-20 bg-gradient-to-r from-blue-300 to-cyan-300 rounded-full"></div>
                         </div>
@@ -584,7 +584,7 @@
                                 <svg class="w-6 h-6 mr-3 text-blue-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Everything in Free plan</span>
+                                <span class="text-white text-base">Unlimited dummy transaksi</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-blue-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -596,7 +596,7 @@
                                 <svg class="w-6 h-6 mr-3 text-blue-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Priority email support</span>
+                                <span class="text-white text-base">Priority support</span>
                             </li>
                         </ul>
                     </div>
@@ -609,7 +609,7 @@
                         <div class="mb-8">
                             <h3 class="text-3xl font-bold text-white mb-4">ENTERPRISE</h3>
                             <div class="mb-2">
-                                <span class="text-3xl font-black text-white">Custom</span>
+                                <span class="text-3xl font-black text-white">Mulai Rp 1.000.000/bulan</span>
                             </div>
                             <div class="h-1 w-20 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full"></div>
                         </div>
@@ -618,19 +618,19 @@
                                 <svg class="w-6 h-6 mr-3 text-purple-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Everything in Pro plan</span>
+                                <span class="text-white text-base">Unlimited dummy transaksi</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-purple-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">Dedicated account manager</span>
+                                <span class="text-white text-base">Custom API limits & support</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-purple-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                                 </svg>
-                                <span class="text-white text-base">24/7 phone & chat support</span>
+                                <span class="text-white text-base">Dedicated support</span>
                             </li>
                             <li class="flex items-start">
                                 <svg class="w-6 h-6 mr-3 text-purple-200 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">

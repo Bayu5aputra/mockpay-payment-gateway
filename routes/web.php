@@ -8,9 +8,10 @@ use App\Http\Controllers\Public\ContactController;
 use App\Http\Controllers\Dashboard\DashboardController;
 use App\Http\Controllers\Dashboard\TransactionController as DashboardTransactionController;
 use App\Http\Controllers\Dashboard\SettlementController as DashboardSettlementController;
-use App\Http\Controllers\Dashboard\ApiKeyController;
 use App\Http\Controllers\Dashboard\SettingController;
 use App\Http\Controllers\Dashboard\MerchantController;
+use App\Http\Controllers\Dashboard\CustomerController as DashboardCustomerController;
+use App\Http\Controllers\Dashboard\UpgradeRequestController as DashboardUpgradeRequestController;
 use App\Http\Controllers\Payment\CheckoutController;
 use App\Http\Controllers\Payment\VirtualAccountController;
 use App\Http\Controllers\Payment\EwalletController;
@@ -20,6 +21,10 @@ use App\Http\Controllers\Payment\RetailController;
 use App\Http\Controllers\LegalController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Client\ClientDashboardController;
+use App\Http\Controllers\Client\UpgradeRequestController as ClientUpgradeRequestController;
+use App\Http\Controllers\Client\ApiKeyController as ClientApiKeyController;
+use App\Http\Controllers\Client\DeveloperToolsController as ClientDeveloperToolsController;
+use App\Http\Controllers\Client\SettingController as ClientSettingController;
 
 // ==========================================
 // PUBLIC ROUTES
@@ -127,62 +132,13 @@ Route::prefix('payment/simulate')->name('payment.simulate.')->group(function () 
 Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(function () {
     // Client Dashboard Home
     Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
-    
-    // TODO: Add more client routes here
-    // - Payment gateway configuration
-    // - Transaction history
-    // - API settings
-    // - Account settings
-});
 
-// ==========================================
-// MERCHANT DASHBOARD ROUTES (PROTECTED)
-// ==========================================
-
-Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {    
-    // Dashboard Home
-    Route::get('/', [DashboardController::class, 'index'])->name('index');
-
-    // ==========================================
-    // TRANSACTIONS
-    // ==========================================
-    Route::prefix('transactions')->name('transactions.')->group(function () {
-        Route::get('/', [DashboardTransactionController::class, 'index'])->name('index');
-        Route::get('/{transaction_id}', [DashboardTransactionController::class, 'show'])->name('show');
-        Route::post('/{transaction_id}/cancel', [DashboardTransactionController::class, 'cancel'])->name('cancel');
-        Route::post('/{transaction_id}/refund', [DashboardTransactionController::class, 'refund'])->name('refund');
-        Route::post('/{transaction_id}/resend-webhook', [DashboardTransactionController::class, 'resendWebhook'])->name('resend-webhook');
-        Route::get('/export/csv', [DashboardTransactionController::class, 'export'])->name('export');
-    });
-
-    // ==========================================
-    // SETTLEMENTS
-    // ==========================================
-    Route::prefix('settlements')->name('settlements.')->group(function () {
-        Route::get('/', [DashboardSettlementController::class, 'index'])->name('index');
-        Route::get('/{date}', [DashboardSettlementController::class, 'show'])->name('show');
-        Route::get('/{date}/download', [DashboardSettlementController::class, 'download'])->name('download');
-        
-        // Bank Account Settings
-        Route::get('/bank-account', [DashboardSettlementController::class, 'bankAccount'])->name('bank-account');
-        Route::put('/bank-account', [DashboardSettlementController::class, 'updateBankAccount'])->name('bank-account.update');
-        
-        // Withdrawal Request
-        Route::post('/withdraw', [DashboardSettlementController::class, 'requestWithdrawal'])->name('withdraw');
-    });
-
-    // ==========================================
-    // DEVELOPER TOOLS
-    // ==========================================
     Route::prefix('developers')->name('developers.')->group(function () {
-        Route::get('/', function () {
-            return view('dashboard.developers.index');
-        })->name('index');
-        
+        Route::get('/', [ClientDeveloperToolsController::class, 'index'])->name('index');
+        Route::get('/logs', [ClientDeveloperToolsController::class, 'logs'])->name('logs');
         Route::get('/api-docs', function () {
             return view('dashboard.developers.api-docs');
         })->name('api-docs');
-        
         Route::get('/code-examples', function () {
             $examples = [
                 'php' => [
@@ -212,29 +168,87 @@ Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('das
             ];
             return view('dashboard.developers.code-examples', compact('examples'));
         })->name('code-examples');
-        
         Route::get('/simulator', function () {
             return view('dashboard.developers.simulator');
         })->name('simulator');
-        
-        Route::get('/logs', function () {
-            $logs = [
-                ['id' => 1, 'timestamp' => now(), 'method' => 'POST', 'endpoint' => '/api/v1/payment/create', 'status_code' => 200, 'response_time' => '145ms', 'ip_address' => '192.168.1.1'],
-                ['id' => 2, 'timestamp' => now()->subMinutes(5), 'method' => 'GET', 'endpoint' => '/api/v1/transactions', 'status_code' => 200, 'response_time' => '89ms', 'ip_address' => '192.168.1.1'],
-                ['id' => 3, 'timestamp' => now()->subMinutes(10), 'method' => 'POST', 'endpoint' => '/api/v1/refund', 'status_code' => 400, 'response_time' => '102ms', 'ip_address' => '192.168.1.1'],
-            ];
-            return view('dashboard.developers.logs', compact('logs'));
-        })->name('logs');
+    });
+
+    Route::prefix('api-keys')->name('api-keys.')->group(function () {
+        Route::get('/', [ClientApiKeyController::class, 'index'])->name('index');
+        Route::post('/', [ClientApiKeyController::class, 'store'])->name('store');
+        Route::delete('/{id}', [ClientApiKeyController::class, 'destroy'])->name('destroy');
+        Route::post('/{id}/regenerate', [ClientApiKeyController::class, 'rotate'])->name('regenerate');
+    });
+
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/webhooks', [ClientSettingController::class, 'webhooks'])->name('webhooks');
+        Route::put('/webhooks', [ClientSettingController::class, 'updateWebhooks'])->name('webhooks.update');
+        Route::post('/webhooks/generate-secret', [ClientSettingController::class, 'generateWebhookSecret'])->name('webhooks.generate-secret');
+    });
+    
+    Route::prefix('upgrade-requests')->name('upgrade-requests.')->group(function () {
+        Route::get('/', [ClientUpgradeRequestController::class, 'index'])->name('index');
+        Route::get('/create', [ClientUpgradeRequestController::class, 'create'])->name('create');
+        Route::post('/', [ClientUpgradeRequestController::class, 'store'])->name('store');
+        Route::get('/{upgradeRequest}', [ClientUpgradeRequestController::class, 'show'])->name('show');
+        Route::get('/{upgradeRequest}/proof', [ClientUpgradeRequestController::class, 'downloadProof'])->name('proof');
+        Route::get('/{upgradeRequest}/invoice', [ClientUpgradeRequestController::class, 'downloadInvoice'])->name('invoice');
+    });
+});
+
+// ==========================================
+// MERCHANT DASHBOARD ROUTES (PROTECTED)
+// ==========================================
+
+Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {    
+    // Dashboard Home
+    Route::get('/', [DashboardController::class, 'index'])->name('index');
+
+    // ==========================================
+    // TRANSACTIONS
+    // ==========================================
+    Route::prefix('transactions')->name('transactions.')->group(function () {
+        Route::get('/', [DashboardTransactionController::class, 'index'])->name('index');
+        Route::get('/{transaction_id}', [DashboardTransactionController::class, 'show'])->name('show');
+        Route::post('/{transaction_id}/cancel', [DashboardTransactionController::class, 'cancel'])->name('cancel');
+        Route::post('/{transaction_id}/refund', [DashboardTransactionController::class, 'refund'])->name('refund');
+        Route::post('/{transaction_id}/resend-webhook', [DashboardTransactionController::class, 'resendWebhook'])->name('resend-webhook');
+        Route::get('/export/csv', [DashboardTransactionController::class, 'export'])->name('export');
     });
 
     // ==========================================
-    // API KEYS
+    // CUSTOMERS
     // ==========================================
-    Route::prefix('api-keys')->name('api-keys.')->group(function () {
-        Route::get('/', [ApiKeyController::class, 'index'])->name('index');
-        Route::post('/', [ApiKeyController::class, 'store'])->name('store');
-        Route::delete('/{id}', [ApiKeyController::class, 'destroy'])->name('destroy');
-        Route::post('/{id}/regenerate', [ApiKeyController::class, 'rotate'])->name('regenerate');
+    Route::prefix('customers')->name('customers.')->group(function () {
+        Route::get('/', [DashboardCustomerController::class, 'index'])->name('index');
+        Route::get('/{customer}', [DashboardCustomerController::class, 'show'])->name('show');
+    });
+
+    // ==========================================
+    // UPGRADE REQUESTS
+    // ==========================================
+    Route::prefix('upgrade-requests')->name('upgrade-requests.')->group(function () {
+        Route::get('/', [DashboardUpgradeRequestController::class, 'index'])->name('index');
+        Route::get('/{upgradeRequest}', [DashboardUpgradeRequestController::class, 'show'])->name('show');
+        Route::post('/{upgradeRequest}/approve', [DashboardUpgradeRequestController::class, 'approve'])->name('approve');
+        Route::post('/{upgradeRequest}/reject', [DashboardUpgradeRequestController::class, 'reject'])->name('reject');
+        Route::get('/{upgradeRequest}/proof', [DashboardUpgradeRequestController::class, 'downloadProof'])->name('proof');
+    });
+
+    // ==========================================
+    // SETTLEMENTS
+    // ==========================================
+    Route::prefix('settlements')->name('settlements.')->group(function () {
+        // Bank Account Settings
+        Route::get('/bank-account', [DashboardSettlementController::class, 'bankAccount'])->name('bank-account');
+        Route::put('/bank-account', [DashboardSettlementController::class, 'updateBankAccount'])->name('bank-account.update');
+        
+        // Withdrawal Request
+        Route::post('/withdraw', [DashboardSettlementController::class, 'requestWithdrawal'])->name('withdraw');
+
+        Route::get('/', [DashboardSettlementController::class, 'index'])->name('index');
+        Route::get('/{date}', [DashboardSettlementController::class, 'show'])->name('show');
+        Route::get('/{date}/download', [DashboardSettlementController::class, 'download'])->name('download');
     });
 
     // ==========================================

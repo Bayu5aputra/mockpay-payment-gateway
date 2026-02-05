@@ -12,6 +12,7 @@ class WebhookLog extends Model
 
     protected $fillable = [
         'merchant_id',
+        'user_id',
         'transaction_id',
         'event',
         'webhook_url',
@@ -38,6 +39,11 @@ class WebhookLog extends Model
     public function merchant(): BelongsTo
     {
         return $this->belongsTo(Merchant::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function transaction(): BelongsTo

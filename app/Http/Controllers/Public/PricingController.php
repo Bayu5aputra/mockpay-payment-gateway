@@ -16,22 +16,16 @@ class PricingController extends Controller
         $plans = [
             [
                 'name' => 'Free',
-                'price' => '$0',
-                'period' => 'forever',
-                'description' => 'Perfect for testing and development',
+                'price' => 'Rp 0',
+                'period' => 'per bulan',
+                'description' => 'Untuk testing dan development ringan',
                 'features' => [
-                    'Unlimited test transactions',
-                    'All payment methods',
-                    'Basic dashboard',
+                    '10 dummy transaksi per hari',
+                    'Semua metode pembayaran',
+                    'Dashboard dasar',
                     'Webhook system',
                     'API documentation',
-                    'Community support',
                     'Sandbox environment',
-                    'Standard rate limits',
-                ],
-                'limitations' => [
-                    'Community support only',
-                    'Standard API rate limits',
                 ],
                 'cta' => 'Get Started',
                 'cta_url' => '/register',
@@ -39,40 +33,33 @@ class PricingController extends Controller
             ],
             [
                 'name' => 'Pro',
-                'price' => '$29',
-                'period' => 'per month',
-                'description' => 'For teams and growing businesses',
+                'price' => 'Rp 150.000',
+                'period' => 'per bulan',
+                'description' => 'Untuk tim dan integrasi yang aktif',
                 'features' => [
-                    'Everything in Free',
+                    'Unlimited dummy transaksi',
+                    'Semua metode pembayaran',
                     'Advanced analytics',
-                    'Team collaboration (up to 5 members)',
                     'Priority support',
-                    'Custom webhook domains',
-                    'Higher API rate limits',
-                    'Transaction export',
-                    'Email notifications',
-                    'Advanced reporting',
+                    'Webhook logs & retry',
+                    'Export transaksi',
                 ],
-                'cta' => 'Start Free Trial',
+                'cta' => 'Upgrade to Pro',
                 'cta_url' => '/register?plan=pro',
                 'popular' => true,
             ],
             [
                 'name' => 'Enterprise',
-                'price' => 'Custom',
-                'period' => 'contact us',
-                'description' => 'For large organizations with custom needs',
+                'price' => 'Mulai Rp 1.000.000',
+                'period' => 'per bulan',
+                'description' => 'Untuk kebutuhan khusus dan skala besar',
                 'features' => [
-                    'Everything in Pro',
-                    'Dedicated instance',
-                    'SLA guarantee (99.9% uptime)',
+                    'Unlimited dummy transaksi',
+                    'Custom API limits',
+                    'Dedicated support',
+                    'SLA 99.9%',
                     'Custom integration support',
-                    'Training sessions',
                     'White-label options',
-                    'Unlimited team members',
-                    'Dedicated account manager',
-                    'Custom API rate limits',
-                    'On-premise deployment option',
                 ],
                 'cta' => 'Contact Sales',
                 'cta_url' => '/contact?subject=enterprise',
@@ -83,34 +70,34 @@ class PricingController extends Controller
         $faqs = [
             [
                 'question' => 'Is the Free plan really free forever?',
-                'answer' => 'Yes! The Free plan is completely free with no time limits. It includes all core features needed for testing and development.'
+                'answer' => 'Ya, Free plan selalu gratis untuk testing, dengan limit 10 transaksi dummy per hari.'
             ],
             [
                 'question' => 'Can I upgrade or downgrade my plan?',
-                'answer' => 'Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately, and we\'ll prorate any charges.'
+                'answer' => 'Ya, Anda bisa upgrade kapan saja. Perubahan berlaku setelah approval.'
             ],
             [
                 'question' => 'What payment methods do you accept?',
-                'answer' => 'We accept all major credit cards (Visa, Mastercard, Amex) and PayPal for Pro plan subscriptions.'
+                'answer' => 'Pembayaran upgrade dilakukan manual via transfer bank sesuai instruksi invoice.'
             ],
             [
                 'question' => 'Do you offer refunds?',
-                'answer' => 'We offer a 30-day money-back guarantee for Pro plan subscriptions. If you\'re not satisfied, we\'ll refund your payment in full.'
+                'answer' => 'MockPay adalah layanan dummy; proses refund mengikuti kebijakan internal.'
             ],
             [
                 'question' => 'What are the API rate limits?',
-                'answer' => 'Free plan: 100 requests/hour. Pro plan: 1,000 requests/hour. Enterprise: Custom limits based on your needs.'
+                'answer' => 'Free: 10 transaksi dummy per hari. Pro/Enterprise: unlimited.'
             ],
             [
                 'question' => 'Can I test before committing to a paid plan?',
-                'answer' => 'Yes! Start with the Free plan to test all features. We also offer a 14-day free trial for the Pro plan, no credit card required.'
+                'answer' => 'Ya, gunakan Free plan untuk testing sebelum upgrade.'
             ],
         ];
 
         $comparison = [
             [
-                'feature' => 'Test Transactions',
-                'free' => 'Unlimited',
+                'feature' => 'Dummy Transactions',
+                'free' => '10 / hari',
                 'pro' => 'Unlimited',
                 'enterprise' => 'Unlimited',
             ],
@@ -121,22 +108,10 @@ class PricingController extends Controller
                 'enterprise' => 'All methods',
             ],
             [
-                'feature' => 'API Rate Limit',
-                'free' => '100/hour',
-                'pro' => '1,000/hour',
-                'enterprise' => 'Custom',
-            ],
-            [
-                'feature' => 'Team Members',
-                'free' => '1',
-                'pro' => 'Up to 5',
-                'enterprise' => 'Unlimited',
-            ],
-            [
                 'feature' => 'Support',
                 'free' => 'Community',
-                'pro' => 'Priority Email',
-                'enterprise' => 'Dedicated + Phone',
+                'pro' => 'Priority',
+                'enterprise' => 'Dedicated',
             ],
             [
                 'feature' => 'Advanced Analytics',
@@ -155,12 +130,6 @@ class PricingController extends Controller
                 'free' => false,
                 'pro' => false,
                 'enterprise' => '99.9%',
-            ],
-            [
-                'feature' => 'White Label',
-                'free' => false,
-                'pro' => false,
-                'enterprise' => true,
             ],
         ];
 

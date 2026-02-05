@@ -23,8 +23,8 @@ class WebhookController extends Controller
     public function logs(Request $request, $transactionId)
     {
         try {
-            $merchant = $request->user();
-            $transaction = $this->transactionService->getByTransactionId($transactionId);
+            $client = $request->user();
+            $transaction = $this->transactionService->getByTransactionIdForUser($transactionId, $client->id);
 
             if (!$transaction) {
                 return response()->json([
@@ -33,26 +33,19 @@ class WebhookController extends Controller
                 ], 404);
             }
 
-            if ($transaction->merchant_id !== $merchant->id) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Unauthorized access'
-                ], 403);
-            }
-
             $logs = $transaction->webhookLogs()
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($log) {
                     return [
                         'id' => $log->id,
-                        'event_name' => $log->event_name,
-                        'url' => $log->url,
+                        'event' => $log->event,
+                        'url' => $log->webhook_url,
                         'payload' => $log->payload,
                         'response_code' => $log->response_code,
                         'response_body' => $log->response_body,
                         'error_message' => $log->error_message,
-                        'attempt' => $log->attempt,
+                        'attempt' => $log->attempt_count,
                         'status' => $log->status,
                         'created_at' => $log->created_at->toIso8601String(),
                     ];

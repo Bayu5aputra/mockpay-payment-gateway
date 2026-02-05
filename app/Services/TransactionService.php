@@ -21,14 +21,35 @@ class TransactionService
     }
 
     /**
-     * Get transaction by order ID and merchant
+     * Get transaction by transaction ID scoped to client
      */
-    public function getByOrderId(string $orderId, int $merchantId): ?Transaction
+    public function getByTransactionIdForUser(string $transactionId, int $userId): ?Transaction
     {
-        return Transaction::where('order_id', $orderId)
-            ->where('merchant_id', $merchantId)
+        return Transaction::where('transaction_id', $transactionId)
+            ->where('user_id', $userId)
             ->with(['virtualAccount', 'ewallet', 'creditCard', 'qris', 'retail'])
             ->first();
+    }
+
+    /**
+     * Get transaction by order ID and merchant
+     */
+    public function getByOrderId(string $orderId, int $userId): ?Transaction
+    {
+        return Transaction::where('order_id', $orderId)
+            ->where('user_id', $userId)
+            ->with(['virtualAccount', 'ewallet', 'creditCard', 'qris', 'retail'])
+            ->first();
+    }
+
+    /**
+     * Count client transactions for a given date
+     */
+    public function getUserDailyTransactionCount(int $userId, Carbon $date): int
+    {
+        return Transaction::where('user_id', $userId)
+            ->whereDate('created_at', $date->toDateString())
+            ->count();
     }
 
     /**
@@ -85,6 +106,53 @@ class TransactionService
     }
 
     /**
+     * Get transactions by client with filters
+     */
+    public function getTransactionsByUser(
+        int $userId,
+        array $filters = [],
+        int $perPage = 15
+    ) {
+        $query = Transaction::where('user_id', $userId)
+            ->with(['virtualAccount', 'ewallet', 'creditCard', 'qris', 'retail']);
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['payment_method'])) {
+            $query->where('payment_method', $filters['payment_method']);
+        }
+
+        if (!empty($filters['payment_channel'])) {
+            $query->where('payment_channel', $filters['payment_channel']);
+        }
+
+        if (!empty($filters['start_date'])) {
+            $query->whereDate('created_at', '>=', $filters['start_date']);
+        }
+
+        if (!empty($filters['end_date'])) {
+            $query->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        if (!empty($filters['search'])) {
+            $query->where(function ($q) use ($filters) {
+                $q->where('transaction_id', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('order_id', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('customer_name', 'like', '%' . $filters['search'] . '%')
+                    ->orWhere('customer_email', 'like', '%' . $filters['search'] . '%');
+            });
+        }
+
+        $orderBy = $filters['order_by'] ?? 'created_at';
+        $orderDirection = $filters['order_direction'] ?? 'desc';
+        $query->orderBy($orderBy, $orderDirection);
+
+        return $query->paginate($perPage);
+    }
+
+    /**
      * Get transaction statistics for merchant
      */
     public function getStatistics(int $merchantId, string $period = 'today'): array
@@ -115,6 +183,7 @@ class TransactionService
             'total_transactions' => (clone $query)->count(),
             'total_amount' => (clone $query)->sum('amount'),
             'total_fee' => (clone $query)->sum('fee'),
+            'pending_amount' => (clone $query)->where('status', Transaction::STATUS_PENDING)->sum('amount'),
             'pending' => (clone $query)->where('status', Transaction::STATUS_PENDING)->count(),
             'settlement' => (clone $query)->where('status', Transaction::STATUS_SETTLEMENT)->count(),
             'cancelled' => (clone $query)->where('status', Transaction::STATUS_CANCELLED)->count(),

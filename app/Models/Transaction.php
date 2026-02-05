@@ -15,8 +15,11 @@ class Transaction extends Model
 
     protected $fillable = [
         'merchant_id',
+        'user_id',
+        'payment_channel_id',
         'transaction_id',
         'order_id',
+        'payment_type',
         'payment_method',
         'payment_channel',
         'amount',
@@ -29,6 +32,9 @@ class Transaction extends Model
         'customer_phone',
         'description',
         'callback_url',
+        'items',
+        'ip_address',
+        'user_agent',
         'expired_at',
         'paid_at',
         'settled_at',
@@ -42,6 +48,7 @@ class Transaction extends Model
         'amount' => 'decimal:2',
         'fee' => 'decimal:2',
         'total_amount' => 'decimal:2',
+        'items' => 'array',
         'expired_at' => 'datetime',
         'paid_at' => 'datetime',
         'settled_at' => 'datetime',
@@ -72,6 +79,14 @@ class Transaction extends Model
     public function merchant(): BelongsTo
     {
         return $this->belongsTo(Merchant::class);
+    }
+
+    /**
+     * Get the client that owns the transaction
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
     /**
@@ -136,6 +151,11 @@ class Transaction extends Model
     public function scopeMerchant($query, $merchantId)
     {
         return $query->where('merchant_id', $merchantId);
+    }
+
+    public function scopeClient($query, $userId)
+    {
+        return $query->where('user_id', $userId);
     }
 
     /**

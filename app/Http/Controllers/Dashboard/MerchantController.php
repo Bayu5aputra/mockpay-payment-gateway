@@ -32,7 +32,7 @@ class MerchantController extends Controller
             'company_name' => 'required|string|max:255',
             'email' => 'required|email|unique:merchants,email,' . $merchant->id,
             'phone' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:500',
+            'company_address' => 'nullable|string|max:500',
             'website' => 'nullable|url|max:255',
         ]);
 
@@ -47,7 +47,7 @@ class MerchantController extends Controller
                 'company_name' => $request->company_name,
                 'email' => $request->email,
                 'phone' => $request->phone,
-                'address' => $request->address,
+                'company_address' => $request->company_address,
                 'website' => $request->website,
             ]);
 
@@ -127,7 +127,17 @@ class MerchantController extends Controller
         }
 
         try {
-            $merchant->update($request->all());
+            $merchant->update([
+                'company_name' => $request->company_name,
+                'business_type' => $request->business_type,
+                'tax_id' => $request->tax_id,
+                'company_address' => $request->address,
+                'city' => $request->city,
+                'state' => $request->state,
+                'postal_code' => $request->postal_code,
+                'country' => $request->country,
+                'website' => $request->website,
+            ]);
 
             return redirect()->back()->with('success', 'Company information updated successfully');
         } catch (\Exception $e) {

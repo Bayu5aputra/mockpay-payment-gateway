@@ -22,22 +22,14 @@ class TransactionController extends Controller
     public function show(Request $request, $transactionId)
     {
         try {
-            $merchant = $request->user();
-            $transaction = $this->transactionService->getByTransactionId($transactionId);
+            $client = $request->user();
+            $transaction = $this->transactionService->getByTransactionIdForUser($transactionId, $client->id);
 
             if (!$transaction) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Transaction not found'
                 ], 404);
-            }
-
-            // Check if transaction belongs to merchant
-            if ($transaction->merchant_id !== $merchant->id) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Unauthorized access'
-                ], 403);
             }
 
             return response()->json([
@@ -83,7 +75,7 @@ class TransactionController extends Controller
     public function index(Request $request)
     {
         try {
-            $merchant = $request->user();
+            $client = $request->user();
 
             $filters = [
                 'status' => $request->status,
@@ -97,8 +89,8 @@ class TransactionController extends Controller
             ];
 
             $perPage = $request->per_page ?? 15;
-            $transactions = $this->transactionService->getTransactionsByMerchant(
-                $merchant->id,
+            $transactions = $this->transactionService->getTransactionsByUser(
+                $client->id,
                 $filters,
                 $perPage
             );
@@ -131,21 +123,14 @@ class TransactionController extends Controller
     public function cancel(Request $request, $transactionId)
     {
         try {
-            $merchant = $request->user();
-            $transaction = $this->transactionService->getByTransactionId($transactionId);
+            $client = $request->user();
+            $transaction = $this->transactionService->getByTransactionIdForUser($transactionId, $client->id);
 
             if (!$transaction) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Transaction not found'
                 ], 404);
-            }
-
-            if ($transaction->merchant_id !== $merchant->id) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Unauthorized access'
-                ], 403);
             }
 
             if (!$transaction->canBeCancelled()) {
@@ -157,7 +142,7 @@ class TransactionController extends Controller
 
             $this->transactionService->cancelTransaction(
                 $transaction,
-                $request->reason ?? 'Cancelled by merchant'
+                $request->reason ?? 'Cancelled by client'
             );
 
             return response()->json([

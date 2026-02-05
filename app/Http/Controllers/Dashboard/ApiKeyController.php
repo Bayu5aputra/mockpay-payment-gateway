@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\ApiKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class ApiKeyController extends Controller
 {
@@ -18,6 +17,7 @@ class ApiKeyController extends Controller
     {
         $merchant = Auth::user();
         $apiKeys = ApiKey::where('merchant_id', $merchant->id)
+            ->withoutTrashed()
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -38,20 +38,16 @@ class ApiKeyController extends Controller
         $merchant = Auth::user();
 
         try {
-            $prefix = $request->environment === 'sandbox' ? 'sandbox_sk_' : 'live_sk_';
-            $key = $prefix . Str::random(32);
-
             $apiKey = ApiKey::create([
                 'merchant_id' => $merchant->id,
-                'name' => $request->name,
-                'key' => $key,
+                'key_name' => $request->name,
                 'environment' => $request->environment,
                 'is_active' => true,
             ]);
 
             return redirect()->back()->with([
                 'success' => 'API key generated successfully',
-                'new_key' => $key,
+                'new_api_key' => $apiKey->getFullKey(),
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to generate API key: ' . $e->getMessage());
@@ -71,8 +67,9 @@ class ApiKeyController extends Controller
 
         try {
             $apiKey->update(['is_active' => false]);
+            $apiKey->delete();
 
-            return redirect()->back()->with('success', 'API key revoked successfully');
+            return redirect()->back()->with('success', 'API key deleted successfully');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to revoke API key: ' . $e->getMessage());
         }
@@ -90,14 +87,11 @@ class ApiKeyController extends Controller
             ->firstOrFail();
 
         try {
-            $prefix = $apiKey->environment === 'sandbox' ? 'sandbox_sk_' : 'live_sk_';
-            $newKey = $prefix . Str::random(32);
-
-            $apiKey->update(['key' => $newKey]);
+            $newKey = $apiKey->regenerate();
 
             return redirect()->back()->with([
                 'success' => 'API key rotated successfully',
-                'new_key' => $newKey,
+                'new_api_key' => $newKey,
             ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to rotate API key: ' . $e->getMessage());

@@ -36,21 +36,14 @@ class RefundController extends Controller
         }
 
         try {
-            $merchant = $request->user();
-            $transaction = $this->transactionService->getByTransactionId($request->transaction_id);
+            $client = $request->user();
+            $transaction = $this->transactionService->getByTransactionIdForUser($request->transaction_id, $client->id);
 
             if (!$transaction) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Transaction not found'
                 ], 404);
-            }
-
-            if ($transaction->merchant_id !== $merchant->id) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Unauthorized access'
-                ], 403);
             }
 
             if (!$transaction->canBeRefunded()) {

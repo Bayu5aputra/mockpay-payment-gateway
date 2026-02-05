@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-2">Developer Tools</h1>
-            <p class="text-gray-600">Access API documentation, code examples, and testing tools</p>
+            <p class="text-gray-600">Tools untuk integrasi API: dokumentasi, contoh kode, simulator, webhook, dan log.</p>
         </div>
 
         <!-- Quick Stats -->
@@ -11,8 +11,8 @@
             <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600 mb-1">API Calls Today</p>
-                        <p class="text-2xl font-bold text-gray-900">1,234</p>
+                        <p class="text-sm text-gray-600 mb-1">Transactions Today</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['transactions_today']) }}</p>
                     </div>
                     <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -26,7 +26,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-600 mb-1">Success Rate</p>
-                        <p class="text-2xl font-bold text-gray-900">98.5%</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['success_rate'], 2) }}%</p>
                     </div>
                     <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -39,8 +39,8 @@
             <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-amber-500">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-sm text-gray-600 mb-1">Avg Response Time</p>
-                        <p class="text-2xl font-bold text-gray-900">145ms</p>
+                        <p class="text-sm text-gray-600 mb-1">Webhook Deliveries Today</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['webhooks_today']) }}</p>
                     </div>
                     <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -54,7 +54,7 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-sm text-gray-600 mb-1">Active API Keys</p>
-                        <p class="text-2xl font-bold text-gray-900">2</p>
+                        <p class="text-2xl font-bold text-gray-900">{{ number_format($stats['active_api_keys']) }}</p>
                     </div>
                     <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
                         <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -63,6 +63,14 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+            <h2 class="text-lg font-semibold text-gray-900 mb-2">Apa itu Developer Tools?</h2>
+            <p class="text-gray-600">
+                Developer Tools dipakai merchant untuk integrasi API MockPay: melihat dokumentasi, contoh kode,
+                melakukan simulasi transaksi, memonitor webhook, dan mengelola API keys.
+            </p>
         </div>
 
         <!-- Developer Tools Grid -->
@@ -116,7 +124,7 @@
                 </div>
             </a>
 
-            <!-- API Logs -->
+            <!-- Webhook Logs -->
             <a href="{{ route('dashboard.developers.logs') }}" class="group block bg-gradient-to-br from-amber-500 to-amber-600 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
                 <div class="p-8 relative">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
@@ -126,8 +134,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                             </svg>
                         </div>
-                        <h3 class="text-2xl font-bold text-white mb-2">API Logs</h3>
-                        <p class="text-amber-100">Monitor and debug your API requests</p>
+                        <h3 class="text-2xl font-bold text-white mb-2">Webhook Logs</h3>
+                        <p class="text-amber-100">Monitor pengiriman webhook transaksi</p>
                     </div>
                 </div>
             </a>

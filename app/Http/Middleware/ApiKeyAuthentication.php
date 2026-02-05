@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\ApiKey;
+use App\Models\ClientApiKey;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,10 +23,10 @@ class ApiKeyAuthenticate
             ], 401);
         }
 
-        // Find API key
-        $key = ApiKey::where('key', $apiKey)
-            ->where('is_active', true)
-            ->with('merchant')
+        $key = ClientApiKey::where('api_key', $apiKey)
+            ->active()
+            ->notExpired()
+            ->with('user')
             ->first();
 
         if (!$key) {
@@ -36,20 +36,12 @@ class ApiKeyAuthenticate
             ], 401);
         }
 
-        // Check if merchant is active
-        if (!$key->merchant->is_active) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Merchant account is not active'
-            ], 403);
-        }
-
         // Update last used timestamp
         $key->update(['last_used_at' => now()]);
 
-        // Set authenticated merchant
+        // Set authenticated client
         $request->setUserResolver(function () use ($key) {
-            return $key->merchant;
+            return $key->user;
         });
 
         return $next($request);

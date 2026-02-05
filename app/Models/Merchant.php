@@ -29,6 +29,17 @@ class Merchant extends Authenticatable
         'callback_url',
         'balance',
         'logo',
+        'bank_name',
+        'bank_account_number',
+        'bank_account_name',
+        'email_notifications',
+        'webhook_notifications',
+        'website',
+        'tax_id',
+        'city',
+        'state',
+        'postal_code',
+        'country',
     ];
 
     protected $hidden = [
@@ -43,6 +54,8 @@ class Merchant extends Authenticatable
         'email_verified_at' => 'datetime',
         'balance' => 'decimal:2',
         'password' => 'hashed',
+        'email_notifications' => 'boolean',
+        'webhook_notifications' => 'boolean',
     ];
 
     // Boot method untuk auto-generate API keys

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Models\UpgradeRequest;
+use App\Models\User;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,7 +24,7 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-        $merchant = Auth::user();
+        $merchant = Auth::guard('merchant')->user();
         $period = $request->period ?? 'today';
 
         // Get statistics
@@ -44,6 +46,9 @@ class DashboardController extends Controller
 
         // Get recent transactions
         $recentTransactions = $this->transactionService->getRecentTransactions($merchant->id, 10);
+
+        $pendingUpgradeCount = UpgradeRequest::where('status', 'pending')->count();
+        $activeClients = User::count();
 
         // Get comparison data (previous period)
         $previousPeriod = $this->getPreviousPeriod($period);
@@ -68,7 +73,9 @@ class DashboardController extends Controller
             'distribution',
             'recentTransactions',
             'changes',
-            'period'
+            'period',
+            'pendingUpgradeCount',
+            'activeClients'
         ));
     }
 

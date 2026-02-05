@@ -48,8 +48,8 @@ class SendWebhookJob implements ShouldQueue
                 'attempt' => $this->attempt,
             ]);
 
-            // Check if merchant has webhook URL
-            if (!$this->transaction->merchant->webhook_url) {
+            // Check if client has webhook URL
+            if (!$this->transaction->user?->webhook_url) {
                 Log::info('Webhook not sent - no webhook URL configured', [
                     'transaction_id' => $this->transaction->transaction_id,
                 ]);
@@ -57,19 +57,17 @@ class SendWebhookJob implements ShouldQueue
             }
 
             // Send webhook
-            $result = $webhookService->deliverWebhook($this->transaction, $this->attempt);
+            $result = $webhookService->deliverWebhook($this->transaction);
 
-            if ($result['success']) {
+            if ($result) {
                 Log::info('Webhook sent successfully', [
                     'transaction_id' => $this->transaction->transaction_id,
                     'attempt' => $this->attempt,
-                    'response_code' => $result['response_code'],
                 ]);
             } else {
                 Log::warning('Webhook delivery failed', [
                     'transaction_id' => $this->transaction->transaction_id,
                     'attempt' => $this->attempt,
-                    'error' => $result['error_message'],
                 ]);
 
                 // If not last attempt, schedule retry

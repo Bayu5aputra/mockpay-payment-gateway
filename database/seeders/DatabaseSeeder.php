@@ -2,10 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\ClientApiKey;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,7 +19,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create demo user/client
-        User::create([
+        $user = User::create([
             'name' => 'Demo Client',
             'email' => 'client@mockpay.test',
             'password' => Hash::make('password'),
@@ -26,9 +28,17 @@ class DatabaseSeeder extends Seeder
 
         echo "✓ Demo client created: client@mockpay.test / password\n";
 
+        ClientApiKey::create([
+            'user_id' => $user->id,
+            'key_name' => 'Demo Sandbox Key',
+            'environment' => 'sandbox',
+            'is_active' => true,
+            'api_key' => 'mpk_test_' . Str::random(32),
+        ]);
+
         // Seed payment channels
         $this->call(PaymentChannelSeeder::class);
-        
+
         // Seed demo merchant
         $this->call(DemoMerchantSeeder::class);
     }

@@ -164,7 +164,7 @@ class SettingController extends Controller
             ],
         ];
 
-        return view('dashboard.settings.payment-methods', compact('paymentMethods'));
+        return view('dashboard.settings.payment-methods', compact('paymentMethods', 'merchant'));
     }
 
     /**

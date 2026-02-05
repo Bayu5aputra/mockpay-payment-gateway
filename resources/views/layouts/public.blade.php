@@ -118,7 +118,7 @@
                     Contact
                 </a>
                 @auth
-                    <a href="{{ route('dashboard') }}"
+                    <a href="{{ route('client.dashboard') }}"
                         class="block px-3 py-2 text-base font-medium text-gray-300 hover:text-white hover:bg-gray-900 rounded-lg transition-colors">
                         Dashboard
                     </a>

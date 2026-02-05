@@ -22,7 +22,7 @@ class WebhookService
      */
     public function sendWebhook(Transaction $transaction, bool $async = true)
     {
-        $webhookUrl = $transaction->merchant->webhook_url;
+        $webhookUrl = $transaction->user?->webhook_url;
 
         if (empty($webhookUrl)) {
             return false;
@@ -43,9 +43,9 @@ class WebhookService
      */
     public function deliverWebhook(Transaction $transaction): bool
     {
-        $webhookUrl = $transaction->merchant->webhook_url;
+        $webhookUrl = $transaction->user?->webhook_url;
         $payload = $this->preparePayload($transaction);
-        $signature = $this->signatureService->generateSignature($payload, $transaction->merchant->webhook_secret);
+        $signature = $this->signatureService->generateSignature($payload, $transaction->user?->webhook_secret ?? '');
 
         $headers = [
             'X-Webhook-Signature' => $signature,
@@ -56,6 +56,7 @@ class WebhookService
         // Create webhook log
         $webhookLog = WebhookLog::create([
             'merchant_id' => $transaction->merchant_id,
+            'user_id' => $transaction->user_id,
             'transaction_id' => $transaction->id,
             'event' => $this->getEventName($transaction->status),
             'webhook_url' => $webhookUrl,

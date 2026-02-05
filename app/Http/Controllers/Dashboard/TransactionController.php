@@ -34,9 +34,10 @@ class TransactionController extends Controller
             'search' => $request->search,
             'order_by' => $request->order_by ?? 'created_at',
             'order_direction' => $request->order_direction ?? 'desc',
+            'per_page' => $request->per_page ?? 15,
         ];
 
-        $perPage = $request->per_page ?? 15;
+        $perPage = $filters['per_page'];
         $transactions = $this->transactionService->getTransactionsByMerchant(
             $merchant->id,
             $filters,

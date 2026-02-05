@@ -45,7 +45,11 @@
                 
                 <div class="flex items-center space-x-4">
                     @auth
-                        <a href="{{ route('dashboard') }}" class="text-gray-700 hover:text-purple-600 font-medium">Dashboard</a>
+                        @if(Auth::guard('merchant')->check())
+                            <a href="{{ route('dashboard.index') }}" class="text-gray-700 hover:text-purple-600 font-medium">Dashboard</a>
+                        @else
+                            <a href="{{ route('client.dashboard') }}" class="text-gray-700 hover:text-purple-600 font-medium">Dashboard</a>
+                        @endif
                     @else
                         <a href="{{ route('login') }}" class="text-gray-700 hover:text-purple-600 font-medium">Login</a>
                         <a href="{{ route('register') }}" class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-indigo-700">Sign Up</a>

@@ -39,9 +39,15 @@
                         Home
                     </a>
                     @auth
-                        <a href="{{ route('dashboard') }}" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300">
-                            Dashboard
-                        </a>
+                        @if(Auth::guard('merchant')->check())
+                            <a href="{{ route('dashboard.index') }}" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300">
+                                Dashboard
+                            </a>
+                        @else
+                            <a href="{{ route('client.dashboard') }}" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300">
+                                Dashboard
+                            </a>
+                        @endif
                     @else
                         <a href="{{ route('login') }}" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300">
                             Get Started
