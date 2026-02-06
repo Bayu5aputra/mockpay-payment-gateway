@@ -1,5 +1,7 @@
 <x-app-layout>
-    <div class="p-8">
+    <div class="min-h-screen bg-[#eae6df] py-10">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="rounded-[36px] bg-[#f8f4ef] border border-white/70 shadow-[0_40px_90px_rgba(15,23,42,0.14)] p-8 space-y-8">
         <div class="mb-6">
             <h1 class="text-2xl font-bold text-gray-900">Bank Account</h1>
             <p class="text-gray-600">Manage your withdrawal account details</p>
@@ -28,6 +30,8 @@
                     Save Bank Account
                 </button>
             </form>
+        </div>
+            </div>
         </div>
     </div>
 </x-app-layout>

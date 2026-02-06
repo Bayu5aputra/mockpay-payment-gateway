@@ -1,5 +1,7 @@
 <x-app-layout>
-    <div class="p-8">
+    <div class="min-h-screen bg-[#eae6df] py-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="rounded-[36px] bg-[#f8f4ef] border border-white/70 shadow-[0_40px_90px_rgba(15,23,42,0.14)] p-8 space-y-8">
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-900 mb-2">Platform Tools</h1>
@@ -221,6 +223,8 @@
                         <p class="text-gray-600">Use logs to verify webhook delivery and API usage across tenants.</p>
                     </div>
                 </div>
+            </div>
+        </div>
             </div>
         </div>
     </div>

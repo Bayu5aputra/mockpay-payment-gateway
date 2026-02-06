@@ -1,5 +1,7 @@
 <x-app-layout>
-    <div class="p-8">
+    <div class="min-h-screen bg-[#eae6df] py-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="rounded-[36px] bg-[#f8f4ef] border border-white/70 shadow-[0_40px_90px_rgba(15,23,42,0.14)] p-8 space-y-8">
         <a href="{{ route('dashboard.customers.index') }}" class="inline-flex items-center text-purple-600 hover:text-purple-700 mb-6">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -88,6 +90,8 @@
                         {{ $transactions->withQueryString()->links() }}
                     </div>
                 </div>
+            </div>
+        </div>
             </div>
         </div>
     </div>

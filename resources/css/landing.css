@@ -230,16 +230,16 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-    background: #1a1a2e;
+    background: #0b0b0c;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+    background: #0b0b0c;
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #7C3AED, #2563EB);
+    background: #111827;
 }
 
 /* Animation Delays */

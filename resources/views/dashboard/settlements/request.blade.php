@@ -1,5 +1,7 @@
 <x-app-layout>
-    <div class="p-8">
+    <div class="min-h-screen bg-[#eae6df] py-10">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="rounded-[36px] bg-[#f8f4ef] border border-white/70 shadow-[0_40px_90px_rgba(15,23,42,0.14)] p-8 space-y-8">
         <div class="bg-white rounded-xl shadow-md p-6">
             <h1 class="text-2xl font-bold text-gray-900 mb-4">Request Withdrawal</h1>
             <form method="POST" action="{{ route('dashboard.settlements.withdraw') }}" class="space-y-4">
@@ -12,6 +14,8 @@
                     Submit Request
                 </button>
             </form>
+        </div>
+            </div>
         </div>
     </div>
 </x-app-layout>

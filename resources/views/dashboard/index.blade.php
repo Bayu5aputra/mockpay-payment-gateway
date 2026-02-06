@@ -1,247 +1,281 @@
 <x-app-layout>
-    <div class="p-8">
-        @php
-            $merchantUser = Auth::guard('merchant')->user();
-        @endphp
-        <div class="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-                <p class="text-xs uppercase tracking-widest text-slate-400">Platform Admin</p>
-                <h1 class="text-3xl font-bold text-gray-900 mt-2">Welcome back, {{ $merchantUser?->name }}!</h1>
-                <p class="text-gray-600">Overview of platform usage {{ $period === 'today' ? 'today' : 'this period' }}.</p>
-            </div>
-            <div class="flex flex-wrap gap-3">
-                <a href="{{ route('dashboard.upgrade-requests.index') }}" class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 transition">
-                    Review Upgrade Requests
-                </a>
-                <a href="{{ route('dashboard.customers.index') }}" class="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-white transition">
-                    View Clients
-                </a>
-            </div>
-        </div>
+    @php
+        $merchantUser = Auth::guard('merchant')->user();
+        $periodLabel = $period === 'today' ? 'today' : 'this period';
+        $totalSimulations = (int) ($statistics['total_transactions'] ?? 0);
+        $successCount = (int) ($statistics['settlement'] ?? 0);
+        $successRate = (float) ($statistics['success_rate'] ?? 0);
+        $pendingCount = (int) ($statistics['pending'] ?? 0);
+        $pendingAmount = (float) ($statistics['pending_amount'] ?? 0);
+        $totalAmount = (float) ($statistics['total_amount'] ?? 0);
+        $transactionChange = (float) ($changes['transactions'] ?? 0);
+        $amountChange = (float) ($changes['amount'] ?? 0);
+        $successRing = min(100, max(0, (int) round($successRate)));
+        $pendingRate = $totalSimulations > 0 ? min(100, (int) round(($pendingCount / $totalSimulations) * 100)) : 0;
+    @endphp
 
-        <div class="mb-8 bg-blue-50 border border-blue-200 rounded-2xl p-4 text-blue-900">
-            <p class="text-sm">
-                Merchant accounts manage users, plan approvals, and overall usage. Client teams control their own simulation outcomes and integrations.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div class="flex items-center justify-between">
+    <div class="min-h-screen bg-[#eae6df] py-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="rounded-[36px] bg-[#f8f4ef] border border-white/70 shadow-[0_40px_90px_rgba(15,23,42,0.14)] p-8 space-y-8">
+                <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
                     <div>
-                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Total Simulations</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ number_format($statistics['total_transactions']) }}</p>
-                        <p class="text-sm {{ $changes['transactions'] >= 0 ? 'text-green-600' : 'text-red-600' }} mt-2">
-                            {{ $changes['transactions'] >= 0 ? '+' : '' }}{{ number_format($changes['transactions'], 2) }}% from last period
-                        </p>
+                        <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Platform Admin</p>
+                        <h1 class="text-4xl font-semibold text-slate-900 mt-2">Merchant Analytics</h1>
+                        <p class="text-sm text-slate-500 mt-2">Overview of platform usage {{ $periodLabel }}.</p>
                     </div>
-                    <div class="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-7 h-7 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Successful Simulations</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ number_format($statistics['settlement']) }}</p>
-                        <p class="text-sm text-green-600 mt-2">{{ number_format($statistics['success_rate'], 2) }}% success rate</p>
-                    </div>
-                    <div class="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Simulated Volume</p>
-                        <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($statistics['total_amount'], 0, ',', '.') }}</p>
-                        <p class="text-sm {{ $changes['amount'] >= 0 ? 'text-green-600' : 'text-red-600' }} mt-2">
-                            {{ $changes['amount'] >= 0 ? '+' : '' }}{{ number_format($changes['amount'], 2) }}% from last period
-                        </p>
-                    </div>
-                    <div class="w-14 h-14 bg-purple-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Pending Transactions</p>
-                        <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($statistics['pending_amount'] ?? 0, 0, ',', '.') }}</p>
-                        <p class="text-sm text-gray-600 mt-2">{{ number_format($statistics['pending']) }} transactions</p>
-                    </div>
-                    <div class="w-14 h-14 bg-amber-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Pending Upgrade Requests</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ number_format($pendingUpgradeCount) }}</p>
-                        <p class="text-sm text-gray-600 mt-2">Needs review</p>
-                    </div>
-                    <div class="w-14 h-14 bg-emerald-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-7 h-7 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-xs uppercase tracking-wide text-slate-400 mb-1">Total Clients</p>
-                        <p class="text-3xl font-bold text-gray-900">{{ number_format($activeClients) }}</p>
-                        <p class="text-sm text-gray-600 mt-2">Registered accounts</p>
-                    </div>
-                    <div class="w-14 h-14 bg-indigo-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-            <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900">Simulation Overview</h2>
-                    <div class="flex space-x-2">
-                        <button class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-medium">7 Days</button>
-                        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">30 Days</button>
-                        <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">90 Days</button>
-                    </div>
-                </div>
-                @php
-                    $max = max(array_merge($chartData['transactions'] ?? [0], $chartData['success'] ?? [0], [1]));
-                @endphp
-                <div class="h-80 flex items-end justify-between space-x-2">
-                    @forelse($chartData['transactions'] as $index => $value)
-                        @php
-                            $success = $chartData['success'][$index] ?? 0;
-                            $heightSuccess = $max > 0 ? round(($success / $max) * 100) : 0;
-                            $heightTotal = $max > 0 ? round(($value / $max) * 100) : 0;
-                        @endphp
-                        <div class="flex-1 flex flex-col justify-end space-y-2">
-                            <div class="bg-gradient-to-t from-purple-500 to-purple-400 rounded-t-lg" style="height: {{ $heightSuccess }}%"></div>
-                            <div class="bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-lg" style="height: {{ $heightTotal }}%"></div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="inline-flex items-center gap-3 rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-slate-700 shadow-sm border border-white">
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900 text-white text-xs font-semibold">
+                                {{ strtoupper(substr(trim($merchantUser?->name ?? 'M'), 0, 1)) }}
+                            </span>
+                            <span class="text-slate-700">{{ $merchantUser?->email }}</span>
                         </div>
-                    @empty
-                        <div class="text-center text-gray-500 w-full">No data yet.</div>
-                    @endforelse
-                </div>
-                <div class="flex items-center justify-center space-x-6 mt-6">
-                    <div class="flex items-center">
-                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
-                        <span class="text-sm text-gray-600">Total</span>
-                    </div>
-                    <div class="flex items-center">
-                        <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
-                        <span class="text-sm text-gray-600">Successful</span>
+                        <a href="{{ route('dashboard.upgrade-requests.index') }}" class="inline-flex items-center rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition">
+                            Review Upgrade Requests
+                        </a>
+                        <a href="{{ route('dashboard.customers.index') }}" class="inline-flex items-center rounded-full border border-slate-200 bg-white/90 px-5 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-white transition">
+                            View Clients
+                        </a>
                     </div>
                 </div>
-            </div>
 
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6">
-                <h2 class="text-xl font-bold text-gray-900 mb-6">Method Distribution</h2>
-                @if(count($distribution) === 0)
-                    <p class="text-sm text-gray-500">No payment method data yet.</p>
-                @else
-                    <div class="space-y-4">
-                        @foreach($distribution as $item)
-                            @php
-                                $name = $item['method'] ? ucwords(str_replace('_', ' ', $item['method'])) : 'Unknown';
-                                $percentage = $item['percentage'] ?? 0;
-                            @endphp
-                            <div>
-                                <div class="flex items-center justify-between mb-2">
-                                    <span class="text-sm font-medium text-gray-700">{{ $name }}</span>
-                                    <span class="text-sm font-bold text-gray-900">{{ number_format($percentage, 2) }}%</span>
+                <div class="rounded-[28px] bg-white/80 border border-white px-6 py-4 text-sm text-slate-600">
+                    Merchant accounts manage users, plan approvals, and overall usage. Client teams control their own simulation outcomes and integrations.
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-8 space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="rounded-[32px] bg-gradient-to-br from-[#111827] via-[#1f2937] to-[#0f172a] p-6 text-white shadow-[0_25px_60px_rgba(15,23,42,0.28)]">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm uppercase tracking-widest text-white/70">Total Simulations</p>
+                                    <span class="text-xs text-white/60">{{ $periodLabel }}</span>
                                 </div>
-                                <div class="w-full bg-gray-200 rounded-full h-2">
-                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ $percentage }}%"></div>
+                                <div class="mt-6 text-4xl font-semibold">{{ number_format($totalSimulations) }}</div>
+                                <p class="mt-2 text-sm {{ $transactionChange >= 0 ? 'text-emerald-300' : 'text-rose-300' }}">
+                                    {{ $transactionChange >= 0 ? '+' : '' }}{{ number_format($transactionChange, 2) }}% from last period
+                                </p>
+                                <div class="mt-6 h-16">
+                                    <svg viewBox="0 0 240 60" class="h-full w-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M0 40C20 20 40 20 60 32C80 44 100 56 120 34C140 12 160 12 180 24C200 36 220 40 240 20" stroke="rgba(255,255,255,0.7)" stroke-width="3" stroke-linecap="round"/>
+                                        <path d="M0 50C20 30 40 28 60 40C80 52 100 60 120 42C140 24 160 22 180 30C200 38 220 44 240 30" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <div class="mt-6 grid grid-cols-3 gap-4 text-xs">
+                                    <div>
+                                        <p class="text-white/70">Success</p>
+                                        <p class="font-semibold">{{ number_format($successCount) }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-white/70">Pending</p>
+                                        <p class="font-semibold">{{ number_format($pendingCount) }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-white/70">Rate</p>
+                                        <p class="font-semibold">{{ number_format($successRate, 2) }}%</p>
+                                    </div>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
-        </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-                <h2 class="text-xl font-bold text-gray-900">Recent Simulations</h2>
-                <a href="{{ route('dashboard.transactions.index') }}" class="text-purple-600 hover:text-purple-700 font-medium text-sm">View All</a>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Transaction ID</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Customer</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Method</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        @forelse($recentTransactions as $transaction)
-                            @php
-                                $statusMap = [
-                                    'pending' => ['label' => 'Pending', 'class' => 'bg-amber-100 text-amber-800'],
-                                    'processing' => ['label' => 'Processing', 'class' => 'bg-blue-100 text-blue-800'],
-                                    'settlement' => ['label' => 'Success', 'class' => 'bg-green-100 text-green-800'],
-                                    'failed' => ['label' => 'Failed', 'class' => 'bg-red-100 text-red-800'],
-                                    'expired' => ['label' => 'Expired', 'class' => 'bg-gray-100 text-gray-800'],
-                                    'cancelled' => ['label' => 'Cancelled', 'class' => 'bg-gray-100 text-gray-800'],
-                                    'refund' => ['label' => 'Refunded', 'class' => 'bg-purple-100 text-purple-800'],
-                                ];
-                                $status = $statusMap[$transaction->status] ?? ['label' => ucfirst($transaction->status), 'class' => 'bg-gray-100 text-gray-800'];
-                                $method = $transaction->payment_method ? ucwords(str_replace('_', ' ', $transaction->payment_method)) : '-';
-                            @endphp
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 text-sm font-medium text-gray-900">
-                                    <a href="{{ route('dashboard.transactions.show', $transaction->transaction_id) }}" class="text-purple-600 hover:text-purple-700">
-                                        {{ $transaction->transaction_id }}
-                                    </a>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $transaction->customer_name }}</td>
-                                <td class="px-6 py-4 text-sm font-semibold text-gray-900">Rp {{ number_format($transaction->amount, 0, ',', '.') }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-600">{{ $method }}</td>
-                                <td class="px-6 py-4">
-                                    <span class="px-3 py-1 text-xs font-semibold rounded-full {{ $status['class'] }}">{{ $status['label'] }}</span>
-                                </td>
-                                <td class="px-6 py-4 text-sm text-gray-600">{{ $transaction->created_at->format('M d, Y H:i') }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="px-6 py-6 text-center text-gray-500">No transactions yet.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                            <div class="rounded-[32px] bg-white p-6 shadow-sm border border-white/70">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-sm font-semibold text-slate-700">Success Rate</p>
+                                    <span class="text-xs text-slate-400">Last 30 days</span>
+                                </div>
+                                <div class="mt-6 flex items-center gap-6">
+                                    <div class="relative h-28 w-28">
+                                        <div class="h-28 w-28 rounded-full" style="background: conic-gradient(#111827 {{ $successRing }}%, #f1f1f1 0)"></div>
+                                        <div class="absolute inset-3 rounded-full bg-white flex items-center justify-center">
+                                            <span class="text-xl font-semibold text-slate-900">{{ number_format($successRate, 1) }}%</span>
+                                        </div>
+                                    </div>
+                                    <div class="space-y-2 text-sm text-slate-600">
+                                        <div class="flex items-center gap-2">
+                                            <span class="h-2 w-2 rounded-full bg-slate-900"></span>
+                                            Successful simulations
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="h-2 w-2 rounded-full bg-slate-300"></span>
+                                            Other outcomes
+                                        </div>
+                                        <div class="text-xs text-slate-400">{{ number_format($successCount) }} success from {{ number_format($totalSimulations) }}</div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 rounded-2xl bg-slate-50 px-4 py-3 text-xs text-slate-600">
+                                    Pending simulations: {{ number_format($pendingCount) }} ({{ $pendingRate }}%)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h2 class="text-lg font-semibold text-slate-900">Simulation Trends</h2>
+                                    <span class="text-xs text-slate-400">7 days</span>
+                                </div>
+                                @php
+                                    $max = max(array_merge($chartData['transactions'] ?? [0], $chartData['success'] ?? [0], [1]));
+                                @endphp
+                                <div class="h-56 flex items-end justify-between gap-2">
+                                    @forelse($chartData['transactions'] as $index => $value)
+                                        @php
+                                            $success = $chartData['success'][$index] ?? 0;
+                                            $heightSuccess = $max > 0 ? round(($success / $max) * 100) : 0;
+                                            $heightTotal = $max > 0 ? round(($value / $max) * 100) : 0;
+                                        @endphp
+                                        <div class="flex-1 flex flex-col justify-end space-y-2">
+                                            <div class="bg-gradient-to-t from-slate-900 to-slate-700 rounded-t-lg" style="height: {{ $heightSuccess }}%"></div>
+                                            <div class="bg-gradient-to-t from-slate-200 to-slate-100 rounded-t-lg" style="height: {{ $heightTotal }}%"></div>
+                                        </div>
+                                    @empty
+                                        <div class="text-center text-sm text-slate-500 w-full">No data yet.</div>
+                                    @endforelse
+                                </div>
+                                <div class="flex items-center justify-center space-x-6 mt-6">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-slate-200 rounded-full mr-2"></div>
+                                        <span class="text-xs text-slate-600">Total</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-slate-800 rounded-full mr-2"></div>
+                                        <span class="text-xs text-slate-600">Successful</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h2 class="text-lg font-semibold text-slate-900">Method Distribution</h2>
+                                    <span class="text-xs text-slate-400">All time</span>
+                                </div>
+                                @if(count($distribution) === 0)
+                                    <p class="text-sm text-slate-500">No payment method data yet.</p>
+                                @else
+                                    <div class="space-y-4">
+                                        @foreach($distribution as $item)
+                                            @php
+                                                $name = $item['method'] ? ucwords(str_replace('_', ' ', $item['method'])) : 'Unknown';
+                                                $percentage = $item['percentage'] ?? 0;
+                                            @endphp
+                                            <div>
+                                                <div class="flex items-center justify-between mb-2">
+                                                    <span class="text-sm font-medium text-slate-700">{{ $name }}</span>
+                                                    <span class="text-sm font-semibold text-slate-900">{{ number_format($percentage, 2) }}%</span>
+                                                </div>
+                                                <div class="w-full bg-slate-100 rounded-full h-2">
+                                                    <div class="bg-slate-900 h-2 rounded-full" style="width: {{ $percentage }}%"></div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                            <div class="flex items-center justify-between mb-4">
+                                <h2 class="text-lg font-semibold text-slate-900">Recent Activity</h2>
+                                <span class="text-xs text-slate-500">Last 5 transactions</span>
+                            </div>
+                            <div class="space-y-4">
+                                @forelse($recentTransactions as $transaction)
+                                    @php
+                                        $status = $transaction->status ?? 'pending';
+                                        $statusClass = match($status) {
+                                            'settlement', 'processing' => 'bg-emerald-100 text-emerald-700',
+                                            'pending' => 'bg-amber-100 text-amber-700',
+                                            'failed', 'cancelled', 'expired' => 'bg-rose-100 text-rose-700',
+                                            'refund', 'refunded' => 'bg-slate-200 text-slate-700',
+                                            default => 'bg-slate-100 text-slate-600',
+                                        };
+                                        $method = $transaction->payment_method ? ucwords(str_replace('_', ' ', $transaction->payment_method)) : '-';
+                                    @endphp
+                                    <div class="flex flex-col gap-3 rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                                        <div>
+                                            <p class="text-sm font-semibold text-slate-900">{{ $transaction->transaction_id }}</p>
+                                            <p class="text-xs text-slate-500">{{ $transaction->customer_name }} · {{ $method }}</p>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="text-sm font-semibold text-slate-900">Rp {{ number_format($transaction->amount, 0, ',', '.') }}</p>
+                                            <div class="flex items-center justify-end gap-2">
+                                                <span class="inline-flex items-center rounded-full px-2 py-1 text-[10px] font-semibold uppercase {{ $statusClass }}">{{ $status }}</span>
+                                                <span class="text-xs text-slate-500">{{ $transaction->created_at->format('d M Y H:i') }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-6 text-sm text-slate-500">No recent transactions yet.</div>
+                                @endforelse
+                            </div>
+                            <div class="mt-4 text-right">
+                                <a href="{{ route('dashboard.transactions.index') }}" class="text-sm font-semibold text-slate-700 hover:text-slate-900">View all transactions</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-4 space-y-6">
+                        <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-semibold text-slate-700">Simulated Volume</p>
+                                <span class="text-xs text-slate-400">All time</span>
+                            </div>
+                            <div class="mt-4 text-3xl font-semibold text-slate-900">Rp {{ number_format($totalAmount, 0, ',', '.') }}</div>
+                            <div class="mt-2 text-sm {{ $amountChange >= 0 ? 'text-emerald-600' : 'text-rose-600' }}">
+                                {{ $amountChange >= 0 ? '+' : '' }}{{ number_format($amountChange, 2) }}% from last period
+                            </div>
+                            <div class="mt-4 h-2 w-full rounded-full bg-slate-100">
+                                <div class="h-2 rounded-full bg-slate-900" style="width: {{ $successRing }}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-semibold text-slate-700">Pending Transactions</p>
+                                <span class="text-xs text-slate-400">{{ number_format($pendingCount) }} pending</span>
+                            </div>
+                            <div class="mt-4 text-3xl font-semibold text-slate-900">Rp {{ number_format($pendingAmount, 0, ',', '.') }}</div>
+                            <div class="mt-4 h-2 w-full rounded-full bg-slate-100">
+                                <div class="h-2 rounded-full bg-amber-400" style="width: {{ $pendingRate }}%"></div>
+                            </div>
+                            <div class="mt-2 text-xs text-slate-400">{{ $pendingRate }}% of total simulations</div>
+                        </div>
+
+                        <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-semibold text-slate-700">Total Clients</p>
+                                <span class="text-xs text-slate-400">Active accounts</span>
+                            </div>
+                            <div class="mt-4 text-3xl font-semibold text-slate-900">{{ number_format($activeClients) }}</div>
+                            <div class="mt-2 text-xs text-slate-400">Registered client workspaces</div>
+                        </div>
+
+                        <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-semibold text-slate-700">Pending Upgrades</p>
+                                <span class="text-xs text-slate-400">Needs review</span>
+                            </div>
+                            <div class="mt-4 text-3xl font-semibold text-slate-900">{{ number_format($pendingUpgradeCount) }}</div>
+                            <a href="{{ route('dashboard.upgrade-requests.index') }}" class="mt-4 inline-flex items-center rounded-full bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 transition">
+                                Review Requests
+                            </a>
+                        </div>
+
+                        <div class="rounded-[28px] bg-slate-900 p-6 text-white shadow-sm">
+                            <p class="text-sm uppercase tracking-widest text-white/60">Quick Actions</p>
+                            <div class="mt-4 space-y-3">
+                                <a href="{{ route('dashboard.transactions.index') }}" class="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-white hover:bg-white/20 transition">
+                                    View Transactions
+                                </a>
+                                <a href="{{ route('dashboard.customers.index') }}" class="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-white hover:bg-white/20 transition">
+                                    Manage Clients
+                                </a>
+                                <a href="{{ route('docs.index') }}" class="flex items-center justify-between rounded-xl bg-white/10 px-4 py-3 text-sm font-semibold text-white hover:bg-white/20 transition">
+                                    Documentation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
