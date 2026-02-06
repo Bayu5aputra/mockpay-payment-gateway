@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Models\PaymentAttempt;
 use App\Models\Transaction;
-use App\Models\Merchant;
+use App\Models\TransactionOverride;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class TransactionService
 {
@@ -150,6 +154,123 @@ class TransactionService
         $query->orderBy($orderBy, $orderDirection);
 
         return $query->paginate($perPage);
+    }
+
+    public function recordPaymentAttempt(Transaction $transaction, ?int $userId, string $source, array $payload = []): PaymentAttempt
+    {
+        return PaymentAttempt::create([
+            'transaction_id' => $transaction->id,
+            'user_id' => $userId,
+            'source' => $source,
+            'payload' => $payload,
+        ]);
+    }
+
+    public function manualOverride(
+        Transaction $transaction,
+        User $user,
+        string $action,
+        ?string $reason,
+        ?float $refundAmount = null
+    ): Transaction {
+        if ($transaction->user_id !== $user->id) {
+            throw new \Exception('Unauthorized transaction access');
+        }
+
+        $action = strtolower(trim($action));
+        $statusMap = [
+            'approve' => Transaction::STATUS_SETTLEMENT,
+            'success' => Transaction::STATUS_SETTLEMENT,
+            'reject' => Transaction::STATUS_FAILED,
+            'failed' => Transaction::STATUS_FAILED,
+            'expire' => Transaction::STATUS_EXPIRED,
+            'expired' => Transaction::STATUS_EXPIRED,
+            'cancel' => Transaction::STATUS_CANCELLED,
+            'cancelled' => Transaction::STATUS_CANCELLED,
+            'refund' => Transaction::STATUS_REFUNDED,
+            'partial_refund' => Transaction::STATUS_PARTIAL_REFUND,
+        ];
+
+        if (!array_key_exists($action, $statusMap)) {
+            throw new \Exception('Invalid manual override action');
+        }
+
+        $targetStatus = $statusMap[$action];
+        $currentStatus = $transaction->status;
+
+        $allowedTransitions = [
+            Transaction::STATUS_PENDING => [
+                Transaction::STATUS_SETTLEMENT,
+                Transaction::STATUS_FAILED,
+                Transaction::STATUS_EXPIRED,
+                Transaction::STATUS_CANCELLED,
+            ],
+            Transaction::STATUS_SETTLEMENT => [
+                Transaction::STATUS_REFUNDED,
+                Transaction::STATUS_PARTIAL_REFUND,
+            ],
+        ];
+
+        if (!isset($allowedTransitions[$currentStatus]) || !in_array($targetStatus, $allowedTransitions[$currentStatus], true)) {
+            throw new \Exception('Invalid status transition');
+        }
+
+        if ($targetStatus === Transaction::STATUS_PARTIAL_REFUND) {
+            if ($refundAmount === null || $refundAmount <= 0 || $refundAmount >= (float) $transaction->total_amount) {
+                throw new \Exception('Invalid refund amount');
+            }
+        }
+
+        DB::beginTransaction();
+        try {
+            $updates = [
+                'status' => $targetStatus,
+                'failure_reason' => $targetStatus === Transaction::STATUS_SETTLEMENT ? null : $reason,
+            ];
+
+            if ($targetStatus === Transaction::STATUS_SETTLEMENT) {
+                $updates['paid_at'] = now();
+                $updates['settled_at'] = now();
+            }
+
+            if (in_array($targetStatus, [Transaction::STATUS_REFUNDED, Transaction::STATUS_PARTIAL_REFUND], true)) {
+                $updates['refunded_at'] = now();
+                $updates['refund_amount'] = $targetStatus === Transaction::STATUS_PARTIAL_REFUND
+                    ? $refundAmount
+                    : $transaction->total_amount;
+            }
+
+            if ($targetStatus === Transaction::STATUS_EXPIRED) {
+                $updates['cancelled_at'] = null;
+            }
+
+            if ($targetStatus === Transaction::STATUS_CANCELLED) {
+                $updates['cancelled_at'] = now();
+            }
+
+            $transaction->update($updates);
+
+            $snapshot = $this->buildOverrideSnapshot($transaction->fresh());
+
+            TransactionOverride::create([
+                'transaction_id' => $transaction->id,
+                'user_id' => $user->id,
+                'previous_status' => $currentStatus,
+                'new_status' => $targetStatus,
+                'reason' => $reason,
+                'refund_amount' => $updates['refund_amount'] ?? null,
+                'payload_snapshot' => $snapshot,
+            ]);
+
+            app(WebhookService::class)->sendWebhook($transaction->fresh());
+
+            DB::commit();
+
+            return $transaction->fresh();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
     }
 
     /**
@@ -402,36 +523,7 @@ class TransactionService
      */
     public function expireOldTransactions(): int
     {
-        $expiredCount = 0;
-        $transactions = Transaction::expired()->get();
-
-        foreach ($transactions as $transaction) {
-            try {
-                DB::beginTransaction();
-
-                $transaction->update([
-                    'status' => Transaction::STATUS_EXPIRED,
-                ]);
-
-                // Trigger webhook
-                app(WebhookService::class)->sendWebhook($transaction);
-
-                DB::commit();
-                $expiredCount++;
-
-                Log::info('Transaction expired', [
-                    'transaction_id' => $transaction->transaction_id,
-                ]);
-            } catch (\Exception $e) {
-                DB::rollBack();
-                Log::error('Failed to expire transaction', [
-                    'transaction_id' => $transaction->transaction_id,
-                    'error' => $e->getMessage(),
-                ]);
-            }
-        }
-
-        return $expiredCount;
+        return 0;
     }
 
     /**
@@ -517,5 +609,98 @@ class TransactionService
         fclose($file);
 
         return $filepath;
+    }
+
+    public function exportToCsvForUser(int $userId, array $filters = []): string
+    {
+        $query = Transaction::where('user_id', $userId)
+            ->with(['virtualAccount', 'ewallet', 'creditCard', 'qris', 'retail']);
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['start_date'])) {
+            $query->whereDate('created_at', '>=', $filters['start_date']);
+        }
+
+        if (!empty($filters['end_date'])) {
+            $query->whereDate('created_at', '<=', $filters['end_date']);
+        }
+
+        $transactions = $query->orderBy('created_at', 'desc')->get();
+
+        $filename = 'transactions_' . now()->format('YmdHis') . '.csv';
+        $filepath = storage_path('app/exports/' . $filename);
+
+        if (!file_exists(storage_path('app/exports'))) {
+            mkdir(storage_path('app/exports'), 0755, true);
+        }
+
+        $file = fopen($filepath, 'w');
+
+        fputcsv($file, [
+            'Transaction ID',
+            'Order ID',
+            'Payment Method',
+            'Payment Channel',
+            'Amount',
+            'Fee',
+            'Total Amount',
+            'Status',
+            'Customer Name',
+            'Customer Email',
+            'Created At',
+            'Paid At',
+        ]);
+
+        foreach ($transactions as $transaction) {
+            fputcsv($file, [
+                $transaction->transaction_id,
+                $transaction->order_id,
+                $transaction->payment_method,
+                $transaction->payment_channel,
+                $transaction->amount,
+                $transaction->fee,
+                $transaction->total_amount,
+                $transaction->status,
+                $transaction->customer_name,
+                $transaction->customer_email,
+                $transaction->created_at->format('Y-m-d H:i:s'),
+                $transaction->paid_at ? $transaction->paid_at->format('Y-m-d H:i:s') : '',
+            ]);
+        }
+
+        fclose($file);
+
+        return $filepath;
+    }
+
+    protected function buildOverrideSnapshot(Transaction $transaction): array
+    {
+        $paymentDetail = $transaction->getPaymentDetail();
+
+        return [
+            'transaction' => [
+                'transaction_id' => $transaction->transaction_id,
+                'order_id' => $transaction->order_id,
+                'status' => $transaction->status,
+                'amount' => $transaction->amount,
+                'fee' => $transaction->fee,
+                'total_amount' => $transaction->total_amount,
+                'currency' => $transaction->currency,
+                'payment_method' => $transaction->payment_method,
+                'payment_channel' => $transaction->payment_channel,
+                'customer_name' => $transaction->customer_name,
+                'customer_email' => $transaction->customer_email,
+                'customer_phone' => $transaction->customer_phone,
+                'metadata' => $transaction->metadata,
+                'created_at' => $transaction->created_at?->toIso8601String(),
+                'paid_at' => $transaction->paid_at?->toIso8601String(),
+                'settled_at' => $transaction->settled_at?->toIso8601String(),
+                'refunded_at' => $transaction->refunded_at?->toIso8601String(),
+            ],
+            'payment_detail' => $paymentDetail?->toArray(),
+        ];
     }
 }

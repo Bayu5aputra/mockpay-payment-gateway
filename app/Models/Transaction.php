@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,6 +42,7 @@ class Transaction extends Model
         'settled_at',
         'cancelled_at',
         'refunded_at',
+        'refund_amount',
         'failure_reason',
         'metadata',
     ];
@@ -54,6 +57,7 @@ class Transaction extends Model
         'settled_at' => 'datetime',
         'cancelled_at' => 'datetime',
         'refunded_at' => 'datetime',
+        'refund_amount' => 'decimal:2',
         'metadata' => 'array',
     ];
 
@@ -65,6 +69,7 @@ class Transaction extends Model
     const STATUS_EXPIRED = 'expired';
     const STATUS_FAILED = 'failed';
     const STATUS_REFUNDED = 'refunded';
+    const STATUS_PARTIAL_REFUND = 'partial_refund';
 
     // Payment method constants
     const METHOD_BANK_TRANSFER = 'bank_transfer';
@@ -118,7 +123,7 @@ class Transaction extends Model
      */
     public function qris(): HasOne
     {
-        return $this->hasOne(Qris::class);
+        return $this->hasOne(QrisPayment::class);
     }
 
     /**
@@ -126,7 +131,7 @@ class Transaction extends Model
      */
     public function retail(): HasOne
     {
-        return $this->hasOne(Retail::class);
+        return $this->hasOne(RetailPayment::class);
     }
 
     /**
@@ -135,6 +140,16 @@ class Transaction extends Model
     public function webhookLogs(): HasMany
     {
         return $this->hasMany(WebhookLog::class);
+    }
+
+    public function overrides(): HasMany
+    {
+        return $this->hasMany(TransactionOverride::class);
+    }
+
+    public function paymentAttempts(): HasMany
+    {
+        return $this->hasMany(PaymentAttempt::class);
     }
 
     /**
@@ -264,7 +279,7 @@ class Transaction extends Model
             self::STATUS_CANCELLED => 'secondary',
             self::STATUS_EXPIRED => 'dark',
             self::STATUS_FAILED => 'danger',
-            self::STATUS_REFUNDED => 'primary',
+            self::STATUS_REFUNDED, self::STATUS_PARTIAL_REFUND => 'primary',
             default => 'secondary',
         };
     }

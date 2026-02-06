@@ -19,9 +19,38 @@
                         <form method="POST" action="{{ route('client.settings.webhooks.update') }}" class="space-y-4">
                             @csrf
                             @method('PUT')
+                            @php
+                                $availableEvents = [
+                                    'transaction.pending' => 'Transaction Pending',
+                                    'transaction.processing' => 'Transaction Processing',
+                                    'transaction.success' => 'Transaction Success',
+                                    'transaction.failed' => 'Transaction Failed',
+                                    'transaction.cancelled' => 'Transaction Cancelled',
+                                    'transaction.expired' => 'Transaction Expired',
+                                    'transaction.refunded' => 'Transaction Refunded',
+                                ];
+                                $selectedEvents = $user->webhook_events ?: array_keys($availableEvents);
+                            @endphp
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-2">Webhook URL</label>
                                 <input type="url" name="webhook_url" value="{{ $user->webhook_url }}" class="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900/20" placeholder="https://example.com/webhook">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">Webhook Events</label>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    @foreach($availableEvents as $eventKey => $eventLabel)
+                                        <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700">
+                                            <input
+                                                type="checkbox"
+                                                name="webhook_events[]"
+                                                value="{{ $eventKey }}"
+                                                class="rounded border-slate-300 text-slate-900 focus:ring-slate-900/20"
+                                                {{ in_array($eventKey, $selectedEvents, true) ? 'checked' : '' }}
+                                            >
+                                            <span>{{ $eventLabel }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
                             </div>
                             <button class="px-6 py-2 rounded-2xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition">
                                 Save Webhook

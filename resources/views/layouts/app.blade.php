@@ -130,13 +130,18 @@
                                         <span class="text-lg font-semibold tracking-wide">MockPay</span>
                                     </div>
                                     <nav class="hidden lg:flex items-center gap-5 text-sm text-white/70">
-                                        <a href="{{ route('dashboard.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.index') ? 'text-white' : '' }}">Dashboard</a>
-                                        <a href="{{ route('dashboard.transactions.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.transactions.*') ? 'text-white' : '' }}">Transactions</a>
-                                        <a href="{{ route('dashboard.customers.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.customers.*') ? 'text-white' : '' }}">Customers</a>
-                                        <a href="{{ route('dashboard.settlements.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.settlements.*') ? 'text-white' : '' }}">Settlements</a>
-                                        <a href="{{ route('dashboard.upgrade-requests.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.upgrade-requests.*') ? 'text-white' : '' }}">Upgrade Requests</a>
-                                        <a href="{{ route('dashboard.invitations.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.invitations.*') ? 'text-white' : '' }}">Invitations</a>
-                                        <a href="{{ route('dashboard.settings.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.settings.*') ? 'text-white' : '' }}">Settings</a>
+                                        @auth('merchant')
+                                            <a href="{{ route('dashboard.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.index') ? 'text-white' : '' }}">Dashboard</a>
+                                            <a href="{{ route('dashboard.upgrade-requests.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.upgrade-requests.*') ? 'text-white' : '' }}">Upgrade Requests</a>
+                                        @endauth
+                                        @auth('web')
+                                            <a href="{{ route('client.dashboard') }}" class="hover:text-white {{ request()->routeIs('client.dashboard') ? 'text-white' : '' }}">Dashboard</a>
+                                            <a href="{{ route('client.transactions.index') }}" class="hover:text-white {{ request()->routeIs('client.transactions.*') ? 'text-white' : '' }}">Transactions</a>
+                                            <a href="{{ route('client.api-keys.index') }}" class="hover:text-white {{ request()->routeIs('client.api-keys.*') ? 'text-white' : '' }}">API Keys</a>
+                                            <a href="{{ route('client.developers.index') }}" class="hover:text-white {{ request()->routeIs('client.developers.*') ? 'text-white' : '' }}">Developer Tools</a>
+                                            <a href="{{ route('client.settings.webhooks') }}" class="hover:text-white {{ request()->routeIs('client.settings.*') ? 'text-white' : '' }}">Settings</a>
+                                            <a href="{{ route('client.upgrade-requests.index') }}" class="hover:text-white {{ request()->routeIs('client.upgrade-requests.*') ? 'text-white' : '' }}">Upgrade</a>
+                                        @endauth
                                     </nav>
                                 </div>
 
@@ -174,12 +179,19 @@
                                         </button>
 
                                         <div x-show="open" @click.away="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-lg py-1 z-20 border border-gray-200">
-                                            <a href="{{ route('dashboard.merchant.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
-                                                Profile
-                                            </a>
-                                            <a href="{{ route('dashboard.settings.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
-                                                Settings
-                                            </a>
+                                            @auth('merchant')
+                                                <a href="{{ route('dashboard.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                                                    Dashboard
+                                                </a>
+                                            @endauth
+                                            @auth('web')
+                                                <a href="{{ route('client.settings.profile') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                                                    Profile
+                                                </a>
+                                                <a href="{{ route('client.settings.webhooks') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                                                    Settings
+                                                </a>
+                                            @endauth
                                             <div class="border-t border-gray-200 my-1"></div>
                                             <form method="POST" action="{{ route('logout') }}">
                                                 @csrf

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
+use App\Models\QrisPayment;
 use App\Services\TransactionService;
-use App\Models\Qris;
 use Illuminate\Http\Request;
 
 class QrisController extends Controller
@@ -85,7 +87,7 @@ class QrisController extends Controller
 
         try {
             // Find QRIS by QR string
-            $qris = Qris::where('qr_string', $request->qr_string)->first();
+            $qris = QrisPayment::where('qr_string', $request->qr_string)->first();
 
             if (!$qris) {
                 return response()->json([
@@ -106,13 +108,20 @@ class QrisController extends Controller
 
             // Check if transaction is expired
             if ($transaction->isExpired()) {
-                $this->transactionService->cancelTransaction($transaction, 'Transaction expired');
-
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Transaction has expired'
                 ], 400);
             }
+
+            $this->transactionService->recordPaymentAttempt(
+                $transaction,
+                $transaction->user_id,
+                'guest_qris_scan',
+                [
+                    'qr_string' => $request->qr_string,
+                ]
+            );
 
             return response()->json([
                 'status' => 'success',
@@ -146,7 +155,7 @@ class QrisController extends Controller
 
         try {
             // Find QRIS by QR string
-            $qris = Qris::where('qr_string', $request->qr_string)->first();
+            $qris = QrisPayment::where('qr_string', $request->qr_string)->first();
 
             if (!$qris) {
                 return response()->json([
@@ -167,42 +176,32 @@ class QrisController extends Controller
 
             // Check if transaction is expired
             if ($transaction->isExpired()) {
-                $this->transactionService->cancelTransaction($transaction, 'Transaction expired');
-
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Transaction has expired'
                 ], 400);
             }
 
-            if ($request->action === 'approve') {
-                // Process payment - update to settlement
-                $this->transactionService->settleTransaction($transaction);
+            $this->transactionService->recordPaymentAttempt(
+                $transaction,
+                $transaction->user_id,
+                'guest_qris_pay',
+                [
+                    'action' => $request->action,
+                    'qr_string' => $request->qr_string,
+                ]
+            );
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Payment successful',
-                    'data' => [
-                        'transaction_id' => $transaction->transaction_id,
-                        'order_id' => $transaction->order_id,
-                        'amount' => $transaction->amount,
-                        'status' => $transaction->fresh()->status,
-                        'paid_at' => $transaction->fresh()->paid_at->toIso8601String(),
-                    ]
-                ]);
-            } else {
-                // Reject payment
-                $this->transactionService->cancelTransaction($transaction, 'Payment rejected by user');
-
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Payment rejected',
-                    'data' => [
-                        'transaction_id' => $transaction->transaction_id,
-                        'status' => $transaction->fresh()->status,
-                    ]
-                ], 400);
-            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Payment attempt recorded. Awaiting tenant manual override.',
+                'data' => [
+                    'transaction_id' => $transaction->transaction_id,
+                    'order_id' => $transaction->order_id,
+                    'amount' => $transaction->amount,
+                    'status' => $transaction->fresh()->status,
+                ]
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([

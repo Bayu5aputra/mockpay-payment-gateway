@@ -94,6 +94,7 @@
                                     <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-[0.2em]">Status</th>
                                     <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-[0.2em]">Response</th>
                                     <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-[0.2em]">Attempts</th>
+                                    <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-[0.2em]">Action</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-200">
@@ -122,10 +123,22 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
                                             {{ $log->attempt_count ?? 1 }}
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">
+                                            @if($log->canRetry())
+                                                <form method="POST" action="{{ route('client.developers.logs.retry', $log) }}">
+                                                    @csrf
+                                                    <button class="rounded-xl border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition">
+                                                        Retry
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <span class="text-xs text-slate-400">-</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" class="px-6 py-6 text-center text-slate-500">No webhook logs yet.</td>
+                                        <td colspan="7" class="px-6 py-6 text-center text-slate-500">No webhook logs yet.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

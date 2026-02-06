@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
-use App\Services\TransactionService;
 use App\Models\VirtualAccount;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -68,9 +70,6 @@ class VirtualAccountController extends Controller
 
             // Check if transaction is expired
             if ($transaction->isExpired()) {
-                // Update to expired
-                $this->transactionService->cancelTransaction($transaction, 'Transaction expired');
-
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Transaction has expired'
@@ -85,18 +84,25 @@ class VirtualAccountController extends Controller
                 ], 400);
             }
 
-            // Process payment - update to settlement
-            $this->transactionService->settleTransaction($transaction);
+            // Record guest payment attempt only
+            $this->transactionService->recordPaymentAttempt(
+                $transaction,
+                $transaction->user_id,
+                'guest_va',
+                [
+                    'va_number' => $request->va_number,
+                    'amount' => $request->amount,
+                ]
+            );
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Payment successful',
+                'message' => 'Payment attempt recorded. Awaiting tenant manual override.',
                 'data' => [
                     'transaction_id' => $transaction->transaction_id,
                     'order_id' => $transaction->order_id,
                     'amount' => $transaction->amount,
                     'status' => $transaction->fresh()->status,
-                    'paid_at' => $transaction->fresh()->paid_at->toIso8601String(),
                 ]
             ]);
 

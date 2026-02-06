@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
@@ -55,6 +57,8 @@ class TransactionController extends Controller
                     'paid_at' => $transaction->paid_at ? $transaction->paid_at->toIso8601String() : null,
                     'settled_at' => $transaction->settled_at ? $transaction->settled_at->toIso8601String() : null,
                     'cancelled_at' => $transaction->cancelled_at ? $transaction->cancelled_at->toIso8601String() : null,
+                    'refunded_at' => $transaction->refunded_at ? $transaction->refunded_at->toIso8601String() : null,
+                    'refund_amount' => $transaction->refund_amount,
                     'created_at' => $transaction->created_at->toIso8601String(),
                     'updated_at' => $transaction->updated_at->toIso8601String(),
                 ]
@@ -133,15 +137,10 @@ class TransactionController extends Controller
                 ], 404);
             }
 
-            if (!$transaction->canBeCancelled()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Transaction cannot be cancelled'
-                ], 400);
-            }
-
-            $this->transactionService->cancelTransaction(
+            $this->transactionService->manualOverride(
                 $transaction,
+                $client,
+                'cancel',
                 $request->reason ?? 'Cancelled by client'
             );
 
@@ -151,7 +150,7 @@ class TransactionController extends Controller
                 'data' => [
                     'transaction_id' => $transaction->transaction_id,
                     'status' => $transaction->fresh()->status,
-                    'cancelled_at' => $transaction->fresh()->cancelled_at->toIso8601String(),
+                    'cancelled_at' => $transaction->fresh()->cancelled_at?->toIso8601String(),
                 ]
             ]);
 

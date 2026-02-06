@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Merchant;
 use App\Services\PaymentService;
 use App\Services\TransactionService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -57,7 +58,6 @@ class PaymentController extends Controller
 
         try {
             $client = $request->user();
-            $merchant = Merchant::query()->first();
 
             $dailyLimit = $client->dailyTransactionLimit();
             if ($dailyLimit !== null) {
@@ -90,15 +90,8 @@ class PaymentController extends Controller
                 ], 409);
             }
 
-            if (!$merchant) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Merchant configuration not found'
-                ], 500);
-            }
-
             $paymentData = [
-                'merchant_id' => $merchant?->id,
+                'merchant_id' => null,
                 'user_id' => $client->id,
                 'order_id' => $request->order_id,
                 'amount' => $request->amount,

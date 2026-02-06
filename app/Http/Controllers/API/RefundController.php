@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
@@ -25,6 +27,7 @@ class RefundController extends Controller
         $validator = Validator::make($request->all(), [
             'transaction_id' => 'required|string',
             'reason' => 'nullable|string|max:500',
+            'refund_amount' => 'nullable|numeric|min:0.01',
         ]);
 
         if ($validator->fails()) {
@@ -46,16 +49,13 @@ class RefundController extends Controller
                 ], 404);
             }
 
-            if (!$transaction->canBeRefunded()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Transaction cannot be refunded. Only settled transactions can be refunded.'
-                ], 400);
-            }
-
-            $this->transactionService->refundTransaction(
+            $action = $request->refund_amount ? 'partial_refund' : 'refund';
+            $this->transactionService->manualOverride(
                 $transaction,
-                $request->reason ?? 'Refund requested by merchant'
+                $client,
+                $action,
+                $request->reason ?? 'Refund requested by merchant',
+                $request->refund_amount
             );
 
             return response()->json([
@@ -66,7 +66,8 @@ class RefundController extends Controller
                     'order_id' => $transaction->order_id,
                     'amount' => $transaction->amount,
                     'status' => $transaction->fresh()->status,
-                    'refunded_at' => $transaction->fresh()->refunded_at->toIso8601String(),
+                    'refunded_at' => $transaction->fresh()->refunded_at?->toIso8601String(),
+                    'refund_amount' => $transaction->fresh()->refund_amount,
                 ]
             ]);
 

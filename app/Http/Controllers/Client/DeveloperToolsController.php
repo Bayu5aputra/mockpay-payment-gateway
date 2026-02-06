@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClientApiKey;
 use App\Models\Transaction;
 use App\Models\WebhookLog;
+use App\Services\WebhookService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -79,5 +82,25 @@ class DeveloperToolsController extends Controller
         ];
 
         return view('client.developers.logs', compact('logs', 'stats'));
+    }
+
+    public function retryWebhook(WebhookLog $webhookLog, WebhookService $webhookService)
+    {
+        $user = Auth::user();
+
+        if ($webhookLog->user_id !== $user->id) {
+            return redirect()->back()->with('error', 'Webhook log not found');
+        }
+
+        if (!$webhookLog->canRetry()) {
+            return redirect()->back()->with('error', 'Webhook cannot be retried');
+        }
+
+        try {
+            $webhookService->retryWebhook($webhookLog);
+            return redirect()->back()->with('success', 'Webhook retry queued');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to retry webhook: ' . $e->getMessage());
+        }
     }
 }

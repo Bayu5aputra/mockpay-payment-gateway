@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
-use App\Models\Transaction;
-use App\Models\PaymentChannel;
-use App\Models\VirtualAccount;
-use App\Models\Ewallet;
-use App\Models\QrisPayment;
-use App\Models\CreditCard;
-use App\Models\RetailPayment;
 use App\Events\TransactionCreated;
+use App\Models\CreditCard;
+use App\Models\Ewallet;
+use App\Models\PaymentChannel;
+use App\Models\QrisPayment;
+use App\Models\RetailPayment;
+use App\Models\Transaction;
+use App\Models\VirtualAccount;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -35,7 +37,8 @@ class PaymentService
 
         try {
             // Find payment channel
-            $paymentChannel = PaymentChannel::where('code', $data['payment_method'])
+            $channelCode = $data['payment_channel'] ?? $data['payment_method'];
+            $paymentChannel = PaymentChannel::where('code', $channelCode)
                 ->where('is_active', true)
                 ->firstOrFail();
 
@@ -62,6 +65,7 @@ class PaymentService
                 'status' => 'pending',
                 'payment_type' => $paymentChannel->type,
                 'payment_method' => $data['payment_method'],
+                'payment_channel' => $data['payment_channel'] ?? null,
                 'customer_name' => $data['customer_name'],
                 'customer_email' => $data['customer_email'],
                 'customer_phone' => $data['customer_phone'] ?? null,
@@ -330,7 +334,7 @@ class PaymentService
             '5411', // MCC
             '360', // Currency IDR
             $amount,
-            $transaction->merchant->company_name ?? 'MOCKPAY',
+            $transaction->user?->name ?? 'MOCKPAY',
             strtoupper(substr(md5($transaction->transaction_id), 0, 4))
         );
     }
@@ -350,11 +354,11 @@ class PaymentService
                     $updates['paid_at'] = now();
                     $updates['settled_at'] = now();
                     break;
-                case 'cancel':
+                case 'cancelled':
                     $updates['cancelled_at'] = now();
                     break;
-                case 'expire':
-                    // Already expired
+                case 'expired':
+                    $updates['cancelled_at'] = null;
                     break;
             }
 

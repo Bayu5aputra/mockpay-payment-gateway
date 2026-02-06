@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -53,7 +55,7 @@ class QrisPayment extends Model
             '5411', // MCC
             '360', // Currency IDR
             number_format($this->transaction->amount, 2, '', ''),
-            $this->transaction->merchant->company_name,
+            $this->transaction->user?->name ?? 'MOCKPAY',
             $this->generateChecksum()
         );
     }

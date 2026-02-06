@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Jobs\SendWebhookJob;
 use App\Models\Transaction;
 use App\Models\WebhookLog;
-use App\Jobs\SendWebhookJob;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -28,6 +30,12 @@ class WebhookService
             return false;
         }
 
+        $eventName = $this->getEventName($transaction->status);
+        $enabledEvents = $transaction->user?->webhook_events;
+        if (is_array($enabledEvents) && !in_array($eventName, $enabledEvents, true)) {
+            return false;
+        }
+
         if ($async) {
             // Send via queue
             SendWebhookJob::dispatch($transaction)->delay(now()->addSeconds(2));
@@ -44,6 +52,7 @@ class WebhookService
     public function deliverWebhook(Transaction $transaction): bool
     {
         $webhookUrl = $transaction->user?->webhook_url;
+        $eventName = $this->getEventName($transaction->status);
         $payload = $this->preparePayload($transaction);
         $signature = $this->signatureService->generateSignature($payload, $transaction->user?->webhook_secret ?? '');
 
@@ -58,7 +67,7 @@ class WebhookService
             'merchant_id' => $transaction->merchant_id,
             'user_id' => $transaction->user_id,
             'transaction_id' => $transaction->id,
-            'event' => $this->getEventName($transaction->status),
+            'event' => $eventName,
             'webhook_url' => $webhookUrl,
             'payload' => $payload,
             'headers' => $headers,
@@ -119,6 +128,9 @@ class WebhookService
                 'customer_email' => $transaction->customer_email,
                 'paid_at' => $transaction->paid_at?->toIso8601String(),
                 'settled_at' => $transaction->settled_at?->toIso8601String(),
+                'refunded_at' => $transaction->refunded_at?->toIso8601String(),
+                'refund_amount' => $transaction->refund_amount,
+                'failure_reason' => $transaction->failure_reason,
                 'created_at' => $transaction->created_at->toIso8601String(),
                 'updated_at' => $transaction->updated_at->toIso8601String(),
             ],
@@ -134,10 +146,10 @@ class WebhookService
             'pending' => 'transaction.pending',
             'processing' => 'transaction.processing',
             'settlement' => 'transaction.success',
-            'cancel' => 'transaction.cancelled',
-            'expire' => 'transaction.expired',
+            'cancelled' => 'transaction.cancelled',
+            'expired' => 'transaction.expired',
             'failed' => 'transaction.failed',
-            'refund', 'partial_refund' => 'transaction.refunded',
+            'refunded', 'partial_refund' => 'transaction.refunded',
             default => 'transaction.updated',
         };
     }
@@ -162,6 +174,16 @@ class WebhookService
         }
 
         $transaction = $webhookLog->transaction;
+        if (!$transaction) {
+            return false;
+        }
+
+        $eventName = $this->getEventName($transaction->status);
+        $enabledEvents = $transaction->user?->webhook_events;
+        if (is_array($enabledEvents) && !in_array($eventName, $enabledEvents, true)) {
+            return false;
+        }
+
         $webhookLog->increment('attempt_count');
 
         return $this->deliverWebhook($transaction);

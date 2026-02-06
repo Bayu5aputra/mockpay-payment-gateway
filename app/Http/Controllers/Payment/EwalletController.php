@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
-use App\Services\TransactionService;
 use App\Models\Ewallet;
+use App\Services\TransactionService;
 use Illuminate\Http\Request;
 
 class EwalletController extends Controller
@@ -110,8 +112,6 @@ class EwalletController extends Controller
 
             // Check if transaction is expired
             if ($transaction->isExpired()) {
-                $this->transactionService->cancelTransaction($transaction, 'Transaction expired');
-
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Transaction has expired'
@@ -121,34 +121,26 @@ class EwalletController extends Controller
             // Simulate payment action
             $action = $request->action ?? 'approve'; // approve or reject
 
-            if ($action === 'approve') {
-                // Process payment - update to settlement
-                $this->transactionService->settleTransaction($transaction);
+            $this->transactionService->recordPaymentAttempt(
+                $transaction,
+                $transaction->user_id,
+                'guest_ewallet',
+                [
+                    'action' => $action,
+                    'provider' => $transaction->ewallet?->provider,
+                ]
+            );
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => 'Payment successful',
-                    'data' => [
-                        'transaction_id' => $transaction->transaction_id,
-                        'order_id' => $transaction->order_id,
-                        'amount' => $transaction->amount,
-                        'status' => $transaction->fresh()->status,
-                        'paid_at' => $transaction->fresh()->paid_at->toIso8601String(),
-                    ]
-                ]);
-            } else {
-                // Reject payment
-                $this->transactionService->cancelTransaction($transaction, 'Payment rejected by user');
-
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Payment rejected',
-                    'data' => [
-                        'transaction_id' => $transaction->transaction_id,
-                        'status' => $transaction->fresh()->status,
-                    ]
-                ], 400);
-            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Payment attempt recorded. Awaiting tenant manual override.',
+                'data' => [
+                    'transaction_id' => $transaction->transaction_id,
+                    'order_id' => $transaction->order_id,
+                    'amount' => $transaction->amount,
+                    'status' => $transaction->fresh()->status,
+                ]
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([

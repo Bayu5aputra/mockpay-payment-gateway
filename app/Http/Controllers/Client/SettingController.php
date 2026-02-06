@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
@@ -44,10 +46,13 @@ class SettingController extends Controller
     {
         $request->validate([
             'webhook_url' => 'nullable|url|max:500',
+            'webhook_events' => 'nullable|array',
+            'webhook_events.*' => 'string|max:100',
         ]);
 
         $user = Auth::user();
         $user->webhook_url = $request->webhook_url;
+        $user->webhook_events = $request->has('webhook_events') ? $request->webhook_events : [];
         $user->save();
 
         return redirect()->back()->with('success', 'Webhook settings updated successfully.');

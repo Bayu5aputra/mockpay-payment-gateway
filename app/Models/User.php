@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -28,6 +30,7 @@ class User extends Authenticatable
         'provider',
         'webhook_url',
         'webhook_secret',
+        'webhook_events',
     ];
 
     /**
@@ -51,6 +54,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'plan_ends_at' => 'datetime',
+            'webhook_events' => 'array',
         ];
     }
 
@@ -107,6 +111,16 @@ class User extends Authenticatable
     public function apiKeys()
     {
         return $this->hasMany(ClientApiKey::class);
+    }
+
+    public function webhookLogs()
+    {
+        return $this->hasMany(WebhookLog::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 
     public function isPro(): bool

@@ -5,12 +5,7 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\DocumentationController;
 use App\Http\Controllers\Public\PricingController;
 use App\Http\Controllers\Public\ContactController;
-use App\Http\Controllers\Dashboard\DashboardController;
-use App\Http\Controllers\Dashboard\TransactionController as DashboardTransactionController;
-use App\Http\Controllers\Dashboard\SettlementController as DashboardSettlementController;
-use App\Http\Controllers\Dashboard\SettingController;
-use App\Http\Controllers\Dashboard\MerchantController;
-use App\Http\Controllers\Dashboard\CustomerController as DashboardCustomerController;
+use App\Http\Controllers\Dashboard\PlatformDashboardController;
 use App\Http\Controllers\Dashboard\UpgradeRequestController as DashboardUpgradeRequestController;
 use App\Http\Controllers\Payment\CheckoutController;
 use App\Http\Controllers\Payment\VirtualAccountController;
@@ -25,7 +20,7 @@ use App\Http\Controllers\Client\UpgradeRequestController as ClientUpgradeRequest
 use App\Http\Controllers\Client\ApiKeyController as ClientApiKeyController;
 use App\Http\Controllers\Client\DeveloperToolsController as ClientDeveloperToolsController;
 use App\Http\Controllers\Client\SettingController as ClientSettingController;
-use App\Http\Controllers\Dashboard\MerchantInvitationController as DashboardMerchantInvitationController;
+use App\Http\Controllers\Client\TransactionController as ClientTransactionController;
 use App\Http\Controllers\MerchantInvitationController;
 
 // ==========================================
@@ -138,6 +133,7 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
     Route::prefix('developers')->name('developers.')->group(function () {
         Route::get('/', [ClientDeveloperToolsController::class, 'index'])->name('index');
         Route::get('/logs', [ClientDeveloperToolsController::class, 'logs'])->name('logs');
+        Route::post('/logs/{webhookLog}/retry', [ClientDeveloperToolsController::class, 'retryWebhook'])->name('logs.retry');
         Route::get('/api-docs', function () {
             return view('dashboard.developers.api-docs');
         })->name('api-docs');
@@ -182,6 +178,17 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
         Route::post('/{id}/regenerate', [ClientApiKeyController::class, 'rotate'])->name('regenerate');
     });
 
+    Route::prefix('transactions')->name('transactions.')->group(function () {
+        Route::get('/', [ClientTransactionController::class, 'index'])->name('index');
+        Route::get('/{transaction_id}', [ClientTransactionController::class, 'show'])->name('show');
+        Route::post('/{transaction_id}/override', [ClientTransactionController::class, 'override'])->name('override');
+        Route::post('/{transaction_id}/resend-webhook', [ClientTransactionController::class, 'resendWebhook'])->name('resend-webhook');
+        Route::get('/{transaction_id}/download/json', [ClientTransactionController::class, 'downloadJson'])->name('download.json');
+        Route::get('/{transaction_id}/download/pdf', [ClientTransactionController::class, 'downloadPdf'])->name('download.pdf');
+        Route::get('/export/csv', [ClientTransactionController::class, 'export'])->name('export');
+        Route::get('/webhooks/export/csv', [ClientTransactionController::class, 'exportWebhookLogs'])->name('webhooks.export');
+    });
+
     Route::prefix('settings')->name('settings.')->group(function () {
         Route::get('/profile', [ClientSettingController::class, 'profile'])->name('profile');
         Route::put('/profile', [ClientSettingController::class, 'updateProfile'])->name('profile.update');
@@ -205,36 +212,9 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
 // MERCHANT DASHBOARD ROUTES (PROTECTED)
 // ==========================================
 
-Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {    
-    // Dashboard Home
-    Route::get('/', [DashboardController::class, 'index'])->name('index');
-    Route::get('/profile', function () {
-        return redirect()->route('dashboard.merchant.profile');
-    })->name('profile.redirect');
+Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
+    Route::get('/', [PlatformDashboardController::class, 'index'])->name('index');
 
-    // ==========================================
-    // TRANSACTIONS
-    // ==========================================
-    Route::prefix('transactions')->name('transactions.')->group(function () {
-        Route::get('/', [DashboardTransactionController::class, 'index'])->name('index');
-        Route::get('/{transaction_id}', [DashboardTransactionController::class, 'show'])->name('show');
-        Route::post('/{transaction_id}/cancel', [DashboardTransactionController::class, 'cancel'])->name('cancel');
-        Route::post('/{transaction_id}/refund', [DashboardTransactionController::class, 'refund'])->name('refund');
-        Route::post('/{transaction_id}/resend-webhook', [DashboardTransactionController::class, 'resendWebhook'])->name('resend-webhook');
-        Route::get('/export/csv', [DashboardTransactionController::class, 'export'])->name('export');
-    });
-
-    // ==========================================
-    // CUSTOMERS
-    // ==========================================
-    Route::prefix('customers')->name('customers.')->group(function () {
-        Route::get('/', [DashboardCustomerController::class, 'index'])->name('index');
-        Route::get('/{customer}', [DashboardCustomerController::class, 'show'])->name('show');
-    });
-
-    // ==========================================
-    // UPGRADE REQUESTS
-    // ==========================================
     Route::prefix('upgrade-requests')->name('upgrade-requests.')->group(function () {
         Route::get('/', [DashboardUpgradeRequestController::class, 'index'])->name('index');
         Route::get('/{upgradeRequest}', [DashboardUpgradeRequestController::class, 'show'])->name('show');
@@ -242,73 +222,6 @@ Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('das
         Route::post('/{upgradeRequest}/reject', [DashboardUpgradeRequestController::class, 'reject'])->name('reject');
         Route::get('/{upgradeRequest}/proof', [DashboardUpgradeRequestController::class, 'downloadProof'])->name('proof');
     });
-
-    // ==========================================
-    // SETTLEMENTS
-    // ==========================================
-    Route::prefix('settlements')->name('settlements.')->group(function () {
-        // Bank Account Settings
-        Route::get('/bank-account', [DashboardSettlementController::class, 'bankAccount'])->name('bank-account');
-        Route::put('/bank-account', [DashboardSettlementController::class, 'updateBankAccount'])->name('bank-account.update');
-        
-        // Withdrawal Request
-        Route::post('/withdraw', [DashboardSettlementController::class, 'requestWithdrawal'])->name('withdraw');
-
-        Route::get('/', [DashboardSettlementController::class, 'index'])->name('index');
-        Route::get('/{date}', [DashboardSettlementController::class, 'show'])->name('show');
-        Route::get('/{date}/download', [DashboardSettlementController::class, 'download'])->name('download');
-    });
-
-    // ==========================================
-    // SETTINGS
-    // ==========================================
-    Route::prefix('settings')->name('settings.')->group(function () {
-        // General Settings
-        Route::get('/', [SettingController::class, 'index'])->name('index');
-        
-        // Webhook Settings
-        Route::get('/webhooks', [SettingController::class, 'webhooks'])->name('webhooks');
-        Route::put('/webhooks', [SettingController::class, 'updateWebhooks'])->name('webhooks.update');
-        Route::post('/webhooks/generate-secret', [SettingController::class, 'generateWebhookSecret'])->name('webhooks.generate-secret');
-        Route::post('/webhooks/test', [SettingController::class, 'testWebhook'])->name('webhooks.test');
-        
-        // Payment Methods Settings
-        Route::get('/payment-methods', [SettingController::class, 'paymentMethods'])->name('payment-methods');
-        Route::put('/payment-methods', [SettingController::class, 'updatePaymentMethods'])->name('payment-methods.update');
-        
-        // Notification Settings
-        Route::get('/notifications', [SettingController::class, 'notifications'])->name('notifications');
-        Route::put('/notifications', [SettingController::class, 'updateNotifications'])->name('notifications.update');
-    });
-
-    // ==========================================
-    // MERCHANT PROFILE
-    // ==========================================
-    Route::prefix('merchant')->name('merchant.')->group(function () {
-        Route::get('/profile', [MerchantController::class, 'profile'])->name('profile');
-        Route::put('/profile', [MerchantController::class, 'updateProfile'])->name('profile.update');
-        Route::put('/password', [MerchantController::class, 'updatePassword'])->name('password.update');
-    });
-
-    // ==========================================
-    // MERCHANT INVITATIONS
-    // ==========================================
-    Route::prefix('invitations')->name('invitations.')->group(function () {
-        Route::get('/', [DashboardMerchantInvitationController::class, 'index'])->name('index');
-        Route::post('/', [DashboardMerchantInvitationController::class, 'store'])->name('store');
-        Route::delete('/{invitation}', [DashboardMerchantInvitationController::class, 'destroy'])->name('destroy');
-        Route::post('/{invitation}/delete', [DashboardMerchantInvitationController::class, 'destroy'])->name('delete');
-        Route::post('/test-email', [DashboardMerchantInvitationController::class, 'testEmail'])->name('test-email');
-    });
-
-    // ==========================================
-    // COMPANY INFORMATION
-    // ==========================================
-    Route::prefix('merchant')->name('merchant.')->group(function () {
-        Route::get('/company', [MerchantController::class, 'company'])->name('company');
-        Route::put('/company', [MerchantController::class, 'updateCompany'])->name('company.update');
-    });
-
 });
 
 // ==========================================

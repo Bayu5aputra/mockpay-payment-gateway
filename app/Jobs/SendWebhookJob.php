@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Jobs;
 
 use App\Models\Transaction;
@@ -48,16 +50,7 @@ class SendWebhookJob implements ShouldQueue
                 'attempt' => $this->attempt,
             ]);
 
-            // Check if client has webhook URL
-            if (!$this->transaction->user?->webhook_url) {
-                Log::info('Webhook not sent - no webhook URL configured', [
-                    'transaction_id' => $this->transaction->transaction_id,
-                ]);
-                return;
-            }
-
-            // Send webhook
-            $result = $webhookService->deliverWebhook($this->transaction);
+            $result = $webhookService->sendWebhook($this->transaction, false);
 
             if ($result) {
                 Log::info('Webhook sent successfully', [

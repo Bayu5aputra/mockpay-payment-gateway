@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
+use App\Models\RetailPayment;
 use App\Services\TransactionService;
-use App\Models\Retail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -79,7 +81,7 @@ class RetailController extends Controller
     public function checkPaymentCode($paymentCode)
     {
         try {
-            $retail = Retail::where('payment_code', $paymentCode)->first();
+            $retail = RetailPayment::where('payment_code', $paymentCode)->first();
 
             if (!$retail) {
                 return response()->json([
@@ -132,7 +134,7 @@ class RetailController extends Controller
         }
 
         try {
-            $retail = Retail::where('payment_code', $request->payment_code)->first();
+            $retail = RetailPayment::where('payment_code', $request->payment_code)->first();
 
             if (!$retail) {
                 return response()->json([
@@ -153,8 +155,6 @@ class RetailController extends Controller
 
             // Check if transaction is expired
             if ($transaction->isExpired()) {
-                $this->transactionService->cancelTransaction($transaction, 'Transaction expired');
-
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Transaction has expired'
@@ -169,18 +169,25 @@ class RetailController extends Controller
                 ], 400);
             }
 
-            // Process payment - update to settlement
-            $this->transactionService->settleTransaction($transaction);
+            // Record guest payment attempt only
+            $this->transactionService->recordPaymentAttempt(
+                $transaction,
+                $transaction->user_id,
+                'guest_retail',
+                [
+                    'payment_code' => $request->payment_code,
+                    'amount' => $request->amount,
+                ]
+            );
 
             return response()->json([
                 'status' => 'success',
-                'message' => 'Payment successful',
+                'message' => 'Payment attempt recorded. Awaiting tenant manual override.',
                 'data' => [
                     'transaction_id' => $transaction->transaction_id,
                     'order_id' => $transaction->order_id,
                     'amount' => $transaction->amount,
                     'status' => $transaction->fresh()->status,
-                    'paid_at' => $transaction->fresh()->paid_at->toIso8601String(),
                 ]
             ]);
 
