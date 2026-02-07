@@ -15,7 +15,7 @@
             @endif
             <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #e5e7eb; padding-bottom:16px;">
                 <div style="display:flex; align-items:center; gap:12px;">
-                    <img src="{{ asset('logo.png') }}" alt="MockPay" style="width:52px; height:52px; object-fit:contain;">
+                    <img src="{{ rtrim(config('app.url'), '/') . '/logo.png' }}" alt="MockPay" style="width:52px; height:52px; object-fit:contain;">
                     <div>
                         <div style="font-size:20px; font-weight:700;">MockPay</div>
                         <div style="font-size:12px; color:#64748b;">Dummy payment gateway for developers</div>

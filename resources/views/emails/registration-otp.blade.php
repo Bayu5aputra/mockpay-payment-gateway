@@ -9,7 +9,7 @@
     <div style="max-width:640px; margin:0 auto; padding:24px;">
         <div style="background:#ffffff; border-radius:12px; padding:24px; box-shadow:0 10px 25px rgba(15, 23, 42, 0.08);">
             <div style="display:flex; align-items:center; gap:12px; border-bottom:1px solid #e2e8f0; padding-bottom:12px;">
-                <img src="{{ asset('logo.png') }}" alt="MockPay" style="width:40px; height:40px; object-fit:contain;">
+                <img src="{{ rtrim(config('app.url'), '/') . '/logo.png' }}" alt="MockPay" style="width:40px; height:40px; object-fit:contain;">
                 <div>
                     <div style="font-size:18px; font-weight:700;">MockPay</div>
                     <div style="font-size:12px; color:#64748b;">Verifikasi Registrasi</div>

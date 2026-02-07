@@ -224,22 +224,15 @@ html {
     scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-    width: 10px;
+/* Hide scrollbars for a seamless look */
+* {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-::-webkit-scrollbar-track {
-    background: #0b0b0c;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #0b0b0c;
-    border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #111827;
+*::-webkit-scrollbar {
+    width: 0;
+    height: 0;
 }
 
 /* Animation Delays */
