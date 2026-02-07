@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
@@ -27,17 +29,18 @@ class CheckoutController extends Controller
             abort(404, 'Transaction not found');
         }
 
-        // Check if transaction is expired
         if ($transaction->isExpired()) {
             return view('payment.expired', compact('transaction'));
         }
 
-        // Check if transaction is already paid
         if ($transaction->isPaid()) {
             return view('payment.success', compact('transaction'));
         }
 
-        // Check if transaction is cancelled
+        if (in_array($transaction->status, ['failed', 'refunded', 'partial_refund'], true)) {
+            return view('payment.failed', compact('transaction'));
+        }
+
         if ($transaction->status === 'cancelled') {
             return view('payment.cancelled', compact('transaction'));
         }

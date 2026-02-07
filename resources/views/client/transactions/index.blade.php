@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
-                    <form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <form method="GET" class="grid grid-cols-1 md:grid-cols-6 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Status</label>
                             <select name="status" class="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700">
@@ -39,6 +39,10 @@
                             </select>
                         </div>
                         <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Payment Channel</label>
+                            <input type="text" name="payment_channel" value="{{ request('payment_channel') }}" class="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700" placeholder="bca_va / gopay / qris">
+                        </div>
+                        <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Start Date</label>
                             <input type="date" name="start_date" value="{{ request('start_date') }}" class="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700">
                         </div>
@@ -46,7 +50,11 @@
                             <label class="block text-sm font-medium text-slate-700 mb-2">End Date</label>
                             <input type="date" name="end_date" value="{{ request('end_date') }}" class="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700">
                         </div>
-                        <div class="md:col-span-4 flex flex-wrap items-center gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Search</label>
+                            <input type="text" name="search" value="{{ request('search') }}" class="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700" placeholder="Order ID / Transaction ID">
+                        </div>
+                        <div class="md:col-span-6 flex flex-wrap items-center gap-3">
                             <button class="rounded-2xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white">Apply Filters</button>
                             <a href="{{ route('client.transactions.export', request()->query()) }}" class="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Export CSV</a>
                             <a href="{{ route('client.transactions.webhooks.export', request()->query()) }}" class="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Export Webhook Logs</a>

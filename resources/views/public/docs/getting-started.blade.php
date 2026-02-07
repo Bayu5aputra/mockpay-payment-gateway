@@ -6,80 +6,121 @@
 @php
     $baseUrl = rtrim(config('app.url'), '/');
 @endphp
-<div class="bg-white rounded-lg shadow-md p-8">
+<div class="rounded-[28px] bg-white/90 border border-white/70 shadow-[0_25px_60px_rgba(15,23,42,0.08)] p-8 lg:p-10">
     <nav class="mb-8">
         <ol class="flex items-center space-x-2 text-sm">
-            <li><a href="{{ route('docs.index') }}" class="text-blue-600 hover:text-blue-800">Documentation</a></li>
-            <li class="text-gray-500">/</li>
-            <li class="text-gray-900 font-semibold">Getting Started</li>
+            <li><a href="{{ route('docs.index') }}" class="text-slate-500 hover:text-slate-900">Documentation</a></li>
+            <li class="text-slate-400">/</li>
+            <li class="text-slate-900 font-semibold">Getting Started</li>
         </ol>
     </nav>
 
-    <h1 class="text-4xl font-bold text-gray-900 mb-6">Getting Started</h1>
+    <p class="text-xs uppercase tracking-[0.35em] text-slate-500 mb-4">Introduction</p>
+    <h1 class="text-4xl lg:text-5xl font-semibold text-slate-900 mb-6">Getting Started</h1>
 
     <section id="introduction" class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Introduction</h2>
-        <p class="text-gray-700 mb-4">
-            MockPay is a SaaS payment gateway simulation platform designed for developers to test payment integrations without connecting to real payment processors.
-            Each client account is isolated (multi-tenant), so your data and transactions are separate from other users.
+        <p class="text-base text-slate-600 mb-4">
+            MockPay is a SaaS payment gateway simulation platform designed specifically for developers and QA teams to test payment integrations without connecting to production payment processors.
         </p>
-        <div class="bg-blue-50 border-l-4 border-blue-600 p-4 mb-6">
-            <p class="text-blue-900">
-                <strong>Note:</strong> MockPay is for testing and development only. Do not use it for production transactions.
-            </p>
+        <p class="text-base text-slate-600 mb-4">
+            Each client account operates in complete isolation (multi-tenant architecture), ensuring your transactions, API keys, and webhook configurations remain private and separate from other users.
+        </p>
+        <div class="rounded-[22px] bg-amber-50 border border-amber-200 p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-amber-500 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-amber-900 mb-1">Development Environment Only</h3>
+                    <p class="text-sm text-amber-800">MockPay is intended exclusively for testing and development purposes. Do not use MockPay for production transactions or real financial operations.</p>
+                </div>
+            </div>
         </div>
     </section>
 
     <section id="local-setup" class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Run Locally</h2>
-        <p class="text-gray-700 mb-4">
-            Use this section if you want to run MockPay on your local machine for testing and integration.
+        <p class="text-xs uppercase tracking-[0.35em] text-slate-500 mb-4">Self-Hosted Installation</p>
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">Local Development Setup</h2>
+        <p class="text-base text-slate-600 mb-4">
+            If you prefer to run MockPay on your local machine for development and testing purposes, follow these installation steps:
         </p>
-        <div class="bg-gray-900 text-gray-100 rounded-lg p-6 mb-6 overflow-x-auto">
-            <pre><code>composer install
+        <div class="rounded-[22px] bg-slate-900 text-slate-100 p-6 mb-6 overflow-x-auto">
+            <pre class="text-sm font-mono"><code># Clone and install dependencies
+composer install
 copy .env.example .env
 
-# SQLite quick setup
+# Database setup (SQLite)
 mkdir -Force database
 New-Item -ItemType File -Path database\database.sqlite
 
+# Application configuration
 php artisan key:generate
 php artisan migrate
+
+# Frontend assets
 npm install
 npm run build
 
-# Start the app
+# Start development server
 php artisan serve</code></pre>
         </div>
-        <div class="bg-blue-50 border-l-4 border-blue-600 p-4">
-            <p class="text-blue-900">
-                <strong>Tip:</strong> Set <code class="bg-blue-100 px-2 py-1 rounded text-sm">APP_URL</code> in <code class="bg-blue-100 px-2 py-1 rounded text-sm">.env</code> to match your local address, for example <code class="bg-blue-100 px-2 py-1 rounded text-sm">http://127.0.0.1:8000</code>.
-            </p>
+        <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-slate-900 mb-1">Environment Configuration</h3>
+                    <p class="text-sm text-slate-600">Ensure <code class="bg-slate-200 px-2 py-0.5 rounded text-xs font-mono">APP_URL</code> in your <code class="bg-slate-200 px-2 py-0.5 rounded text-xs font-mono">.env</code> file matches your local server address (e.g., <code class="bg-slate-200 px-2 py-0.5 rounded text-xs font-mono">http://127.0.0.1:8000</code>).</p>
+                </div>
+            </div>
         </div>
     </section>
 
     <section id="quick-start" class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Quick Start</h2>
+        <p class="text-xs uppercase tracking-[0.35em] text-slate-500 mb-4">Integration Guide</p>
+        <h2 class="text-2xl font-semibold text-slate-900 mb-6">Quick Start</h2>
 
-        <h3 class="text-xl font-semibold text-gray-900 mb-3">1. Create an Account</h3>
-        <p class="text-gray-700 mb-4">
-            Register for a free account at <a href="{{ route('register') }}" class="text-blue-600 hover:underline">{{ route('register') }}</a>
-        </p>
+        <div class="space-y-8">
+            <div class="flex gap-6">
+                <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-semibold flex-shrink-0">1</div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Create an Account</h3>
+                    <p class="text-base text-slate-600">
+                        Register for a free client account at <a href="{{ route('register') }}" class="text-slate-900 font-medium underline hover:text-slate-700">{{ route('register') }}</a>
+                    </p>
+                </div>
+            </div>
 
-        <h3 class="text-xl font-semibold text-gray-900 mb-3">2. Generate API Keys</h3>
-        <p class="text-gray-700 mb-4">
-            Once logged in, navigate to the Client Dashboard and generate your API keys:
-        </p>
-        <ol class="list-decimal list-inside space-y-2 mb-6 ml-4">
-            <li class="text-gray-700">Go to Client Dashboard > API Keys</li>
-            <li class="text-gray-700">Click "Generate New Key"</li>
-            <li class="text-gray-700">Copy your Server Key (starts with <code class="bg-gray-100 px-2 py-1 rounded text-sm">sandbox_sk_</code>)</li>
-            <li class="text-gray-700">Keep it secure - treat it like a password</li>
-        </ol>
+            <div class="flex gap-6">
+                <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-semibold flex-shrink-0">2</div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Generate API Keys</h3>
+                    <p class="text-base text-slate-600 mb-4">
+                        After logging in, navigate to the Client Dashboard to generate your API credentials:
+                    </p>
+                    <ol class="list-decimal list-inside space-y-2 text-sm text-slate-600 ml-4">
+                        <li>Navigate to <strong>Client Dashboard → API Keys</strong></li>
+                        <li>Click <strong>"Generate New Key"</strong></li>
+                        <li>Copy your Server Key (prefixed with <code class="bg-slate-100 px-2 py-0.5 rounded text-xs font-mono">sandbox_sk_</code>)</li>
+                        <li>Store the key securely — treat it as a password</li>
+                    </ol>
+                </div>
+            </div>
 
-        <h3 class="text-xl font-semibold text-gray-900 mb-3">3. Make Your First API Call</h3>
-        <div class="bg-gray-900 text-gray-100 rounded-lg p-6 mb-6 overflow-x-auto">
-            <pre><code>curl -X POST {{ $baseUrl }}/api/v1/payment/create \
+            <div class="flex gap-6">
+                <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-semibold flex-shrink-0">3</div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Create Your First Transaction</h3>
+                    <p class="text-base text-slate-600 mb-4">
+                        Make an API request to create a payment transaction:
+                    </p>
+                    <div class="rounded-[22px] bg-slate-900 text-slate-100 p-6 overflow-x-auto">
+                        <pre class="text-sm font-mono"><code>curl -X POST {{ $baseUrl }}/api/v1/payment/create \
   -H "Authorization: Bearer sandbox_sk_test_xxxxxxxxxx" \
   -H "Content-Type: application/json" \
   -d '{
@@ -93,14 +134,19 @@ php artisan serve</code></pre>
         "phone": "081234567890"
     }
 }'</code></pre>
-        </div>
+                    </div>
+                </div>
+            </div>
 
-        <h3 class="text-xl font-semibold text-gray-900 mb-3">4. Handle the Response</h3>
-        <p class="text-gray-700 mb-4">
-            The API will return a response with payment details:
-        </p>
-        <div class="bg-gray-900 text-gray-100 rounded-lg p-6 mb-6 overflow-x-auto">
-            <pre><code>{
+            <div class="flex gap-6">
+                <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-semibold flex-shrink-0">4</div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Handle the Response</h3>
+                    <p class="text-base text-slate-600 mb-4">
+                        The API returns a structured response containing payment details:
+                    </p>
+                    <div class="rounded-[22px] bg-slate-900 text-slate-100 p-6 overflow-x-auto">
+                        <pre class="text-sm font-mono"><code>{
     "success": true,
     "data": {
         "transaction_id": "TRX-xxxxx",
@@ -112,90 +158,156 @@ php artisan serve</code></pre>
         "expires_at": "2026-01-30T23:59:59Z"
     }
 }</code></pre>
-        </div>
+                    </div>
+                </div>
+            </div>
 
-        <h3 class="text-xl font-semibold text-gray-900 mb-3">5. Test Payment</h3>
-        <p class="text-gray-700 mb-4">
-            Direct your customer to the <code class="bg-gray-100 px-2 py-1 rounded text-sm">payment_url</code> to complete the payment.
-            Use our simulation tools to test different payment scenarios.
-        </p>
+            <div class="flex gap-6">
+                <div class="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center font-semibold flex-shrink-0">5</div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-2">Simulate Payment Outcome</h3>
+                    <p class="text-base text-slate-600 mb-4">
+                        Direct your customer to the <code class="bg-slate-100 px-2 py-0.5 rounded text-xs font-mono">payment_url</code> for the hosted payment page, or use the <strong>Manual Override</strong> feature in your Client Dashboard to control the transaction outcome directly.
+                    </p>
+                    <div class="rounded-[22px] bg-emerald-50 border border-emerald-200 p-4">
+                        <p class="text-sm text-emerald-800">
+                            <strong>Pro Tip:</strong> Use Manual Override to test success, failure, expiration, and refund scenarios without waiting for actual payment flows.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <section id="guest-client" class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Guest vs Client</h2>
+        <p class="text-xs uppercase tracking-[0.35em] text-slate-500 mb-4">Access Levels</p>
+        <h2 class="text-2xl font-semibold text-slate-900 mb-6">Guest vs Client</h2>
         <div class="grid md:grid-cols-2 gap-6">
-            <div class="border border-gray-200 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Guest (No Login)</h3>
-                <ul class="list-disc list-inside space-y-2 text-gray-700">
-                    <li>Browse documentation at <code class="bg-gray-100 px-2 py-1 rounded text-sm">/docs</code></li>
-                    <li>Use payment simulators at <code class="bg-gray-100 px-2 py-1 rounded text-sm">/payment/simulate/*</code></li>
-                    <li>Check API health at <code class="bg-gray-100 px-2 py-1 rounded text-sm">/api/health</code></li>
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-6">
+                <h3 class="text-base font-semibold text-slate-900 mb-4 flex items-center">
+                    <div class="w-8 h-8 rounded-lg bg-slate-300 flex items-center justify-center mr-3">
+                        <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    Guest (No Authentication)
+                </h3>
+                <ul class="space-y-2 text-sm text-slate-600">
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Browse documentation at <code class="bg-slate-200 px-1 py-0.5 rounded text-xs">/docs</code>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Access payment simulators
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Check API health status
+                    </li>
                 </ul>
             </div>
-            <div class="border border-gray-200 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Client (Login Required)</h3>
-                <ul class="list-disc list-inside space-y-2 text-gray-700">
-                    <li>Create and manage API keys</li>
-                    <li>Access developer tools and logs</li>
-                    <li>Call authenticated endpoints under <code class="bg-gray-100 px-2 py-1 rounded text-sm">/api/v1</code></li>
-                    <li>Control your own simulation outcomes</li>
-                    <li>Configure your own webhook endpoints</li>
+            <div class="rounded-[22px] border border-slate-200 bg-white p-6">
+                <h3 class="text-base font-semibold text-slate-900 mb-4 flex items-center">
+                    <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center mr-3">
+                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    Client (Authenticated)
+                </h3>
+                <ul class="space-y-2 text-sm text-slate-600">
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Generate and manage API keys
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Create and manage transactions
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Configure webhook endpoints
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Manual override transaction outcomes
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <svg class="w-4 h-4 text-emerald-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Download transaction reports (JSON/PDF/CSV)
+                    </li>
                 </ul>
             </div>
-        </div>
-    </section>
-
-    <section id="merchant-role" class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Merchant (Admin) Role</h2>
-        <div class="border border-gray-200 rounded-lg p-6">
-            <p class="text-gray-700 mb-4">
-                Merchant accounts are platform administrators. They manage user/client accounts, approve plan upgrades,
-                and monitor overall platform usage. They do not control client simulation outcomes.
-            </p>
         </div>
     </section>
 
     <section id="api-keys" class="mb-12">
-        <h2 class="text-2xl font-bold text-gray-900 mb-4">Understanding API Keys</h2>
+        <p class="text-xs uppercase tracking-[0.35em] text-slate-500 mb-4">Security</p>
+        <h2 class="text-2xl font-semibold text-slate-900 mb-6">Understanding API Keys</h2>
 
         <div class="grid md:grid-cols-2 gap-6 mb-6">
-            <div class="border border-gray-200 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Server Key</h3>
-                <p class="text-sm text-gray-600 mb-2"><code class="bg-gray-100 px-2 py-1 rounded">sandbox_sk_test_...</code></p>
-                <p class="text-gray-700">
-                    Used for server-side API calls. Keep this secret and never expose it in client-side code.
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-6">
+                <h3 class="text-base font-semibold text-slate-900 mb-2">Server Key</h3>
+                <p class="text-xs text-slate-500 mb-3 font-mono bg-slate-200 inline-block px-2 py-1 rounded">sandbox_sk_test_...</p>
+                <p class="text-sm text-slate-600">
+                    Used for server-side API calls. This key must be kept confidential and should never be exposed in client-side code or version control.
                 </p>
             </div>
-            <div class="border border-gray-200 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Client Key</h3>
-                <p class="text-sm text-gray-600 mb-2"><code class="bg-gray-100 px-2 py-1 rounded">sandbox_pk_test_...</code></p>
-                <p class="text-gray-700">
-                    Used for client-side integrations. Safe to expose in frontend applications.
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-6">
+                <h3 class="text-base font-semibold text-slate-900 mb-2">Client Key</h3>
+                <p class="text-xs text-slate-500 mb-3 font-mono bg-slate-200 inline-block px-2 py-1 rounded">sandbox_pk_test_...</p>
+                <p class="text-sm text-slate-600">
+                    Used for client-side integrations. This key can be safely exposed in frontend applications as it has limited permissions.
                 </p>
             </div>
         </div>
 
-        <div class="bg-yellow-50 border-l-4 border-yellow-600 p-4">
-            <p class="text-yellow-900">
-                <strong>Security Warning:</strong> Never commit API keys to version control. Use environment variables instead.
-            </p>
+        <div class="rounded-[22px] bg-red-50 border border-red-200 p-6">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-red-500 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-red-900 mb-1">Security Best Practice</h3>
+                    <p class="text-sm text-red-800">Never commit API keys to version control. Store credentials in environment variables or secure secret management systems.</p>
+                </div>
+            </div>
         </div>
     </section>
 
-    <section class="border-t border-gray-200 pt-8">
-        <h2 class="text-2xl font-bold text-gray-900 mb-6">Next Steps</h2>
+    <section class="border-t border-slate-200 pt-8">
+        <p class="text-xs uppercase tracking-[0.35em] text-slate-500 mb-6">Continue Learning</p>
         <div class="grid md:grid-cols-3 gap-4">
-            <a href="{{ route('docs.authentication') }}" class="border border-gray-200 rounded-lg p-4 hover:border-blue-600 hover:shadow-md transition-all">
-                <h3 class="font-semibold text-gray-900 mb-2">Authentication</h3>
-                <p class="text-sm text-gray-600">Learn how to authenticate API requests</p>
+            <a href="{{ route('docs.authentication') }}" class="rounded-[22px] border border-slate-200 bg-white p-5 hover:border-slate-400 hover:shadow-lg transition-all">
+                <h3 class="font-semibold text-slate-900 mb-2">Authentication</h3>
+                <p class="text-sm text-slate-600">Learn about API authentication methods and signature verification.</p>
             </a>
-            <a href="{{ route('docs.api-reference') }}" class="border border-gray-200 rounded-lg p-4 hover:border-blue-600 hover:shadow-md transition-all">
-                <h3 class="font-semibold text-gray-900 mb-2">API Reference</h3>
-                <p class="text-sm text-gray-600">Explore all available endpoints</p>
+            <a href="{{ route('docs.api-reference') }}" class="rounded-[22px] border border-slate-200 bg-white p-5 hover:border-slate-400 hover:shadow-lg transition-all">
+                <h3 class="font-semibold text-slate-900 mb-2">API Reference</h3>
+                <p class="text-sm text-slate-600">Explore all available API endpoints and their parameters.</p>
             </a>
-            <a href="{{ route('docs.examples') }}" class="border border-gray-200 rounded-lg p-4 hover:border-blue-600 hover:shadow-md transition-all">
-                <h3 class="font-semibold text-gray-900 mb-2">Code Examples</h3>
-                <p class="text-sm text-gray-600">See implementation examples</p>
+            <a href="{{ route('docs.examples') }}" class="rounded-[22px] border border-slate-200 bg-white p-5 hover:border-slate-400 hover:shadow-lg transition-all">
+                <h3 class="font-semibold text-slate-900 mb-2">Code Examples</h3>
+                <p class="text-sm text-slate-600">Implementation examples in PHP, Node.js, Python, and cURL.</p>
             </a>
         </div>
     </section>

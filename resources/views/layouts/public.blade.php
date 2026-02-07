@@ -75,22 +75,22 @@
     </style>
 </head>
 
-<body class="font-sans antialiased bg-white text-gray-900">
+<body class="font-sans antialiased bg-[#eae6df] text-slate-900">
     <!-- Navigation -->
-    <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-xl border-b border-white/5 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
-        <div class="h-0.5 w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600"></div>
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#0b0b0c]/95 backdrop-blur-xl border-b border-white/5 shadow-[0_12px_30px_rgba(0,0,0,0.35)]">
+        <div class="h-0.5 w-full bg-slate-800"></div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="{{ route('home') }}" class="flex items-center space-x-3">
                         <div
-                            class="w-11 h-11 bg-gradient-to-br from-cyan-500 to-indigo-600 rounded-xl flex items-center justify-center ring-1 ring-white/10 shadow-[0_10px_30px_rgba(59,130,246,0.35)] nav-jello">
+                            class="w-11 h-11 bg-slate-900 rounded-xl flex items-center justify-center ring-1 ring-white/10 shadow-[0_10px_30px_rgba(15,23,42,0.35)] nav-jello">
                             <img src="{{ asset('logo.png') }}" alt="MockPay" class="w-6 h-6 object-contain">
                         </div>
                         <div class="flex flex-col leading-tight">
                             <span class="text-lg font-semibold text-white tracking-wide">MockPay</span>
-                            <span class="text-xs text-cyan-200/80 uppercase tracking-[0.2em]">Gateway Sandbox</span>
+                            <span class="text-xs text-slate-300 uppercase tracking-[0.2em]">Gateway Sandbox</span>
                         </div>
                     </a>
                 </div>
@@ -98,19 +98,19 @@
                 <!-- Navigation Links -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="{{ route('home') }}"
-                        class="text-sm font-semibold {{ request()->routeIs('home') ? 'text-cyan-200' : 'text-slate-300 hover:text-white' }} transition-colors">
+                        class="text-sm font-semibold {{ request()->routeIs('home') ? 'text-white' : 'text-slate-300 hover:text-white' }} transition-colors">
                         Home
                     </a>
                     <a href="{{ route('docs.index') }}"
-                        class="text-sm font-semibold {{ request()->routeIs('docs.*') ? 'text-cyan-200' : 'text-slate-300 hover:text-white' }} transition-colors">
+                        class="text-sm font-semibold {{ request()->routeIs('docs.*') ? 'text-white' : 'text-slate-300 hover:text-white' }} transition-colors">
                         Documentation
                     </a>
                     <a href="{{ route('pricing') }}"
-                        class="text-sm font-semibold {{ request()->routeIs('pricing') ? 'text-cyan-200' : 'text-slate-300 hover:text-white' }} transition-colors">
+                        class="text-sm font-semibold {{ request()->routeIs('pricing') ? 'text-white' : 'text-slate-300 hover:text-white' }} transition-colors">
                         Pricing
                     </a>
                     <a href="{{ route('contact') }}"
-                        class="text-sm font-semibold {{ request()->routeIs('contact') ? 'text-cyan-200' : 'text-slate-300 hover:text-white' }} transition-colors">
+                        class="text-sm font-semibold {{ request()->routeIs('contact') ? 'text-white' : 'text-slate-300 hover:text-white' }} transition-colors">
                         Contact
                     </a>
                 </div>
@@ -135,7 +135,7 @@
             Sign In
         </a>
         <a href="{{ route('register') }}"
-            class="btn-primary inline-flex items-center px-6 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-700 text-white text-sm font-semibold rounded-xl hover:from-cyan-400 hover:to-blue-600 transition-all duration-200 shadow-lg hover:shadow-xl nav-rubber">
+            class="btn-primary inline-flex items-center px-6 py-2.5 bg-white text-slate-900 text-sm font-semibold rounded-full hover:bg-slate-100 transition-all duration-200 shadow-lg hover:shadow-xl nav-rubber">
             Get Started Free
         </a>
     @endauth
@@ -159,19 +159,19 @@
             class="md:hidden border-t border-gray-800 bg-black">
             <div class="px-4 pt-2 pb-3 space-y-1">
                 <a href="{{ route('home') }}"
-                    class="block px-3 py-2 text-base font-medium {{ request()->routeIs('home') ? 'text-purple-400 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
+                    class="block px-3 py-2 text-base font-medium {{ request()->routeIs('home') ? 'text-white bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
                     Home
                 </a>
                 <a href="{{ route('docs.index') }}"
-                    class="block px-3 py-2 text-base font-medium {{ request()->routeIs('docs.*') ? 'text-purple-400 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
+                    class="block px-3 py-2 text-base font-medium {{ request()->routeIs('docs.*') ? 'text-white bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
                     Documentation
                 </a>
                 <a href="{{ route('pricing') }}"
-                    class="block px-3 py-2 text-base font-medium {{ request()->routeIs('pricing') ? 'text-purple-400 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
+                    class="block px-3 py-2 text-base font-medium {{ request()->routeIs('pricing') ? 'text-white bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
                     Pricing
                 </a>
                 <a href="{{ route('contact') }}"
-                    class="block px-3 py-2 text-base font-medium {{ request()->routeIs('contact') ? 'text-purple-400 bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
+                    class="block px-3 py-2 text-base font-medium {{ request()->routeIs('contact') ? 'text-white bg-gray-900' : 'text-gray-300 hover:text-white hover:bg-gray-900' }} rounded-lg transition-colors">
                     Contact
                 </a>
                 @auth
@@ -185,7 +185,7 @@
                         Sign In
                     </a>
                     <a href="{{ route('register') }}"
-                        class="block px-3 py-2 text-base font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg transition-colors">
+                        class="block px-3 py-2 text-base font-medium text-slate-900 bg-white rounded-lg transition-colors">
                         Get Started Free
                     </a>
                 @endauth
@@ -199,19 +199,19 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300">
+    <footer class="bg-[#0b0b0c] text-slate-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <!-- Brand -->
                 <div class="col-span-1">
                     <div class="flex items-center space-x-3 mb-4">
                         <div
-                            class="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                            class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center">
                             <img src="{{ asset('logo.png') }}" alt="MockPay" class="w-6 h-6 object-contain">
                         </div>
                         <span class="text-xl font-bold text-white">MockPay</span>
                     </div>
-                    <p class="text-sm text-gray-400">
+                    <p class="text-sm text-slate-400">
                         Dummy payment gateway for developers. Test your integrations safely.
                     </p>
                 </div>
@@ -246,24 +246,24 @@
                     <h3 class="text-lg font-semibold text-white mb-4">Legal</h3>
                     <ul class="space-y-2">
                         <li><a href="{{ route('legal.privacy-policy') }}"
-                                class="text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</a>
+                                class="text-slate-400 hover:text-white transition-colors duration-200">Privacy Policy</a>
                         </li>
                         <li><a href="{{ route('legal.terms-of-service') }}"
-                                class="text-gray-400 hover:text-white transition-colors duration-200">Terms of
+                                class="text-slate-400 hover:text-white transition-colors duration-200">Terms of
                                 Service</a></li>
                         <li><a href="{{ route('legal.cookie-policy') }}"
-                                class="text-gray-400 hover:text-white transition-colors duration-200">Cookie Policy</a>
+                                class="text-slate-400 hover:text-white transition-colors duration-200">Cookie Policy</a>
                         </li>
                     </ul>
                 </div>
             </div>
 
-            <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm text-gray-400">
+            <div class="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-sm text-slate-400">
                     © {{ date('Y') }} MockPay. All rights reserved.
                 </p>
                 <div class="flex space-x-6 mt-4 md:mt-0">
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                    <a href="#" class="text-slate-400 hover:text-white transition-colors">
                         <span class="sr-only">GitHub</span>
                         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd"
@@ -271,7 +271,7 @@
                                 clip-rule="evenodd"></path>
                         </svg>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                    <a href="#" class="text-slate-400 hover:text-white transition-colors">
                         <span class="sr-only">Twitter</span>
                         <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
                             <path

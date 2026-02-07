@@ -70,6 +70,11 @@ class LoginRequest extends FormRequest
                 ]);
             }
 
+            // Logout from web guard if previously logged in (prevent dual auth)
+            if (Auth::guard('web')->check()) {
+                Auth::guard('web')->logout();
+            }
+
             // Login as merchant
             Auth::guard('merchant')->login($merchant, $remember);
             RateLimiter::clear($this->throttleKey());
@@ -80,6 +85,11 @@ class LoginRequest extends FormRequest
         $user = User::where('email', $email)->first();
         
         if ($user && Hash::check($password, $user->password)) {
+            // Logout from merchant guard if previously logged in (prevent dual auth)
+            if (Auth::guard('merchant')->check()) {
+                Auth::guard('merchant')->logout();
+            }
+
             // Login as user
             Auth::guard('web')->login($user, $remember);
             RateLimiter::clear($this->throttleKey());

@@ -203,7 +203,7 @@ class PaymentService
             'card_category' => null,
             'bank' => null,
             'authentication_type' => '3ds',
-            'authentication_url' => route('payment.3ds', $transaction->transaction_id),
+            'authentication_url' => route('payment.credit-card.3ds', $transaction->transaction_id),
             'is_authenticated' => false,
             'installment_term' => 0,
             'installment_rate' => 0,
@@ -221,7 +221,7 @@ class PaymentService
         $qris = QrisPayment::create([
             'transaction_id' => $transaction->id,
             'qr_string' => $this->generateQRISString($transaction),
-            'qr_image_url' => route('payment.qris.image', $transaction->transaction_id),
+            'qr_image_url' => route('payment.qris.qr', $transaction->transaction_id),
             'acquirer' => 'MOCKPAY',
             'nmid' => QrisPayment::generateNMID(),
             'terminal_id' => 'MOCK' . str_pad($transaction->id, 6, '0', STR_PAD_LEFT),

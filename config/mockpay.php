@@ -13,6 +13,7 @@ return [
     ],
     'limits' => [
         'free_daily_transactions' => 10,
+        'free_daily_api_requests' => 500,
     ],
     'banks' => [
         [

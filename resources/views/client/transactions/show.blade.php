@@ -68,6 +68,109 @@
                         </div>
 
                         <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                            <h2 class="text-lg font-semibold text-slate-900 mb-4">Timeline</h2>
+                            <div class="space-y-3 text-sm text-slate-700">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-500">Created</span>
+                                    <span class="font-semibold text-slate-900">{{ $transaction->created_at?->format('Y-m-d H:i:s') }}</span>
+                                </div>
+                                @if($transaction->paid_at)
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-slate-500">Paid At</span>
+                                        <span class="font-semibold text-slate-900">{{ $transaction->paid_at->format('Y-m-d H:i:s') }}</span>
+                                    </div>
+                                @endif
+                                @if($transaction->settled_at)
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-slate-500">Settled At</span>
+                                        <span class="font-semibold text-slate-900">{{ $transaction->settled_at->format('Y-m-d H:i:s') }}</span>
+                                    </div>
+                                @endif
+                                @if($transaction->cancelled_at)
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-slate-500">Cancelled At</span>
+                                        <span class="font-semibold text-slate-900">{{ $transaction->cancelled_at->format('Y-m-d H:i:s') }}</span>
+                                    </div>
+                                @endif
+                                @if($transaction->refunded_at)
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-slate-500">Refunded At</span>
+                                        <span class="font-semibold text-slate-900">{{ $transaction->refunded_at->format('Y-m-d H:i:s') }}</span>
+                                    </div>
+                                @endif
+                                @if($transaction->expired_at)
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-slate-500">Expired At</span>
+                                        <span class="font-semibold text-slate-900">{{ $transaction->expired_at->format('Y-m-d H:i:s') }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                            <h2 class="text-lg font-semibold text-slate-900 mb-4">Payment Detail</h2>
+                            @if($paymentDetail)
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-700">
+                                    @if($transaction->payment_method === 'bank_transfer')
+                                        <div>
+                                            <p class="text-xs text-slate-500">Bank Code</p>
+                                            <p class="font-semibold text-slate-900">{{ strtoupper($paymentDetail->bank_code) }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-slate-500">VA Number</p>
+                                            <p class="font-semibold text-slate-900">{{ $paymentDetail->va_number }}</p>
+                                        </div>
+                                    @elseif($transaction->payment_method === 'ewallet')
+                                        <div>
+                                            <p class="text-xs text-slate-500">Provider</p>
+                                            <p class="font-semibold text-slate-900">{{ strtoupper($paymentDetail->provider) }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-slate-500">Deeplink</p>
+                                            <p class="font-semibold text-slate-900 truncate">{{ $paymentDetail->deeplink_url ?? '-' }}</p>
+                                        </div>
+                                    @elseif($transaction->payment_method === 'qris')
+                                        <div>
+                                            <p class="text-xs text-slate-500">QR String</p>
+                                            <p class="font-semibold text-slate-900 truncate">{{ $paymentDetail->qr_string }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-slate-500">QR Image</p>
+                                            <img src="{{ route('payment.qris.qr', $transaction->transaction_id) }}" alt="QRIS QR" class="mt-2 h-28 w-28 rounded-xl border border-slate-200">
+                                        </div>
+                                    @elseif($transaction->payment_method === 'retail')
+                                        <div>
+                                            <p class="text-xs text-slate-500">Store</p>
+                                            <p class="font-semibold text-slate-900">{{ strtoupper($paymentDetail->store_type) }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-slate-500">Payment Code</p>
+                                            <p class="font-semibold text-slate-900">{{ $paymentDetail->payment_code }}</p>
+                                        </div>
+                                    @elseif($transaction->payment_method === 'credit_card')
+                                        <div>
+                                            <p class="text-xs text-slate-500">Card Type</p>
+                                            <p class="font-semibold text-slate-900">{{ $paymentDetail->card_type ? strtoupper($paymentDetail->card_type) : '-' }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-slate-500">Masked Card</p>
+                                            <p class="font-semibold text-slate-900">{{ $paymentDetail->masked_card ?? '-' }}</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            @else
+                                <p class="text-sm text-slate-500">No payment detail available.</p>
+                            @endif
+                        </div>
+
+                        <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                            <h2 class="text-lg font-semibold text-slate-900 mb-4">Metadata</h2>
+                            <div class="rounded-2xl bg-slate-50 px-4 py-3 text-xs text-slate-700 whitespace-pre-wrap">
+                                {{ $transaction->metadata ? json_encode($transaction->metadata, JSON_PRETTY_PRINT) : 'No metadata provided.' }}
+                            </div>
+                        </div>
+
+                        <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
                             <h2 class="text-lg font-semibold text-slate-900 mb-4">Manual Override</h2>
                             <form method="POST" action="{{ route('client.transactions.override', $transaction->transaction_id) }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 @csrf

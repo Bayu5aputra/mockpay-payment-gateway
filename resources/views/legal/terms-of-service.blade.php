@@ -1,633 +1,498 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service - MockPay</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        }
-    </style>
-</head>
-<body class="bg-gray-50 antialiased">
-    <!-- Top Navigation -->
-    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <!-- Logo & Title -->
-                <div class="flex items-center space-x-3">
-                    <a href="{{ url('/') }}" class="flex items-center space-x-2">
-                        <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                            <img src="{{ asset('logo.png') }}" alt="MockPay" class="w-6 h-6 object-contain">
-                        </div>
-                        <span class="text-xl font-bold text-gray-900">MockPay</span>
-                    </a>
-                    <span class="text-gray-400">/</span>
-                    <span class="text-gray-600 font-medium">Legal</span>
-                </div>
+@extends('layouts.legal')
 
-                <!-- Right Navigation -->
-                <div class="flex items-center space-x-4">
-                    <a href="{{ url('/') }}" class="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
-                        Home
-                    </a>
-                    @auth
-                        @if(Auth::guard('merchant')->check())
-                            <a href="{{ route('dashboard.index') }}" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300">
-                                Dashboard
-                            </a>
-                        @else
-                            <a href="{{ route('client.dashboard') }}" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300">
-                                Dashboard
-                            </a>
-                        @endif
-                    @else
-                        <a href="{{ route('login') }}" class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition-all duration-300">
-                            Get Started
-                        </a>
-                    @endauth
-                </div>
-            </div>
+@section('title', 'Terms of Service - MockPay')
+
+@section('page-navigation')
+<nav class="space-y-2 text-sm">
+    <a href="#acceptance" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Acceptance of Terms</span>
+        <span class="lang-id-inline">Penerimaan Syarat</span>
+    </a>
+    <a href="#service-description" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Service Description</span>
+        <span class="lang-id-inline">Deskripsi Layanan</span>
+    </a>
+    <a href="#account" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Account</span>
+        <span class="lang-id-inline">Akun</span>
+    </a>
+    <a href="#acceptable-use" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Acceptable Use</span>
+        <span class="lang-id-inline">Penggunaan yang Diizinkan</span>
+    </a>
+    <a href="#api-terms" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">API Terms</span>
+        <span class="lang-id-inline">Ketentuan API</span>
+    </a>
+    <a href="#intellectual-property" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Intellectual Property</span>
+        <span class="lang-id-inline">Kekayaan Intelektual</span>
+    </a>
+    <a href="#disclaimers" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Disclaimers</span>
+        <span class="lang-id-inline">Penafian</span>
+    </a>
+    <a href="#liability" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Limitation of Liability</span>
+        <span class="lang-id-inline">Batasan Tanggung Jawab</span>
+    </a>
+    <a href="#indemnification" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Indemnification</span>
+        <span class="lang-id-inline">Ganti Rugi</span>
+    </a>
+    <a href="#termination" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Termination</span>
+        <span class="lang-id-inline">Pengakhiran</span>
+    </a>
+    <a href="#disputes" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Dispute Resolution</span>
+        <span class="lang-id-inline">Penyelesaian Sengketa</span>
+    </a>
+    <a href="#contact" class="block text-slate-600 hover:text-slate-900 transition-colors">
+        <span class="lang-en-inline">Contact</span>
+        <span class="lang-id-inline">Kontak</span>
+    </a>
+</nav>
+@endsection
+
+@section('legal-content')
+<!-- Header -->
+<div class="mb-10">
+    <p class="text-xs uppercase tracking-[0.35em] text-slate-500 mb-4">
+        <span class="lang-en-inline">Legal Document</span>
+        <span class="lang-id-inline">Dokumen Hukum</span>
+    </p>
+    <h1 class="text-4xl lg:text-5xl font-semibold text-slate-900 mb-3">
+        <span class="lang-en-inline">Terms of Service</span>
+        <span class="lang-id-inline">Syarat dan Ketentuan</span>
+    </h1>
+    <p class="text-base text-slate-600">
+        <span class="lang-en-inline">Effective Date: January 27, 2026 | Version 2.0</span>
+        <span class="lang-id-inline">Tanggal Berlaku: 27 Januari 2026 | Versi 2.0</span>
+    </p>
+</div>
+
+<div class="prose prose-slate max-w-none">
+    <!-- Section 1: Acceptance -->
+    <section id="acceptance" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">1. Acceptance of Terms</span>
+            <span class="lang-id-inline">1. Penerimaan Syarat</span>
+        </h2>
+        
+        <div class="lang-en">
+            <p class="text-base text-slate-600 leading-relaxed mb-4 text-justify">
+                By accessing, registering for, or using MockPay's services ("Service"), you ("Tenant," "you," or "your") unconditionally agree to be bound by these Terms of Service ("Terms"), our Privacy Policy, and all applicable laws of the Republic of Indonesia. If you do not agree, you must immediately discontinue use.
+            </p>
+            <p class="text-base text-slate-600 leading-relaxed text-justify">
+                These Terms constitute a legally binding agreement between you and PT Next Innovation Technology ("MockPay," "we," "us," or "our").
+            </p>
         </div>
-    </nav>
+        <div class="lang-id">
+            <p class="text-base text-slate-600 leading-relaxed mb-4 text-justify">
+                Dengan mengakses, mendaftar, atau menggunakan layanan MockPay ("Layanan"), Anda ("Tenant," "Anda") tanpa syarat setuju untuk terikat oleh Syarat dan Ketentuan ini ("Syarat"), Kebijakan Privasi kami, dan semua hukum Republik Indonesia yang berlaku. Jika Anda tidak setuju, Anda harus segera menghentikan penggunaan.
+            </p>
+            <p class="text-base text-slate-600 leading-relaxed text-justify">
+                Syarat ini merupakan perjanjian yang mengikat secara hukum antara Anda dan PT Next Innovation Technology ("MockPay," "kami").
+            </p>
+        </div>
 
-    <!-- Main Content with Sidebar -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="flex gap-8">
-            <!-- Sidebar Navigation -->
-            <aside class="w-64 flex-shrink-0">
-                <div class="sticky top-24">
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-                        <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">LEGAL</h3>
-                        <nav class="space-y-1">
-                            <a href="{{ route('legal.privacy-policy') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200">
-                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                                </svg>
-                                Privacy Policy
-                            </a>
-                            <a href="{{ route('legal.terms-of-service') }}" class="flex items-center px-3 py-2 text-sm font-semibold rounded-lg bg-purple-50 text-purple-700 border border-purple-200">
-                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                </svg>
-                                Terms of Service
-                            </a>
-                            <a href="{{ route('legal.cookie-policy') }}" class="flex items-center px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg transition-colors duration-200">
-                                <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-                                </svg>
-                                Cookie Policy
-                            </a>
-                        </nav>
-
-                        <div class="mt-6 pt-6 border-t border-gray-200">
-                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">ON THIS PAGE</h4>
-                            <nav class="space-y-2 text-sm">
-                                <a href="#acceptance" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Acceptance of Terms</a>
-                                <a href="#service-description" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Service Description</a>
-                                <a href="#account-registration" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Account Registration</a>
-                                <a href="#use-of-service" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Use of Service</a>
-                                <a href="#payment-terms" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Payment Terms</a>
-                                <a href="#prohibited-activities" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Prohibited Activities</a>
-                                <a href="#termination" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Termination</a>
-                                <a href="#governing-law" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Governing Law</a>
-                                <a href="#force-majeure" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Force Majeure</a>
-                                <a href="#liability" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Limitation of Liability</a>
-                                <a href="#changes" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Changes to Terms</a>
-                                <a href="#contact" class="block text-gray-600 hover:text-purple-600 transition-colors duration-200">Contact</a>
-                            </nav>
-                        </div>
+        <div class="rounded-[22px] bg-red-50 border border-red-200 p-6 mt-4">
+            <div class="flex items-start gap-4">
+                <div class="w-10 h-10 rounded-xl bg-red-500 flex items-center justify-center flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-red-900 mb-1">
+                        <span class="lang-en-inline">Critical Disclaimer</span>
+                        <span class="lang-id-inline">Pemberitahuan Penting</span>
+                    </h3>
+                    <div class="lang-en">
+                        <p class="text-sm text-red-800 text-justify">
+                            MockPay is exclusively a <strong>testing and development sandbox environment</strong>. <strong>NO REAL FINANCIAL TRANSACTIONS</strong> occur through this platform. All payment processing is simulated for development purposes only. You acknowledge this limitation.
+                        </p>
+                    </div>
+                    <div class="lang-id">
+                        <p class="text-sm text-red-800 text-justify">
+                            MockPay adalah <strong>lingkungan sandbox untuk pengujian dan pengembangan</strong>. <strong>TIDAK ADA TRANSAKSI KEUANGAN NYATA</strong> yang terjadi melalui platform ini. Semua pemrosesan pembayaran disimulasikan hanya untuk tujuan pengembangan. Anda mengakui batasan ini.
+                        </p>
                     </div>
                 </div>
-            </aside>
-
-            <!-- Main Content -->
-            <main class="flex-1 max-w-4xl">
-                <!-- Header -->
-                <div class="mb-10">
-                    <h1 class="text-5xl font-bold text-gray-900 mb-3 tracking-tight">Terms of Service</h1>
-                    <p class="text-lg text-gray-600 font-medium">Last updated: January 27, 2026</p>
-                </div>
-
-                <!-- Content -->
-                <div class="prose prose-lg max-w-none">
-                    <!-- Acceptance of Terms -->
-                    <section id="acceptance" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Acceptance of Terms</h2>
-                        <p class="text-gray-700 leading-relaxed text-base mb-4 text-justify">
-                            By accessing, registering for, or using MockPay's services, you unconditionally agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any part of these terms, you must immediately discontinue use of our services. Your continued use of the platform constitutes ongoing acceptance of these terms and any future modifications.
-                        </p>
-                        <div class="bg-red-50 border-l-4 border-red-500 p-5 rounded-r-lg">
-                            <div class="flex items-start">
-                                <svg class="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                </svg>
-                                <div class="ml-3">
-                                    <p class="text-gray-800 text-base font-semibold mb-2">Critical Disclaimer</p>
-                                    <p class="text-gray-700 text-sm leading-relaxed text-justify">
-                                        MockPay is exclusively a <strong>testing and development sandbox environment</strong>. No real financial transactions occur through this platform. All payment processing is simulated for development purposes only. Users assume all risks associated with their use of the service. MockPay disclaims all warranties and limits liability as specified herein. By using this service, you explicitly acknowledge and agree to these limitations and disclaimers.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Service Description -->
-                    <section id="service-description" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Service Description</h2>
-                        <p class="text-gray-700 leading-relaxed text-base mb-6 text-justify">
-                            MockPay provides a comprehensive dummy payment gateway platform that simulates real payment processing environments for testing and development purposes only. Our service enables developers to test payment integrations without risking actual financial transactions or exposing sensitive customer data.
-                        </p>
-
-                        <div class="space-y-4">
-                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-purple-300 transition-colors duration-200">
-                                <h3 class="text-xl font-bold text-gray-900 mb-3">Simulated Payment Methods</h3>
-                                <p class="text-gray-700 text-base leading-relaxed text-justify">We provide virtual credit cards, bank transfers, e-wallets, and other payment methods that simulate real payment processing flows. These test payment methods allow you to validate your integration without using actual payment credentials or processing real transactions. All payment data is simulated and contains no real financial information.</p>
-                            </div>
-
-                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-purple-300 transition-colors duration-200">
-                                <h3 class="text-xl font-bold text-gray-900 mb-3">API Integration</h3>
-                                <p class="text-gray-700 text-base leading-relaxed text-justify">Access to our RESTful API endpoints, comprehensive documentation, code examples in multiple programming languages, and testing tools. Our API is designed to mirror real payment gateway interfaces for testing purposes only. MockPay provides no guarantee that API behavior matches any specific real payment gateway.</p>
-                            </div>
-
-                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-purple-300 transition-colors duration-200">
-                                <h3 class="text-xl font-bold text-gray-900 mb-3">Transaction Dashboard</h3>
-                                <p class="text-gray-700 text-base leading-relaxed text-justify">A comprehensive web-based dashboard for monitoring test transactions, viewing detailed transaction logs, managing API credentials, configuring webhook endpoints, and analyzing payment patterns to ensure your integration works correctly in a testing environment.</p>
-                            </div>
-
-                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6 hover:border-purple-300 transition-colors duration-200">
-                                <h3 class="text-xl font-bold text-gray-900 mb-3">Webhook Testing</h3>
-                                <p class="text-gray-700 text-base leading-relaxed text-justify">Real-time webhook notifications for simulated payment events, allowing you to test how your application handles various payment states including successful payments, failed transactions, pending status, refunds, and chargebacks in a controlled testing environment only.</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Account Registration -->
-                    <section id="account-registration" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Account Registration</h2>
-                        <p class="text-gray-700 leading-relaxed text-base mb-6 text-justify">
-                            To use MockPay's services, you must create an account by providing accurate and complete information. You are solely and exclusively responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account.
-                        </p>
-
-                        <div class="space-y-4">
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center shadow-lg">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-900 text-lg">Registration Methods</h4>
-                                    <p class="text-gray-700 text-base leading-relaxed text-justify">You can register for MockPay using either email and password or through Google Sign-In (OAuth). When using Google Sign-In, you authorize us to access your basic profile information including your name and email address from your Google account. We do not have access to your Google password or other sensitive account information. You are responsible for maintaining the security of your Google account.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-900 text-lg">Account Accuracy</h4>
-                                    <p class="text-gray-700 text-base leading-relaxed text-justify">You must provide accurate, current, and complete information during registration and keep your account information updated at all times. Providing false, misleading, or incomplete information is a violation of these terms and may result in immediate account suspension or termination without refund. MockPay reserves the right to verify account information and refuse service based on verification results.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-red-500 flex items-center justify-center shadow-lg">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-900 text-lg">Account Security</h4>
-                                    <p class="text-gray-700 text-base leading-relaxed text-justify">You are solely responsible for maintaining the security of your account credentials, including your password and API keys. You must immediately notify us of any unauthorized use of your account or any other security breach. MockPay is not liable for any loss or damage arising from your failure to protect your account credentials. We strongly recommend changing passwords regularly and using strong, unique passwords.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start">
-                                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
-                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <h4 class="font-semibold text-gray-900 text-lg">Account Responsibility</h4>
-                                    <p class="text-gray-700 text-base leading-relaxed text-justify">You are responsible for all activities conducted through your account, whether or not authorized by you. You must ensure that your account is not used for any unlawful or prohibited activities. Any violation of these terms through your account may result in immediate termination without notice. MockPay reserves the right to monitor account activity and take appropriate action for any suspicious or prohibited activities.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Use of Service -->
-                    <section id="use-of-service" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Use of Service</h2>
-                        <p class="text-gray-700 leading-relaxed text-base mb-6 text-justify">
-                            MockPay is intended solely for testing and development purposes in sandbox environments. You agree to use our services in compliance with all applicable laws and regulations and in accordance with these Terms of Service. Any other use is strictly prohibited.
-                        </p>
-
-                        <div class="bg-gradient-to-br from-purple-50 to-indigo-50 border-2 border-purple-200 rounded-xl p-8">
-                            <h3 class="text-xl font-bold text-gray-900 mb-4">Acceptable Use Guidelines</h3>
-                            <div class="space-y-4">
-                                <div class="flex items-start">
-                                    <svg class="w-6 h-6 text-purple-600 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <p class="ml-3 text-gray-700 text-base leading-relaxed text-justify">Use the service exclusively for testing and development purposes in sandbox environments. Do not attempt to process real financial transactions, use actual customer payment information, or connect to production systems. The service is for testing only.</p>
-                                </div>
-                                <div class="flex items-start">
-                                    <svg class="w-6 h-6 text-purple-600 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <p class="ml-3 text-gray-700 text-base leading-relaxed text-justify">Protect your API keys and credentials as sensitive information. Never share them publicly, commit them to version control systems, or store them in insecure locations. Regenerate keys immediately if you suspect they have been compromised. MockPay is not responsible for damages from compromised credentials.</p>
-                                </div>
-                                <div class="flex items-start">
-                                    <svg class="w-6 h-6 text-purple-600 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <p class="ml-3 text-gray-700 text-base leading-relaxed text-justify">Comply with all API rate limits and usage restrictions. Excessive use that negatively impacts service availability for other users may result in temporary or permanent restrictions on your account. MockPay reserves the right to throttle or limit usage at its discretion.</p>
-                                </div>
-                                <div class="flex items-start">
-                                    <svg class="w-6 h-6 text-purple-600 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <p class="ml-3 text-gray-700 text-base leading-relaxed text-justify">Do not use the service for any unlawful purpose or in any way that violates these Terms of Service. Respect the rights of other users and third parties when using our platform. Any illegal or prohibited use will result in immediate termination and may be reported to authorities.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Payment Terms -->
-                    <section id="payment-terms" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Payment Terms</h2>
-                        <p class="text-gray-700 leading-relaxed text-base mb-6 text-justify">
-                            While MockPay processes only simulated transactions, we offer various subscription plans for extended features and higher usage limits. All fees are in Indonesian Rupiah (IDR) and are subject to applicable taxes. All payments are non-refundable unless otherwise required by law.
-                        </p>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
-                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="text-lg font-bold text-gray-900 mb-2">Transaction Fees</h3>
-                                <p class="text-gray-700 text-base text-justify mb-3">Standard transaction fee of 2.9% + IDR 2,500 per simulated transaction for paid plans. Free plan includes limited transactions per month. Fees are subject to change with 30 days notice.</p>
-                            </div>
-
-                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
-                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="text-lg font-bold text-gray-900 mb-2">Subscription Plans</h3>
-                                <p class="text-gray-700 text-base text-justify mb-3">Monthly subscription fees vary by plan tier. Starter: Free, Professional: IDR 500,000/month, Enterprise: Custom pricing with additional features and support. All subscriptions automatically renew unless canceled.</p>
-                            </div>
-
-                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
-                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="text-lg font-bold text-gray-900 mb-2">Chargeback Simulation</h3>
-                                <p class="text-gray-700 text-base text-justify mb-3">Testing chargeback scenarios incurs a fee of IDR 100,000 per simulated chargeback to cover administrative costs and system resources. This fee is non-refundable.</p>
-                            </div>
-
-                            <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
-                                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-                                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                                    </svg>
-                                </div>
-                                <h3 class="text-lg font-bold text-gray-900 mb-2">Refund Policy</h3>
-                                <p class="text-gray-700 text-base text-justify mb-3">Subscription fees are non-refundable except as required by Indonesian consumer protection law. You may cancel your subscription at any time, and it will remain active until the end of the current billing period. No prorated refunds for partial months.</p>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Prohibited Activities -->
-                    <section id="prohibited-activities" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Prohibited Activities</h2>
-                        <p class="text-gray-700 leading-relaxed text-base mb-6 text-justify">
-                            You agree not to engage in any of the following prohibited activities when using MockPay. Violation of these restrictions may result in immediate termination of your account, forfeiture of any fees paid, and legal action where applicable.
-                        </p>
-
-                        <div class="space-y-3">
-                            <div class="flex items-start bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                <svg class="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                                <div class="ml-3">
-                                    <h4 class="font-bold text-gray-900 text-base">Processing Real Transactions</h4>
-                                    <p class="text-gray-700 text-sm mt-1 text-justify">Attempting to process real financial transactions, using actual customer payment information, or connecting the service to production systems. MockPay is for testing only and any attempt to process real transactions is strictly prohibited.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                <svg class="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                                <div class="ml-3">
-                                    <h4 class="font-bold text-gray-900 text-base">Unauthorized Access</h4>
-                                    <p class="text-gray-700 text-sm mt-1 text-justify">Attempting to access accounts, systems, or data that you are not authorized to access, including bypassing security measures, exploiting vulnerabilities, or using another user's credentials without permission.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                <svg class="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                                <div class="ml-3">
-                                    <h4 class="font-bold text-gray-900 text-base">Malicious Code Distribution</h4>
-                                    <p class="text-gray-700 text-sm mt-1 text-justify">Uploading, transmitting, or distributing any viruses, malware, ransomware, or other malicious code that could harm our systems, other users, or third-party systems. This includes attempting to disrupt or compromise service integrity.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                <svg class="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                                <div class="ml-3">
-                                    <h4 class="font-bold text-gray-900 text-base">Abuse and Harassment</h4>
-                                    <p class="text-gray-700 text-sm mt-1 text-justify">Harassing, threatening, or abusing other users or our support staff through any communication channel provided by our platform. This includes excessive, abusive, or threatening communications.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                <svg class="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                                <div class="ml-3">
-                                    <h4 class="font-bold text-gray-900 text-base">Intellectual Property Violation</h4>
-                                    <p class="text-gray-700 text-sm mt-1 text-justify">Infringing upon copyrights, trademarks, patents, trade secrets, or other intellectual property rights of MockPay or third parties. This includes unauthorized use, reproduction, or distribution of protected materials.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex items-start bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
-                                <svg class="w-6 h-6 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                                <div class="ml-3">
-                                    <h4 class="font-bold text-gray-900 text-base">Service Disruption</h4>
-                                    <p class="text-gray-700 text-sm mt-1 text-justify">Interfering with or disrupting the service, servers, or networks connected to the service, including through denial-of-service attacks, excessive automated requests, or any activity designed to overload or disrupt service availability.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Termination -->
-                    <section id="termination" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Account Termination</h2>
-                        <p class="text-gray-700 leading-relaxed text-base mb-6 text-justify">
-                            We reserve the right to suspend or terminate your account at our sole discretion if you violate these Terms of Service or engage in activities that harm our platform, other users, or third parties. Termination may occur without prior notice in cases of serious violations.
-                        </p>
-
-                        <div class="bg-gradient-to-br from-orange-50 to-red-50 border-2 border-orange-200 rounded-xl p-8">
-                            <h3 class="text-xl font-bold text-gray-900 mb-5">Termination Process</h3>
-                            <div class="space-y-4">
-                                <div class="flex items-start">
-                                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                                        <span class="font-bold text-orange-600">1</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 mb-1">Voluntary Termination</h4>
-                                        <p class="text-gray-700 text-base text-justify">You may terminate your account at any time through your dashboard settings. Upon termination, your access to the service will be immediately revoked. No refunds will be provided for any remaining subscription period.</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start">
-                                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                                        <span class="font-bold text-orange-600">2</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 mb-1">Data Retention</h4>
-                                        <p class="text-gray-700 text-base text-justify">After account termination, your data will be retained for 30 days before permanent deletion, unless longer retention is required by law. You may request immediate deletion by contacting our support team, but we reserve the right to retain data as required by Indonesian regulations.</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start">
-                                    <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                                        <span class="font-bold text-orange-600">3</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 mb-1">Service Suspension</h4>
-                                        <p class="text-gray-700 text-base text-justify">We may temporarily suspend your account if we detect suspicious activity or Terms of Service violations. You will be notified and given an opportunity to respond before permanent termination, except in cases of serious violations where immediate termination is necessary.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Governing Law -->
-                    <section id="governing-law" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Governing Law & Dispute Resolution</h2>
-
-                        <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
-                            <div class="space-y-4">
-                                <div class="flex items-start">
-                                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-bold text-gray-900 mb-2">Governing Law</h3>
-                                        <p class="text-gray-700 text-base">
-                                            These Terms shall be governed by and construed in accordance with the laws of the Republic of Indonesia, without regard to its conflict of law provisions. The United Nations Convention on Contracts for the International Sale of Goods shall not apply. Users worldwide agree to submit to the exclusive jurisdiction of the courts located in Jakarta, Indonesia.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start">
-                                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h3 class="text-lg font-bold text-gray-900 mb-2">Dispute Resolution</h3>
-                                        <p class="text-gray-700 text-base">
-                                            Any dispute, controversy, or claim arising out of or relating to these Terms shall first be attempted to be resolved through good faith negotiations between the parties. If unresolved within 30 days, parties agree to submit to binding arbitration in Jakarta, Indonesia, in accordance with the Indonesian National Board of Arbitration (Badan Arbitrase Nasional Indonesia - BANI) rules. The arbitration shall be conducted in English. Judgment upon the award rendered by the arbitrator(s) may be entered in any court having jurisdiction thereof.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Force Majeure -->
-                    <section id="force-majeure" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Force Majeure</h2>
-
-                        <div class="bg-gray-50 border-2 border-gray-200 rounded-xl p-6">
-                            <div class="flex items-start">
-                                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-900 mb-2">Events Beyond Our Control</h3>
-                                    <p class="text-gray-700 text-base leading-relaxed">
-                                        MockPay shall not be liable for any failure or delay in performance due to circumstances beyond our reasonable control, including but not limited to: acts of God, natural disasters, war, terrorism, riots, government actions, epidemics, pandemics, strikes, labor disputes, power failures, internet disruptions, cyber attacks, infrastructure failures, or any other events that are not within our reasonable control. In such events, MockPay may suspend or terminate service without liability. Subscription periods will not be extended for force majeure events.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Limitation of Liability -->
-                    <section id="liability" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Limitation of Liability</h2>
-
-                        <div class="bg-red-50 border-2 border-red-200 rounded-xl p-6 mb-6">
-                            <div class="flex items-start">
-                                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-900 mb-3">No Liability for Consequential Damages</h3>
-                                    <p class="text-gray-700 text-base leading-relaxed mb-3">
-                                        To the maximum extent permitted by applicable law, <strong>MockPay shall not be liable</strong> for any indirect, incidental, special, consequential, or punitive damages, including but not limited to:
-                                    </p>
-                                    <ul class="list-disc pl-5 text-gray-700 text-base space-y-1">
-                                        <li>Loss of profits, revenue, business opportunities, or data</li>
-                                        <li>Business interruption or downtime costs</li>
-                                        <li>Reputational damage or loss of goodwill</li>
-                                        <li>Cost of substitute goods or services</li>
-                                        <li>Damages resulting from security breaches, data loss, or unauthorized access</li>
-                                        <li>Damages resulting from service interruptions, delays, or failures</li>
-                                        <li>Any damages related to your use or inability to use the service</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="bg-yellow-50 border-2 border-yellow-200 rounded-xl p-6">
-                            <div class="flex">
-                                <svg class="w-6 h-6 text-yellow-600 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
-                                <div class="ml-4">
-                                    <p class="text-gray-800 font-bold mb-3">Total Liability Cap</p>
-                                    <p class="text-gray-700 text-base leading-relaxed mb-4">
-                                        In no event shall MockPay's total liability to you for all claims arising from or related to these Terms or your use of the Service exceed the amount paid by you to MockPay in the six (6) months preceding the claim, or IDR 1,000,000 (One Million Rupiah), whichever is greater. This limitation applies to all claims regardless of the legal theory on which they are based, including contract, tort, strict liability, or any other theory.
-                                    </p>
-                                    <p class="text-gray-800 font-bold mb-3">Essential Purpose & Disclaimer of Warranties</p>
-                                    <p class="text-gray-700 text-base leading-relaxed">
-                                        The service is provided "as is" and "as available" without any warranties of any kind, either express or implied. MockPay specifically disclaims all warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, non-infringement, and accuracy. MockPay does not warrant that the service will be uninterrupted, secure, error-free, or meet your specific requirements. These limitations are an essential basis of the bargain between you and MockPay, and the service would not be provided without such limitations.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Changes to Terms -->
-                    <section id="changes" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Changes to Terms</h2>
-
-                        <div class="bg-white border-2 border-gray-200 rounded-xl p-6">
-                            <div class="flex items-start">
-                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-4 flex-shrink-0">
-                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 class="text-lg font-bold text-gray-900 mb-2">Modification Rights</h3>
-                                    <p class="text-gray-700 text-base leading-relaxed mb-3">
-                                        We reserve the right to modify these Terms at any time at our sole discretion. Changes will be effective immediately upon posting on our website. Your continued use of the Service after such changes constitutes your unconditional acceptance of the new Terms. It is your responsibility to regularly review these Terms for any changes.
-                                    </p>
-                                    <p class="text-gray-700 text-base leading-relaxed">
-                                        We will make reasonable efforts to notify users of material changes via email or dashboard notifications, but we are not obligated to do so. If you do not agree to the modified Terms, you must immediately discontinue using the Service. No refunds will be provided for discontinuation due to Terms changes.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- Contact -->
-                    <section id="contact" class="mb-12">
-                        <h2 class="text-3xl font-bold text-gray-900 mb-5 tracking-tight">Contact Us</h2>
-                        <p class="text-gray-700 leading-relaxed text-base mb-6">
-                            If you have any questions about this Privacy Policy or wish to exercise your rights, please contact us through our official channels:
-                        </p>
-                        <div class="bg-white border-2 border-gray-200 rounded-xl p-8">
-                            <div class="space-y-6">
-                                <div class="flex items-start">
-                                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
-                                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Privacy Inquiries</p>
-                                        <p class="text-lg font-semibold text-gray-900">legal@m.next-it.my.id</p>
-                                        <p class="text-sm text-gray-600 mt-1">For terms-of-service questions</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start">
-                                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
-                                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Official Website</p>
-                                        <p class="text-lg font-semibold text-gray-900">https://m.next-it.my.id/</p>
-                                        <p class="text-sm text-gray-600 mt-1">Visit for latest updates and documentation</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-start">
-                                    <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
-                                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold text-gray-500 uppercase tracking-wider mb-1">Technical Support</p>
-                                        <p class="text-lg font-semibold text-gray-900">support@m.next-it.my.id</p>
-                                        <p class="text-sm text-gray-600 mt-1">For technical issues and service-related questions</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mt-8 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            <p class="text-sm text-gray-600 text-center">
-                                <strong>Important Notice:</strong> By using MockPay's services, you acknowledge and agree that you have read, understood, and consent to all terms in this Privacy Policy. This document is available in English and Indonesian versions. In case of any discrepancy between versions, the English version shall prevail. This Privacy Policy is governed by Indonesian law, and users worldwide agree to its terms by using our services.
-                            </p>
-                        </div>
-                    </section>
-                </div>
-            </main>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <div class="flex flex-col md:flex-row justify-between items-center">
-                <p class="text-gray-600 text-sm font-medium">&copy; 2026 MockPay. All rights reserved.</p>
-                <div class="flex space-x-8 mt-4 md:mt-0">
-                    <a href="{{ route('legal.privacy-policy') }}" class="text-gray-600 hover:text-purple-600 text-sm font-medium transition-colors duration-200">Privacy Policy</a>
-                    <a href="{{ route('legal.terms-of-service') }}" class="text-gray-600 hover:text-purple-600 text-sm font-medium transition-colors duration-200">Terms of Service</a>
-                    <a href="{{ route('legal.cookie-policy') }}" class="text-gray-600 hover:text-purple-600 text-sm font-medium transition-colors duration-200">Cookie Policy</a>
+    <!-- Section 2: Service Description -->
+    <section id="service-description" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">2. Service Description</span>
+            <span class="lang-id-inline">2. Deskripsi Layanan</span>
+        </h2>
+        
+        <div class="lang-en">
+            <p class="text-base text-slate-600 leading-relaxed mb-4 text-justify">
+                MockPay is a SaaS dummy payment gateway simulator designed to help developers and companies test payment integration logic without real money. The Service includes:
+            </p>
+        </div>
+        <div class="lang-id">
+            <p class="text-base text-slate-600 leading-relaxed mb-4 text-justify">
+                MockPay adalah simulator payment gateway dummy SaaS yang dirancang untuk membantu pengembang dan perusahaan menguji logika integrasi pembayaran tanpa uang nyata. Layanan meliputi:
+            </p>
+        </div>
+
+        <div class="space-y-3">
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-4">
+                <p class="font-semibold text-slate-900 text-sm"><span class="lang-en-inline">2.1 API Access</span><span class="lang-id-inline">2.1 Akses API</span></p>
+                <p class="text-sm text-slate-600"><span class="lang-en-inline">RESTful API for creating simulated transactions, generating test payment methods, and receiving webhook notifications.</span><span class="lang-id-inline">API RESTful untuk membuat transaksi simulasi, menghasilkan metode pembayaran uji, dan menerima notifikasi webhook.</span></p>
+            </div>
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-4">
+                <p class="font-semibold text-slate-900 text-sm"><span class="lang-en-inline">2.2 Manual Override</span><span class="lang-id-inline">2.2 Override Manual</span></p>
+                <p class="text-sm text-slate-600"><span class="lang-en-inline">Tenant-controlled simulation outcome (Approve, Reject, Expire, Cancel, Refund) for testing various payment scenarios.</span><span class="lang-id-inline">Hasil simulasi yang dikontrol tenant (Setuju, Tolak, Kadaluarsa, Batal, Refund) untuk menguji berbagai skenario pembayaran.</span></p>
+            </div>
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-4">
+                <p class="font-semibold text-slate-900 text-sm"><span class="lang-en-inline">2.3 Dashboard</span><span class="lang-id-inline">2.3 Dashboard</span></p>
+                <p class="text-sm text-slate-600"><span class="lang-en-inline">Web-based interface for managing API keys, webhooks, viewing transactions, and downloading test results.</span><span class="lang-id-inline">Antarmuka berbasis web untuk mengelola kunci API, webhook, melihat transaksi, dan mengunduh hasil pengujian.</span></p>
+            </div>
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-4">
+                <p class="font-semibold text-slate-900 text-sm"><span class="lang-en-inline">2.4 Hosted Payment Page</span><span class="lang-id-inline">2.4 Halaman Pembayaran Terhosti</span></p>
+                <p class="text-sm text-slate-600"><span class="lang-en-inline">Optional pre-built payment UI for simulating guest payment flows.</span><span class="lang-id-inline">UI pembayaran yang sudah dibuat untuk mensimulasikan alur pembayaran tamu (opsional).</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: Account -->
+    <section id="account" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">3. Account Registration & Security</span>
+            <span class="lang-id-inline">3. Pendaftaran Akun & Keamanan</span>
+        </h2>
+
+        <div class="rounded-[22px] bg-slate-900 text-white p-6">
+            <div class="space-y-3">
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <p class="text-sm text-white/90"><span class="lang-en-inline">Provide accurate and complete registration information</span><span class="lang-id-inline">Berikan informasi pendaftaran yang akurat dan lengkap</span></p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <p class="text-sm text-white/90"><span class="lang-en-inline">Maintain the security and confidentiality of your credentials</span><span class="lang-id-inline">Jaga keamanan dan kerahasiaan kredensial Anda</span></p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <p class="text-sm text-white/90"><span class="lang-en-inline">You are solely responsible for all activities under your account</span><span class="lang-id-inline">Anda sepenuhnya bertanggung jawab atas semua aktivitas di bawah akun Anda</span></p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <p class="text-sm text-white/90"><span class="lang-en-inline">Immediately notify us of any unauthorized access</span><span class="lang-id-inline">Segera beritahu kami tentang akses tidak sah</span></p>
+                </div>
+                <div class="flex items-start gap-3">
+                    <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+                    <p class="text-sm text-white/90"><span class="lang-en-inline">Do not share API keys or allow unauthorized access</span><span class="lang-id-inline">Jangan bagikan kunci API atau izinkan akses tidak sah</span></p>
                 </div>
             </div>
         </div>
-    </footer>
-</body>
-</html>
+    </section>
+
+    <!-- Section 4: Acceptable Use -->
+    <section id="acceptable-use" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">4. Acceptable Use Policy</span>
+            <span class="lang-id-inline">4. Kebijakan Penggunaan yang Dapat Diterima</span>
+        </h2>
+
+        <div class="lang-en"><p class="text-base text-slate-600 leading-relaxed mb-4 text-justify">You agree NOT to:</p></div>
+        <div class="lang-id"><p class="text-base text-slate-600 leading-relaxed mb-4 text-justify">Anda setuju untuk TIDAK:</p></div>
+
+        <div class="space-y-2">
+            <div class="flex items-start gap-3 p-3 rounded-[16px] bg-red-50 border border-red-200">
+                <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <p class="text-sm text-slate-700"><span class="lang-en-inline">Process any real financial transactions or use actual payment credentials</span><span class="lang-id-inline">Memproses transaksi keuangan nyata atau menggunakan kredensial pembayaran asli</span></p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-[16px] bg-red-50 border border-red-200">
+                <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <p class="text-sm text-slate-700"><span class="lang-en-inline">Store real customer financial data (credit cards, bank accounts) in MockPay</span><span class="lang-id-inline">Menyimpan data keuangan pelanggan nyata di MockPay</span></p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-[16px] bg-red-50 border border-red-200">
+                <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <p class="text-sm text-slate-700"><span class="lang-en-inline">Attempt unauthorized access to other accounts or systems</span><span class="lang-id-inline">Mencoba akses tidak sah ke akun atau sistem lain</span></p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-[16px] bg-red-50 border border-red-200">
+                <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <p class="text-sm text-slate-700"><span class="lang-en-inline">Distribute malware, viruses, or malicious code</span><span class="lang-id-inline">Mendistribusikan malware, virus, atau kode berbahaya</span></p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-[16px] bg-red-50 border border-red-200">
+                <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <p class="text-sm text-slate-700"><span class="lang-en-inline">Conduct DDoS attacks or disrupt service availability</span><span class="lang-id-inline">Melakukan serangan DDoS atau mengganggu ketersediaan layanan</span></p>
+            </div>
+            <div class="flex items-start gap-3 p-3 rounded-[16px] bg-red-50 border border-red-200">
+                <svg class="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <p class="text-sm text-slate-700"><span class="lang-en-inline">Violate any applicable Indonesian law (UU ITE, KUHP, etc.)</span><span class="lang-id-inline">Melanggar hukum Indonesia yang berlaku (UU ITE, KUHP, dll.)</span></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 5: API Terms -->
+    <section id="api-terms" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">5. API Terms & Rate Limits</span>
+            <span class="lang-id-inline">5. Ketentuan API & Batas Rate</span>
+        </h2>
+
+        <div class="overflow-x-auto mb-4">
+            <table class="w-full text-sm border border-slate-200 rounded-[16px] overflow-hidden">
+                <thead class="bg-slate-100">
+                    <tr>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-900">Plan</th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-900"><span class="lang-en-inline">Rate Limit</span><span class="lang-id-inline">Batas Rate</span></th>
+                        <th class="px-4 py-3 text-left font-semibold text-slate-900"><span class="lang-en-inline">Daily Limit</span><span class="lang-id-inline">Batas Harian</span></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                    <tr><td class="px-4 py-3 text-slate-600">Free</td><td class="px-4 py-3 text-slate-600">60 req/min</td><td class="px-4 py-3 text-slate-600">1,000 transactions</td></tr>
+                    <tr><td class="px-4 py-3 text-slate-600">Pro</td><td class="px-4 py-3 text-slate-600">300 req/min</td><td class="px-4 py-3 text-slate-600">10,000 transactions</td></tr>
+                    <tr><td class="px-4 py-3 text-slate-600">Enterprise</td><td class="px-4 py-3 text-slate-600">Custom</td><td class="px-4 py-3 text-slate-600">Unlimited</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="lang-en"><p class="text-sm text-slate-600 text-justify">Exceeding rate limits will result in HTTP 429 responses. Repeated abuse may result in temporary or permanent suspension.</p></div>
+        <div class="lang-id"><p class="text-sm text-slate-600 text-justify">Melebihi batas rate akan menghasilkan respons HTTP 429. Penyalahgunaan berulang dapat mengakibatkan penangguhan sementara atau permanen.</p></div>
+    </section>
+
+    <!-- Section 6: Intellectual Property -->
+    <section id="intellectual-property" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">6. Intellectual Property</span>
+            <span class="lang-id-inline">6. Kekayaan Intelektual</span>
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-5">
+                <h3 class="text-base font-semibold text-slate-900 mb-2"><span class="lang-en-inline">MockPay Ownership</span><span class="lang-id-inline">Kepemilikan MockPay</span></h3>
+                <div class="lang-en"><p class="text-sm text-slate-600 text-justify">MockPay owns all rights to the platform, API, documentation, trademarks, logos, and proprietary technology. You receive a limited, non-exclusive, revocable license to use the Service.</p></div>
+                <div class="lang-id"><p class="text-sm text-slate-600 text-justify">MockPay memiliki semua hak atas platform, API, dokumentasi, merek dagang, logo, dan teknologi proprietary. Anda menerima lisensi terbatas, non-eksklusif, yang dapat dicabut untuk menggunakan Layanan.</p></div>
+            </div>
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-5">
+                <h3 class="text-base font-semibold text-slate-900 mb-2"><span class="lang-en-inline">Your Data Ownership</span><span class="lang-id-inline">Kepemilikan Data Anda</span></h3>
+                <div class="lang-en"><p class="text-sm text-slate-600 text-justify">You retain ownership of your simulation data and test results. MockPay acts only as a processor and storage provider. You may export your data at any time.</p></div>
+                <div class="lang-id"><p class="text-sm text-slate-600 text-justify">Anda mempertahankan kepemilikan data simulasi dan hasil pengujian Anda. MockPay hanya bertindak sebagai prosesor dan penyedia penyimpanan. Anda dapat mengekspor data Anda kapan saja.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 7: Disclaimers -->
+    <section id="disclaimers" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">7. Disclaimers</span>
+            <span class="lang-id-inline">7. Penafian</span>
+        </h2>
+
+        <div class="rounded-[22px] bg-amber-50 border border-amber-200 p-6">
+            <div class="lang-en">
+                <p class="text-sm text-amber-900 text-justify mb-3"><strong>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND.</strong></p>
+                <ul class="list-disc pl-5 text-sm text-amber-800 space-y-1">
+                    <li>MockPay is NOT a real payment processor and cannot be used for actual transactions</li>
+                    <li>We do not guarantee uninterrupted availability or error-free operation</li>
+                    <li>Simulation results are for testing purposes only and do not represent real payment behavior</li>
+                    <li>You must independently validate your integration before using a real payment gateway</li>
+                </ul>
+            </div>
+            <div class="lang-id">
+                <p class="text-sm text-amber-900 text-justify mb-3"><strong>LAYANAN DISEDIAKAN "SEBAGAIMANA ADANYA" TANPA JAMINAN APA PUN.</strong></p>
+                <ul class="list-disc pl-5 text-sm text-amber-800 space-y-1">
+                    <li>MockPay BUKAN pemroses pembayaran nyata dan tidak dapat digunakan untuk transaksi aktual</li>
+                    <li>Kami tidak menjamin ketersediaan tanpa gangguan atau operasi bebas kesalahan</li>
+                    <li>Hasil simulasi hanya untuk tujuan pengujian dan tidak mewakili perilaku pembayaran nyata</li>
+                    <li>Anda harus memvalidasi integrasi Anda secara independen sebelum menggunakan payment gateway nyata</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 8: Limitation of Liability -->
+    <section id="liability" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">8. Limitation of Liability</span>
+            <span class="lang-id-inline">8. Batasan Tanggung Jawab</span>
+        </h2>
+
+        <div class="rounded-[22px] bg-red-50 border border-red-200 p-6">
+            <div class="lang-en">
+                <p class="text-sm text-red-800 text-justify mb-3">
+                    <strong>TO THE MAXIMUM EXTENT PERMITTED BY LAW, MOCKPAY SHALL NOT BE LIABLE FOR:</strong>
+                </p>
+                <ul class="list-disc pl-5 text-sm text-red-800 space-y-1">
+                    <li>Any indirect, incidental, special, consequential, or punitive damages</li>
+                    <li>Loss of profits, revenue, data, or business opportunities</li>
+                    <li>Damages arising from reliance on simulation results in production systems</li>
+                    <li>Any damages exceeding the amount paid by you to MockPay in the preceding 12 months</li>
+                    <li>Actions taken by third parties using your credentials</li>
+                </ul>
+            </div>
+            <div class="lang-id">
+                <p class="text-sm text-red-800 text-justify mb-3">
+                    <strong>SEJAUH DIIZINKAN OLEH HUKUM, MOCKPAY TIDAK BERTANGGUNG JAWAB ATAS:</strong>
+                </p>
+                <ul class="list-disc pl-5 text-sm text-red-800 space-y-1">
+                    <li>Kerugian tidak langsung, insidental, khusus, konsekuensial, atau punitif</li>
+                    <li>Kehilangan keuntungan, pendapatan, data, atau peluang bisnis</li>
+                    <li>Kerugian akibat mengandalkan hasil simulasi dalam sistem produksi</li>
+                    <li>Kerugian melebihi jumlah yang Anda bayarkan ke MockPay dalam 12 bulan sebelumnya</li>
+                    <li>Tindakan yang diambil pihak ketiga menggunakan kredensial Anda</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 9: Indemnification -->
+    <section id="indemnification" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">9. Indemnification</span>
+            <span class="lang-id-inline">9. Ganti Rugi</span>
+        </h2>
+
+        <div class="rounded-[22px] bg-slate-900 text-white p-6">
+            <div class="lang-en">
+                <p class="text-sm text-white/90 text-justify">
+                    You agree to <span class="font-bold text-white">defend, indemnify, and hold harmless</span> MockPay, its affiliates, officers, directors, employees, and agents from any claims, damages, losses, liabilities, costs, and expenses (including legal fees) arising from: (a) your use of the Service; (b) your violation of these Terms; (c) your violation of any third-party rights; (d) any content you submit to the Service; or (e) your negligence or willful misconduct.
+                </p>
+            </div>
+            <div class="lang-id">
+                <p class="text-sm text-white/90 text-justify">
+                    Anda setuju untuk <span class="font-bold text-white">membela, mengganti kerugian, dan membebaskan</span> MockPay, afiliasi, pejabat, direktur, karyawan, dan agennya dari setiap klaim, kerugian, tanggung jawab, biaya, dan pengeluaran (termasuk biaya hukum) yang timbul dari: (a) penggunaan Layanan oleh Anda; (b) pelanggaran Syarat ini oleh Anda; (c) pelanggaran hak pihak ketiga oleh Anda; (d) konten yang Anda kirimkan ke Layanan; atau (e) kelalaian atau kesalahan yang disengaja oleh Anda.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 10: Termination -->
+    <section id="termination" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">10. Termination</span>
+            <span class="lang-id-inline">10. Pengakhiran</span>
+        </h2>
+
+        <div class="space-y-4">
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-5">
+                <h3 class="text-base font-semibold text-slate-900 mb-2"><span class="lang-en-inline">By You</span><span class="lang-id-inline">Oleh Anda</span></h3>
+                <div class="lang-en"><p class="text-sm text-slate-600">You may terminate your account at any time through the dashboard or by contacting support. Upon termination, you must cease using the Service.</p></div>
+                <div class="lang-id"><p class="text-sm text-slate-600">Anda dapat mengakhiri akun Anda kapan saja melalui dashboard atau dengan menghubungi support. Setelah pengakhiran, Anda harus berhenti menggunakan Layanan.</p></div>
+            </div>
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-5">
+                <h3 class="text-base font-semibold text-slate-900 mb-2"><span class="lang-en-inline">By MockPay</span><span class="lang-id-inline">Oleh MockPay</span></h3>
+                <div class="lang-en"><p class="text-sm text-slate-600">We may suspend or terminate your account immediately for violation of these Terms, suspected fraud, or as required by law. We will provide notice where practical.</p></div>
+                <div class="lang-id"><p class="text-sm text-slate-600">Kami dapat menangguhkan atau mengakhiri akun Anda segera karena pelanggaran Syarat ini, dugaan penipuan, atau sebagaimana diwajibkan hukum. Kami akan memberikan pemberitahuan jika memungkinkan.</p></div>
+            </div>
+            <div class="rounded-[22px] border border-slate-200 bg-slate-50 p-5">
+                <h3 class="text-base font-semibold text-slate-900 mb-2"><span class="lang-en-inline">Data Retention After Termination</span><span class="lang-id-inline">Penyimpanan Data Setelah Pengakhiran</span></h3>
+                <div class="lang-en"><p class="text-sm text-slate-600">Your simulation data will be retained for 30 days after termination to allow recovery. After 30 days, data will be permanently deleted except where retention is required by law.</p></div>
+                <div class="lang-id"><p class="text-sm text-slate-600">Data simulasi Anda akan disimpan selama 30 hari setelah pengakhiran untuk pemulihan. Setelah 30 hari, data akan dihapus secara permanen kecuali penyimpanan diwajibkan oleh hukum.</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 11: Dispute Resolution -->
+    <section id="disputes" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">11. Dispute Resolution & Governing Law</span>
+            <span class="lang-id-inline">11. Penyelesaian Sengketa & Hukum yang Berlaku</span>
+        </h2>
+
+        <div class="rounded-[22px] bg-blue-50 border border-blue-200 p-6">
+            <div class="space-y-4">
+                <div>
+                    <p class="font-semibold text-slate-900 text-sm mb-1"><span class="lang-en-inline">Governing Law</span><span class="lang-id-inline">Hukum yang Berlaku</span></p>
+                    <div class="lang-en"><p class="text-sm text-slate-600">These Terms shall be governed by the laws of the Republic of Indonesia.</p></div>
+                    <div class="lang-id"><p class="text-sm text-slate-600">Syarat ini diatur oleh hukum Republik Indonesia.</p></div>
+                </div>
+                <div>
+                    <p class="font-semibold text-slate-900 text-sm mb-1"><span class="lang-en-inline">Negotiation</span><span class="lang-id-inline">Negosiasi</span></p>
+                    <div class="lang-en"><p class="text-sm text-slate-600">Parties shall first attempt to resolve disputes through good-faith negotiation within 30 days.</p></div>
+                    <div class="lang-id"><p class="text-sm text-slate-600">Para pihak akan terlebih dahulu mencoba menyelesaikan sengketa melalui negosiasi dengan itikad baik dalam 30 hari.</p></div>
+                </div>
+                <div>
+                    <p class="font-semibold text-slate-900 text-sm mb-1"><span class="lang-en-inline">Arbitration</span><span class="lang-id-inline">Arbitrase</span></p>
+                    <div class="lang-en"><p class="text-sm text-slate-600">Unresolved disputes shall be submitted to BANI (Badan Arbitrase Nasional Indonesia) in Jakarta for final and binding arbitration.</p></div>
+                    <div class="lang-id"><p class="text-sm text-slate-600">Sengketa yang tidak terselesaikan akan diajukan ke BANI (Badan Arbitrase Nasional Indonesia) di Jakarta untuk arbitrase yang final dan mengikat.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 12: Force Majeure -->
+    <section id="force-majeure" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">12. Force Majeure</span>
+            <span class="lang-id-inline">12. Keadaan Kahar</span>
+        </h2>
+
+        <div class="lang-en">
+            <p class="text-base text-slate-600 leading-relaxed text-justify">
+                MockPay shall not be liable for any failure to perform due to circumstances beyond reasonable control, including but not limited to: natural disasters, war, terrorism, pandemic, government actions, power failures, internet outages, or infrastructure failures.
+            </p>
+        </div>
+        <div class="lang-id">
+            <p class="text-base text-slate-600 leading-relaxed text-justify">
+                MockPay tidak bertanggung jawab atas kegagalan untuk melaksanakan karena keadaan di luar kendali yang wajar, termasuk namun tidak terbatas pada: bencana alam, perang, terorisme, pandemi, tindakan pemerintah, kegagalan listrik, gangguan internet, atau kegagalan infrastruktur.
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 13: Modifications -->
+    <section id="modifications" class="mb-12">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">13. Modifications to Terms</span>
+            <span class="lang-id-inline">13. Modifikasi Syarat</span>
+        </h2>
+
+        <div class="lang-en">
+            <p class="text-base text-slate-600 leading-relaxed text-justify">
+                We may modify these Terms at any time. For material changes, we will provide at least <strong>30 days' prior written notice</strong> via email or dashboard notification. Continued use after the effective date constitutes acceptance of the modified Terms.
+            </p>
+        </div>
+        <div class="lang-id">
+            <p class="text-base text-slate-600 leading-relaxed text-justify">
+                Kami dapat memodifikasi Syarat ini kapan saja. Untuk perubahan material, kami akan memberikan pemberitahuan tertulis <strong>minimal 30 hari sebelumnya</strong> melalui email atau notifikasi dashboard. Penggunaan berkelanjutan setelah tanggal berlaku merupakan penerimaan Syarat yang dimodifikasi.
+            </p>
+        </div>
+    </section>
+
+    <!-- Section 14: Contact -->
+    <section id="contact" class="mb-8">
+        <h2 class="text-2xl font-semibold text-slate-900 mb-4">
+            <span class="lang-en-inline">14. Contact Us</span>
+            <span class="lang-id-inline">14. Hubungi Kami</span>
+        </h2>
+
+        <div class="rounded-[22px] bg-slate-900 text-white p-6">
+            <div class="space-y-3">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-wider text-white/50 mb-0.5"><span class="lang-en-inline">Legal Inquiries</span><span class="lang-id-inline">Pertanyaan Hukum</span></p>
+                        <p class="text-sm font-semibold text-white">support@m.next-it.my.id</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                    </div>
+                    <div>
+                        <p class="text-xs uppercase tracking-wider text-white/50 mb-0.5"><span class="lang-en-inline">Technical Support</span><span class="lang-id-inline">Dukungan Teknis</span></p>
+                        <p class="text-sm font-semibold text-white">support@m.next-it.my.id</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 rounded-[16px] bg-slate-100 border border-slate-200 p-4">
+            <div class="lang-en"><p class="text-xs text-slate-600 text-center"><strong>Legal Notice:</strong> By using MockPay, you acknowledge that you have read, understood, and agree to be bound by these Terms. This agreement is governed by Indonesian law.</p></div>
+            <div class="lang-id"><p class="text-xs text-slate-600 text-center"><strong>Pemberitahuan Hukum:</strong> Dengan menggunakan MockPay, Anda mengakui bahwa Anda telah membaca, memahami, dan setuju untuk terikat oleh Syarat ini. Perjanjian ini diatur oleh hukum Indonesia.</p></div>
+        </div>
+    </section>
+</div>
+@endsection

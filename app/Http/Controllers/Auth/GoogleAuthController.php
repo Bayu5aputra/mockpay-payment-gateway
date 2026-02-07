@@ -1,21 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\RegistrationOtpService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
-use Illuminate\Support\Str;
 
 class GoogleAuthController extends Controller
 {
     /**
      * Redirect to Google OAuth page
      */
-    public function redirect()
+    public function redirect(): RedirectResponse
     {
         try {
             return Socialite::driver('google')->redirect();
@@ -28,7 +30,7 @@ class GoogleAuthController extends Controller
     /**
      * Handle Google OAuth callback
      */
-    public function callback()
+    public function callback(RegistrationOtpService $otpService): RedirectResponse
     {
         try {
             // Get user info from Google
@@ -65,19 +67,26 @@ class GoogleAuthController extends Controller
                 return redirect()->intended(route('client.dashboard'))->with('success', 'Google account linked successfully!');
             }
 
-            // Create new user
-            $user = User::create([
-                'name' => $googleUser->getName(),
-                'email' => $googleUser->getEmail(),
+            $googleEmail = $googleUser->getEmail();
+            if (!$googleEmail) {
+                return redirect('login')->with('error', 'Google account does not have a valid email.');
+            }
+
+            $name = $googleUser->getName()
+                ?: $googleUser->getNickname()
+                ?: $googleEmail;
+
+            $otpService->start([
+                'name' => $name,
+                'email' => $googleEmail,
+                'provider' => 'google',
                 'google_id' => $googleUser->getId(),
                 'avatar' => $googleUser->getAvatar(),
-                'provider' => 'google',
-                'password' => Hash::make(Str::random(24)), // Random password for OAuth users
-                'email_verified_at' => now(), // Auto-verify email for Google users
             ]);
 
-            Auth::login($user, true);
-            return redirect()->intended(route('client.dashboard'))->with('success', 'Account created successfully!');
+            return redirect()
+                ->route('register.otp')
+                ->with('status', 'Kode OTP telah dikirim ke email Anda.');
 
         } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
             Log::error('Google OAuth Invalid State Error: ' . $e->getMessage());
@@ -93,7 +102,7 @@ class GoogleAuthController extends Controller
     /**
      * Logout user
      */
-    public function logout()
+    public function logout(): RedirectResponse
     {
         Auth::logout();
         request()->session()->invalidate();

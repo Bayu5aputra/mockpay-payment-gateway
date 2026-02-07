@@ -30,7 +30,9 @@
                     <table>
                         <tr>
                             <td style="padding-right:10px;">
-                                <img src="{{ public_path('logo.png') }}" alt="MockPay" style="width:52px; height:52px; object-fit:contain;">
+                                <div style="width:48px; height:48px; background:linear-gradient(135deg, #6366f1, #8b5cf6); border-radius:10px; display:flex; align-items:center; justify-content:center;">
+                                    <span style="color:#fff; font-weight:700; font-size:18px;">MP</span>
+                                </div>
                             </td>
                             <td>
                                 <div class="title">MockPay</div>

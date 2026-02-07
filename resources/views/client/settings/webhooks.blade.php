@@ -13,6 +13,11 @@
                         <p class="text-emerald-800 font-medium">{{ session('success') }}</p>
                     </div>
                 @endif
+                @if(session('error'))
+                    <div class="rounded-2xl border border-rose-200 bg-rose-50/80 p-4">
+                        <p class="text-rose-800 font-medium">{{ session('error') }}</p>
+                    </div>
+                @endif
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2 rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
@@ -54,6 +59,12 @@
                             </div>
                             <button class="px-6 py-2 rounded-2xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition">
                                 Save Webhook
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ route('client.settings.webhooks.test') }}" class="mt-4">
+                            @csrf
+                            <button class="w-full px-6 py-2 rounded-2xl border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition">
+                                Send Test Webhook
                             </button>
                         </form>
                     </div>

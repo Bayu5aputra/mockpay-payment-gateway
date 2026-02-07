@@ -134,41 +134,10 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
         Route::get('/', [ClientDeveloperToolsController::class, 'index'])->name('index');
         Route::get('/logs', [ClientDeveloperToolsController::class, 'logs'])->name('logs');
         Route::post('/logs/{webhookLog}/retry', [ClientDeveloperToolsController::class, 'retryWebhook'])->name('logs.retry');
-        Route::get('/api-docs', function () {
-            return view('dashboard.developers.api-docs');
-        })->name('api-docs');
-        Route::get('/code-examples', function () {
-            $examples = [
-                'php' => [
-                    'examples' => [
-                        'create_payment' => [
-                            'title' => 'Create Payment',
-                            'code' => file_get_contents(resource_path('examples/php/create-payment.php'))
-                        ]
-                    ]
-                ],
-                'javascript' => [
-                    'examples' => [
-                        'create_payment' => [
-                            'title' => 'Create Payment',
-                            'code' => file_get_contents(resource_path('examples/javascript/create-payment.js'))
-                        ]
-                    ]
-                ],
-                'python' => [
-                    'examples' => [
-                        'create_payment' => [
-                            'title' => 'Create Payment',
-                            'code' => file_get_contents(resource_path('examples/python/create-payment.py'))
-                        ]
-                    ]
-                ]
-            ];
-            return view('dashboard.developers.code-examples', compact('examples'));
-        })->name('code-examples');
-        Route::get('/simulator', function () {
-            return view('dashboard.developers.simulator');
-        })->name('simulator');
+        Route::get('/api-docs', [ClientDeveloperToolsController::class, 'apiDocs'])->name('api-docs');
+        Route::get('/code-examples', [ClientDeveloperToolsController::class, 'codeExamples'])->name('code-examples');
+        Route::get('/simulator', [ClientDeveloperToolsController::class, 'simulator'])->name('simulator');
+        Route::get('/api-logs', [ClientDeveloperToolsController::class, 'apiLogs'])->name('api-logs');
     });
 
     Route::prefix('api-keys')->name('api-keys.')->group(function () {
@@ -196,6 +165,7 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
         Route::get('/webhooks', [ClientSettingController::class, 'webhooks'])->name('webhooks');
         Route::put('/webhooks', [ClientSettingController::class, 'updateWebhooks'])->name('webhooks.update');
         Route::post('/webhooks/generate-secret', [ClientSettingController::class, 'generateWebhookSecret'])->name('webhooks.generate-secret');
+        Route::post('/webhooks/test', [ClientSettingController::class, 'testWebhook'])->name('webhooks.test');
     });
     
     Route::prefix('upgrade-requests')->name('upgrade-requests.')->group(function () {
@@ -205,6 +175,14 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
         Route::get('/{upgradeRequest}', [ClientUpgradeRequestController::class, 'show'])->name('show');
         Route::get('/{upgradeRequest}/proof', [ClientUpgradeRequestController::class, 'downloadProof'])->name('proof');
         Route::get('/{upgradeRequest}/invoice', [ClientUpgradeRequestController::class, 'downloadInvoice'])->name('invoice');
+    });
+
+    // Notification routes
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Client\NotificationController::class, 'index'])->name('index');
+        Route::post('/{id}/read', [\App\Http\Controllers\Client\NotificationController::class, 'markAsRead'])->name('read');
+        Route::post('/read-all', [\App\Http\Controllers\Client\NotificationController::class, 'markAllAsRead'])->name('read-all');
+        Route::get('/unread-count', [\App\Http\Controllers\Client\NotificationController::class, 'unreadCount'])->name('unread-count');
     });
 });
 
@@ -221,6 +199,7 @@ Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('das
         Route::post('/{upgradeRequest}/approve', [DashboardUpgradeRequestController::class, 'approve'])->name('approve');
         Route::post('/{upgradeRequest}/reject', [DashboardUpgradeRequestController::class, 'reject'])->name('reject');
         Route::get('/{upgradeRequest}/proof', [DashboardUpgradeRequestController::class, 'downloadProof'])->name('proof');
+        Route::get('/{upgradeRequest}/invoice', [DashboardUpgradeRequestController::class, 'downloadInvoice'])->name('invoice');
     });
 });
 

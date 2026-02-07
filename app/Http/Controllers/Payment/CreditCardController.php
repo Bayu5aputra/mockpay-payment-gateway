@@ -123,9 +123,15 @@ class CreditCardController extends Controller
 
             // Update credit card details
             $creditCard = $transaction->creditCard;
+            $cardType = $this->getCardType($cardNumber);
+            if (!in_array($cardType, ['visa', 'mastercard', 'amex', 'jcb'], true)) {
+                $cardType = 'visa';
+            }
+
             $creditCard->update([
-                'masked_number' => '****-****-****-' . substr($cardNumber, -4),
-                'card_type' => $this->getCardType($cardNumber),
+                'masked_card' => \App\Models\CreditCard::maskCardNumber($cardNumber),
+                'card_type' => $cardType,
+                'card_category' => 'credit',
                 'bank' => $this->getBankName($cardNumber),
             ]);
 
@@ -251,16 +257,16 @@ class CreditCardController extends Controller
         $firstTwoDigits = substr($cardNumber, 0, 2);
 
         if ($firstDigit == '4') {
-            return 'Visa';
+            return 'visa';
         } elseif (in_array($firstTwoDigits, ['51', '52', '53', '54', '55'])) {
-            return 'Mastercard';
+            return 'mastercard';
         } elseif (in_array($firstTwoDigits, ['34', '37'])) {
-            return 'American Express';
+            return 'amex';
         } elseif ($firstTwoDigits == '35') {
-            return 'JCB';
+            return 'jcb';
         }
 
-        return 'Unknown';
+        return 'unknown';
     }
 
     /**

@@ -184,6 +184,12 @@ class TransactionController extends Controller
             ->when($request->filled('event'), function ($query) use ($request) {
                 $query->where('event', 'like', '%' . $request->event . '%');
             })
+            ->when($request->filled('start_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '>=', $request->start_date);
+            })
+            ->when($request->filled('end_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '<=', $request->end_date);
+            })
             ->orderBy('created_at', 'desc')
             ->get();
 

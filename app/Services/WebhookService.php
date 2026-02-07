@@ -57,7 +57,7 @@ class WebhookService
         $signature = $this->signatureService->generateSignature($payload, $transaction->user?->webhook_secret ?? '');
 
         $headers = [
-            'X-Webhook-Signature' => $signature,
+            'X-Mockpay-Signature' => $signature,
             'X-Transaction-Id' => $transaction->transaction_id,
             'Content-Type' => 'application/json',
         ];

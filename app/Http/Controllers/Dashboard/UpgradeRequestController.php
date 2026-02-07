@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Mail\UpgradeInvoiceMail;
 use App\Models\UpgradeRequest;
+use App\Notifications\UpgradeApprovedNotification;
+use App\Notifications\UpgradeRejectedNotification;
 use App\Services\UpgradeProofService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -81,6 +83,9 @@ class UpgradeRequestController extends Controller
                 ->with('error', 'Permintaan disetujui, tetapi email gagal dikirim. Periksa konfigurasi SMTP.');
         }
 
+        // Send notification to user
+        $user->notify(new UpgradeApprovedNotification($upgradeRequest));
+
         return redirect()
             ->route('dashboard.upgrade-requests.show', $upgradeRequest)
             ->with('success', 'Permintaan disetujui dan invoice telah dikirim ke email client.');
@@ -102,6 +107,9 @@ class UpgradeRequestController extends Controller
         $upgradeRequest->rejection_reason = $validated['rejection_reason'] ?? null;
         $upgradeRequest->save();
 
+        // Send notification to user
+        $upgradeRequest->user->notify(new UpgradeRejectedNotification($upgradeRequest));
+
         return redirect()
             ->route('dashboard.upgrade-requests.show', $upgradeRequest)
             ->with('success', 'Permintaan upgrade ditolak.');
@@ -118,6 +126,27 @@ class UpgradeRequestController extends Controller
         return response()->streamDownload(function () use ($content) {
             echo $content;
         }, $filename, ['Content-Type' => $mime]);
+    }
+
+    public function downloadInvoice(UpgradeRequest $upgradeRequest)
+    {
+        abort_unless($upgradeRequest->invoice_number, 404, 'Invoice belum tersedia untuk permintaan ini.');
+
+        $banks = Config::get('mockpay.banks', []);
+
+        if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.upgrade-invoice', [
+                'upgradeRequest' => $upgradeRequest->load('user'),
+                'banks' => $banks,
+            ]);
+            return $pdf->download($upgradeRequest->invoice_number . '.pdf');
+        }
+
+        // Fallback: render HTML view if DomPDF not installed
+        return view('pdf.upgrade-invoice', [
+            'upgradeRequest' => $upgradeRequest->load('user'),
+            'banks' => $banks,
+        ]);
     }
 
     private function generateInvoiceNumber(): string

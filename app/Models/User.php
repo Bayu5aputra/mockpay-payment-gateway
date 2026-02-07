@@ -118,6 +118,11 @@ class User extends Authenticatable
         return $this->hasMany(WebhookLog::class);
     }
 
+    public function apiRequestLogs()
+    {
+        return $this->hasMany(ApiRequestLog::class);
+    }
+
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
@@ -167,6 +172,15 @@ class User extends Authenticatable
     {
         if ($this->effectivePlan() === 'free') {
             return (int) config('mockpay.limits.free_daily_transactions', 10);
+        }
+
+        return null;
+    }
+
+    public function dailyApiRequestLimit(): ?int
+    {
+        if ($this->effectivePlan() === 'free') {
+            return (int) config('mockpay.limits.free_daily_api_requests', 500);
         }
 
         return null;
