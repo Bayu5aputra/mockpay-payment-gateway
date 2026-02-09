@@ -161,6 +161,21 @@
                             </div>
                         </div>
                     </a>
+
+                    <a href="{{ route('client.developers.payload-generator') }}" class="group block rounded-[28px] bg-white border border-white/70 p-6 shadow-sm hover:shadow-[0_20px_40px_rgba(15,23,42,0.12)] transition">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Payload</p>
+                                <h3 class="text-2xl font-semibold text-slate-900 mt-3">Payload Generator</h3>
+                                <p class="text-sm text-slate-600 mt-2">Generate sample request bodies</p>
+                            </div>
+                            <div class="h-14 w-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center group-hover:scale-105 transition-transform">
+                                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14-6H5m14 12H5m14 6H5"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
                 </div>
 
                 <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">

@@ -25,7 +25,7 @@
                 @endif
 
                 <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
-                    <form method="POST" action="{{ route('client.api-keys.store') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <form method="POST" action="{{ route('client.api-keys.store') }}" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                         @csrf
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Key Name</label>
@@ -37,6 +37,10 @@
                                 <option value="sandbox">Sandbox</option>
                                 <option value="production">Production</option>
                             </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Expires At (optional)</label>
+                            <input type="datetime-local" name="expires_at" class="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900/20">
                         </div>
                         <button class="px-6 py-2 rounded-2xl bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800 transition">
                             Generate Key
@@ -53,6 +57,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-[0.2em]">Key</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-[0.2em]">Environment</th>
                                     <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-[0.2em]">Last Used</th>
+                                    <th class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-[0.2em]">Expires</th>
                                     <th class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-[0.2em]">Actions</th>
                                 </tr>
                             </thead>
@@ -63,6 +68,7 @@
                                         <td class="px-6 py-4 font-mono text-slate-700">{{ $apiKey->getMaskedKey() }}</td>
                                         <td class="px-6 py-4 text-slate-600">{{ ucfirst($apiKey->environment) }}</td>
                                         <td class="px-6 py-4 text-slate-600">{{ $apiKey->last_used_at?->format('Y-m-d H:i') ?? '-' }}</td>
+                                        <td class="px-6 py-4 text-slate-600">{{ $apiKey->expires_at?->format('Y-m-d H:i') ?? 'Never' }}</td>
                                         <td class="px-6 py-4 text-right space-x-2">
                                             <form method="POST" action="{{ route('client.api-keys.regenerate', $apiKey->id) }}" class="inline">
                                                 @csrf
@@ -77,7 +83,7 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-6 text-center text-slate-500">No API keys yet.</td>
+                                        <td colspan="6" class="px-6 py-6 text-center text-slate-500">No API keys yet.</td>
                                     </tr>
                                 @endforelse
                             </tbody>

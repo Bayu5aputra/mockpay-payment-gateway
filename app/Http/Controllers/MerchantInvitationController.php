@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Merchant;
 use App\Models\MerchantInvitation;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +14,7 @@ class MerchantInvitationController extends Controller
     public function showAccept(string $token)
     {
         $invitation = MerchantInvitation::where('token', $token)->firstOrFail();
+        $invitation->load('inviter');
 
         if ($invitation->status !== 'pending' || ($invitation->expires_at && $invitation->expires_at->isPast())) {
             abort(410, 'Invitation link has expired.');
@@ -44,20 +46,21 @@ class MerchantInvitationController extends Controller
         $merchant = Merchant::create([
             'name' => $request->name,
             'email' => $invitation->email,
-            'email_verified_at' => now(),
+            'email_verified_at' => null,
             'password' => Hash::make($request->password),
             'company_name' => $request->company_name,
             'phone' => $request->phone,
             'business_type' => $request->business_type,
-            'status' => 'pending',
+            'status' => 'active',
         ]);
 
         $invitation->status = 'accepted';
         $invitation->accepted_at = now();
         $invitation->save();
 
+        event(new Registered($merchant));
         Auth::guard('merchant')->login($merchant);
 
-        return redirect()->route('dashboard.index')->with('success', 'Merchant account created from invitation.');
+        return redirect()->route('verification.notice')->with('success', 'Merchant account created from invitation.');
     }
 }

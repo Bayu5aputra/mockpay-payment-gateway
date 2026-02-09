@@ -22,7 +22,7 @@ class WebhookService
     /**
      * Send webhook notification
      */
-    public function sendWebhook(Transaction $transaction, bool $async = true)
+    public function sendWebhook(Transaction $transaction, bool $async = true, int $attempt = 1)
     {
         $webhookUrl = $transaction->user?->webhook_url;
 
@@ -38,18 +38,18 @@ class WebhookService
 
         if ($async) {
             // Send via queue
-            SendWebhookJob::dispatch($transaction)->delay(now()->addSeconds(2));
+            SendWebhookJob::dispatch($transaction, $attempt)->delay(now()->addSeconds(2));
             return true;
         }
 
         // Send immediately
-        return $this->deliverWebhook($transaction);
+        return $this->deliverWebhook($transaction, $attempt);
     }
 
     /**
      * Actually deliver the webhook
      */
-    public function deliverWebhook(Transaction $transaction): bool
+    public function deliverWebhook(Transaction $transaction, int $attempt = 1): bool
     {
         $webhookUrl = $transaction->user?->webhook_url;
         $eventName = $this->getEventName($transaction->status);
@@ -62,7 +62,6 @@ class WebhookService
             'Content-Type' => 'application/json',
         ];
 
-        // Create webhook log
         $webhookLog = WebhookLog::create([
             'merchant_id' => $transaction->merchant_id,
             'user_id' => $transaction->user_id,
@@ -72,7 +71,7 @@ class WebhookService
             'payload' => $payload,
             'headers' => $headers,
             'status' => 'pending',
-            'attempt_count' => 1,
+            'attempt_count' => $attempt,
             'sent_at' => now(),
         ]);
 
@@ -184,8 +183,8 @@ class WebhookService
             return false;
         }
 
-        $webhookLog->increment('attempt_count');
+        $nextAttempt = $webhookLog->attempt_count + 1;
 
-        return $this->deliverWebhook($transaction);
+        return $this->deliverWebhook($transaction, $nextAttempt);
     }
 }

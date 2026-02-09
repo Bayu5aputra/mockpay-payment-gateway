@@ -21,7 +21,7 @@ class VerifyEmailController extends Controller
                 return redirect()->intended(route('dashboard.index') . '?verified=1');
             }
             
-            return redirect()->intended(route('client.dashboard') . '?verified=1');
+            return redirect()->intended(route('dashboard') . '?verified=1');
         }
 
         if ($request->user()->markEmailAsVerified()) {
@@ -33,6 +33,6 @@ class VerifyEmailController extends Controller
             return redirect()->intended(route('dashboard.index') . '?verified=1');
         }
         
-        return redirect()->intended(route('client.dashboard') . '?verified=1');
+        return redirect()->intended(route('dashboard') . '?verified=1');
     }
 }

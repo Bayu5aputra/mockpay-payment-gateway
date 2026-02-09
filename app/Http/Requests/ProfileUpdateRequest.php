@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,13 +24,14 @@ class ProfileUpdateRequest extends FormRequest
         $user = $this->user();
 
         return [
-            'company_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'company_name' => 'nullable|string|max:255',
             'email' => [
                 'required',
                 'string',
                 'email',
                 'max:255',
-                Rule::unique('merchants')->ignore($user->id),
+                Rule::unique((new User())->getTable())->ignore($user?->id),
             ],
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:500',
@@ -49,7 +51,8 @@ class ProfileUpdateRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'company_name.required' => 'Company name is required',
+            'name.required' => 'Name is required',
+            'name.max' => 'Name must not exceed 255 characters',
             'company_name.max' => 'Company name must not exceed 255 characters',
             'email.required' => 'Email address is required',
             'email.email' => 'Please provide a valid email address',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentChannel;
 use App\Services\PaymentService;
 use App\Services\TransactionService;
 use Carbon\Carbon;
@@ -143,144 +144,31 @@ class PaymentController extends Controller
     public function channels(Request $request)
     {
         try {
-            $channels = [
-                'bank_transfer' => [
-                    'bca_va' => [
-                        'name' => 'BCA Virtual Account',
-                        'code' => 'bca_va',
-                        'fee_percentage' => 1.5,
-                        'fee_fixed' => 0,
-                        'min_amount' => 10000,
-                        'max_amount' => 50000000,
-                        'status' => 'active',
-                    ],
-                    'mandiri_va' => [
-                        'name' => 'Mandiri Virtual Account',
-                        'code' => 'mandiri_va',
-                        'fee_percentage' => 1.5,
-                        'fee_fixed' => 0,
-                        'min_amount' => 10000,
-                        'max_amount' => 50000000,
-                        'status' => 'active',
-                    ],
-                    'bni_va' => [
-                        'name' => 'BNI Virtual Account',
-                        'code' => 'bni_va',
-                        'fee_percentage' => 1.5,
-                        'fee_fixed' => 0,
-                        'min_amount' => 10000,
-                        'max_amount' => 50000000,
-                        'status' => 'active',
-                    ],
-                    'bri_va' => [
-                        'name' => 'BRI Virtual Account',
-                        'code' => 'bri_va',
-                        'fee_percentage' => 1.5,
-                        'fee_fixed' => 0,
-                        'min_amount' => 10000,
-                        'max_amount' => 50000000,
-                        'status' => 'active',
-                    ],
-                    'permata_va' => [
-                        'name' => 'Permata Virtual Account',
-                        'code' => 'permata_va',
-                        'fee_percentage' => 1.5,
-                        'fee_fixed' => 0,
-                        'min_amount' => 10000,
-                        'max_amount' => 50000000,
-                        'status' => 'active',
-                    ],
-                ],
-                'ewallet' => [
-                    'gopay' => [
-                        'name' => 'GoPay',
-                        'code' => 'gopay',
-                        'fee_percentage' => 2.0,
-                        'fee_fixed' => 0,
-                        'min_amount' => 1000,
-                        'max_amount' => 10000000,
-                        'status' => 'active',
-                    ],
-                    'ovo' => [
-                        'name' => 'OVO',
-                        'code' => 'ovo',
-                        'fee_percentage' => 2.0,
-                        'fee_fixed' => 0,
-                        'min_amount' => 10000,
-                        'max_amount' => 10000000,
-                        'status' => 'active',
-                    ],
-                    'dana' => [
-                        'name' => 'DANA',
-                        'code' => 'dana',
-                        'fee_percentage' => 2.0,
-                        'fee_fixed' => 0,
-                        'min_amount' => 1000,
-                        'max_amount' => 10000000,
-                        'status' => 'active',
-                    ],
-                    'shopeepay' => [
-                        'name' => 'ShopeePay',
-                        'code' => 'shopeepay',
-                        'fee_percentage' => 2.0,
-                        'fee_fixed' => 0,
-                        'min_amount' => 1000,
-                        'max_amount' => 10000000,
-                        'status' => 'active',
-                    ],
-                    'linkaja' => [
-                        'name' => 'LinkAja',
-                        'code' => 'linkaja',
-                        'fee_percentage' => 2.0,
-                        'fee_fixed' => 0,
-                        'min_amount' => 1000,
-                        'max_amount' => 10000000,
-                        'status' => 'active',
-                    ],
-                ],
-                'credit_card' => [
-                    'credit_card' => [
-                        'name' => 'Credit Card',
-                        'code' => 'credit_card',
-                        'fee_percentage' => 2.9,
-                        'fee_fixed' => 2000,
-                        'min_amount' => 10000,
-                        'max_amount' => 100000000,
-                        'status' => 'active',
-                    ],
-                ],
-                'qris' => [
-                    'qris' => [
-                        'name' => 'QRIS',
-                        'code' => 'qris',
-                        'fee_percentage' => 0.7,
-                        'fee_fixed' => 0,
-                        'min_amount' => 1000,
-                        'max_amount' => 10000000,
-                        'status' => 'active',
-                    ],
-                ],
-                'retail' => [
-                    'alfamart' => [
-                        'name' => 'Alfamart',
-                        'code' => 'alfamart',
-                        'fee_percentage' => 0,
-                        'fee_fixed' => 2500,
-                        'min_amount' => 10000,
-                        'max_amount' => 5000000,
-                        'status' => 'active',
-                    ],
-                    'indomaret' => [
-                        'name' => 'Indomaret',
-                        'code' => 'indomaret',
-                        'fee_percentage' => 0,
-                        'fee_fixed' => 2500,
-                        'min_amount' => 10000,
-                        'max_amount' => 5000000,
-                        'status' => 'active',
-                    ],
-                ],
-            ];
+            $channels = PaymentChannel::query()
+                ->orderBy('display_order')
+                ->orderBy('name')
+                ->get()
+                ->groupBy(function (PaymentChannel $channel): string {
+                    return match ($channel->type) {
+                        'card' => 'credit_card',
+                        default => $channel->type,
+                    };
+                })
+                ->map(function ($group) {
+                    return $group->mapWithKeys(function (PaymentChannel $channel): array {
+                        return [
+                            $channel->code => [
+                                'name' => $channel->name,
+                                'code' => $channel->code,
+                                'fee_percentage' => (float) $channel->fee_merchant_percentage,
+                                'fee_fixed' => (float) $channel->fee_merchant_fixed,
+                                'min_amount' => (float) $channel->min_amount,
+                                'max_amount' => (float) $channel->max_amount,
+                                'status' => $channel->is_active ? 'active' : 'inactive',
+                            ],
+                        ];
+                    });
+                });
 
             return response()->json([
                 'status' => 'success',

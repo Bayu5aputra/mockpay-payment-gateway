@@ -38,6 +38,53 @@
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Tenant Status</p>
+                        <div class="mt-3 space-y-2 text-sm text-slate-700">
+                            <div class="flex items-center justify-between">
+                                <span>Active</span>
+                                <span class="font-semibold">{{ number_format($statusCounts['active']) }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Suspended</span>
+                                <span class="font-semibold">{{ number_format($statusCounts['suspended']) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">System Health</p>
+                        <div class="mt-3 space-y-2 text-sm text-slate-700">
+                            <div class="flex items-center justify-between">
+                                <span>Database</span>
+                                <span class="font-semibold">{{ $health['database'] ? 'Healthy' : 'Down' }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Queue Backlog</span>
+                                <span class="font-semibold">{{ number_format($health['queue_backlog']) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-500">Traffic (24h)</p>
+                        <div class="mt-3 space-y-2 text-sm text-slate-700">
+                            <div class="flex items-center justify-between">
+                                <span>API Requests</span>
+                                <span class="font-semibold">{{ number_format($health['api_requests_24h']) }}</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Failed Webhooks</span>
+                                <span class="font-semibold">{{ number_format($health['failed_webhooks_24h']) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3">
+                    <a href="{{ route('dashboard.tenants.index') }}" class="rounded-2xl bg-slate-900 text-white px-5 py-2 text-sm font-semibold hover:bg-slate-800 transition">Manage Tenants</a>
+                    <a href="{{ route('dashboard.settings.global.index') }}" class="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Global Settings</a>
+                </div>
+
                 <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
                     <p class="text-sm text-slate-600">
                         Platform admin does not access tenant operational data, transactions, or webhook payloads.

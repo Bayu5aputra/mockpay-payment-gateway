@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
+use App\Models\PaymentChannel;
+use App\Services\PaymentService;
 use App\Services\TransactionService;
 use Illuminate\Http\Request;
 
@@ -47,8 +49,9 @@ class CheckoutController extends Controller
 
         // Get payment detail
         $paymentDetail = $transaction->getPaymentDetail();
+        $methodChannels = $this->getMethodChannels();
 
-        return view('payment.checkout', compact('transaction', 'paymentDetail'));
+        return view('payment.checkout', compact('transaction', 'paymentDetail', 'methodChannels'));
     }
 
     /**
@@ -183,5 +186,62 @@ class CheckoutController extends Controller
             'status' => 'success',
             'data' => $instructions
         ]);
+    }
+
+    public function selectMethod(Request $request, string $transactionId, PaymentService $paymentService)
+    {
+        $validated = $request->validate([
+            'payment_method' => 'required|in:bank_transfer,ewallet,credit_card,qris,retail',
+            'payment_channel' => 'required|string|max:100',
+        ]);
+
+        $transaction = $this->transactionService->getByTransactionId($transactionId);
+
+        if (!$transaction) {
+            abort(404, 'Transaction not found');
+        }
+
+        if ($transaction->status !== 'pending') {
+            return redirect()->back()->with('error', 'Payment method can only be changed for pending transactions.');
+        }
+
+        if ($transaction->isExpired()) {
+            return redirect()->back()->with('error', 'Transaction has expired.');
+        }
+
+        if ($transaction->paymentAttempts()->exists()) {
+            return redirect()->back()->with('error', 'Payment method cannot be changed after a payment attempt is recorded.');
+        }
+
+        try {
+            $paymentService->switchPaymentMethod(
+                $transaction,
+                $validated['payment_method'],
+                $validated['payment_channel'],
+            );
+
+            return redirect()
+                ->route('payment.show', $transaction->transaction_id)
+                ->with('success', 'Payment method updated successfully.');
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Failed to update payment method: ' . $e->getMessage());
+        }
+    }
+
+    private function getMethodChannels(): array
+    {
+        $channels = PaymentChannel::query()
+            ->where('is_active', true)
+            ->orderBy('display_order')
+            ->orderBy('name')
+            ->get(['code', 'name', 'type']);
+
+        return [
+            'bank_transfer' => $channels->where('type', 'bank_transfer')->values(),
+            'ewallet' => $channels->where('type', 'ewallet')->values(),
+            'credit_card' => $channels->where('type', 'card')->values(),
+            'qris' => $channels->where('type', 'qris')->values(),
+            'retail' => $channels->where('type', 'retail')->values(),
+        ];
     }
 }

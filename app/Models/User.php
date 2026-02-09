@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status',
         'plan',
         'plan_ends_at',
         'google_id',
@@ -53,6 +54,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'status' => 'string',
             'plan_ends_at' => 'datetime',
             'webhook_events' => 'array',
         ];
@@ -141,6 +143,16 @@ class User extends Authenticatable
     public function isFree(): bool
     {
         return $this->effectivePlan() === 'free';
+    }
+
+    public function isSuspended(): bool
+    {
+        return $this->status === 'suspended';
+    }
+
+    public function isActive(): bool
+    {
+        return !$this->isSuspended();
     }
 
     public function isPlanExpired(): bool

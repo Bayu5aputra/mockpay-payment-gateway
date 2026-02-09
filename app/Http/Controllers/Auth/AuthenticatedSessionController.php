@@ -37,7 +37,7 @@ class AuthenticatedSessionController extends Controller
         }
         
         // Redirect user/client to client dashboard
-        return redirect()->intended(route('client.dashboard'));
+        return redirect()->intended(route('dashboard'));
     }
 
     /**

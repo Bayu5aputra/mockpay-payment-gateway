@@ -173,6 +173,64 @@ class TransactionController extends Controller
         }
     }
 
+    public function exportExcel(Request $request)
+    {
+        $user = Auth::user();
+
+        $filters = [
+            'status' => $request->status,
+            'payment_method' => $request->payment_method,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+        ];
+
+        $transactions = $this->transactionService->getTransactionsByUser(
+            $user->id,
+            $filters,
+            100000
+        )->items();
+
+        $rows = [];
+        foreach ($transactions as $transaction) {
+            $rows[] = [
+                $transaction->transaction_id,
+                $transaction->order_id,
+                $transaction->payment_method,
+                $transaction->payment_channel,
+                $transaction->amount,
+                $transaction->fee,
+                $transaction->total_amount,
+                $transaction->status,
+                $transaction->customer_name,
+                $transaction->customer_email,
+                $transaction->created_at?->format('Y-m-d H:i:s'),
+                $transaction->paid_at?->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        $xml = $this->buildSpreadsheetXml([
+            'Transaction ID',
+            'Order ID',
+            'Payment Method',
+            'Payment Channel',
+            'Amount',
+            'Fee',
+            'Total Amount',
+            'Status',
+            'Customer Name',
+            'Customer Email',
+            'Created At',
+            'Paid At',
+        ], $rows);
+
+        $filename = 'transactions_' . now()->format('YmdHis') . '.xls';
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/vnd.ms-excel',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
     public function exportWebhookLogs(Request $request)
     {
         $user = Auth::user();
@@ -235,5 +293,95 @@ class TransactionController extends Controller
         return Response::download($filepath, basename($filepath), [
             'Content-Type' => 'text/csv',
         ])->deleteFileAfterSend(true);
+    }
+
+    public function exportWebhookLogsExcel(Request $request)
+    {
+        $user = Auth::user();
+
+        $logs = $user->webhookLogs()
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->filled('event'), function ($query) use ($request) {
+                $query->where('event', 'like', '%' . $request->event . '%');
+            })
+            ->when($request->filled('start_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '>=', $request->start_date);
+            })
+            ->when($request->filled('end_date'), function ($query) use ($request) {
+                $query->whereDate('created_at', '<=', $request->end_date);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $rows = [];
+        foreach ($logs as $log) {
+            $rows[] = [
+                $log->id,
+                $log->transaction?->transaction_id,
+                $log->event,
+                $log->status,
+                $log->attempt_count,
+                $log->response_code,
+                $log->response_body,
+                $log->error_message,
+                optional($log->sent_at)?->format('Y-m-d H:i:s'),
+                $log->created_at?->format('Y-m-d H:i:s'),
+            ];
+        }
+
+        $xml = $this->buildSpreadsheetXml([
+            'ID',
+            'Transaction ID',
+            'Event',
+            'Status',
+            'Attempts',
+            'Response Code',
+            'Response Body',
+            'Error Message',
+            'Sent At',
+            'Created At',
+        ], $rows);
+
+        $filename = 'webhook-logs_' . now()->format('YmdHis') . '.xls';
+
+        return response($xml, 200, [
+            'Content-Type' => 'application/vnd.ms-excel',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ]);
+    }
+
+    private function buildSpreadsheetXml(array $headers, array $rows): string
+    {
+        $escape = static function ($value): string {
+            return htmlspecialchars((string) ($value ?? ''), ENT_XML1 | ENT_QUOTES, 'UTF-8');
+        };
+
+        $xml = '<?xml version="1.0"?>';
+        $xml .= '<?mso-application progid="Excel.Sheet"?>';
+        $xml .= '<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"';
+        $xml .= ' xmlns:o="urn:schemas-microsoft-com:office:office"';
+        $xml .= ' xmlns:x="urn:schemas-microsoft-com:office:excel"';
+        $xml .= ' xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">';
+        $xml .= '<Worksheet ss:Name="Report"><Table>';
+
+        $xml .= '<Row>';
+        foreach ($headers as $header) {
+            $xml .= '<Cell><Data ss:Type="String">' . $escape($header) . '</Data></Cell>';
+        }
+        $xml .= '</Row>';
+
+        foreach ($rows as $row) {
+            $xml .= '<Row>';
+            foreach ($row as $cell) {
+                $xml .= '<Cell><Data ss:Type="String">' . $escape($cell) . '</Data></Cell>';
+            }
+            $xml .= '</Row>';
+        }
+
+        $xml .= '</Table></Worksheet></Workbook>';
+
+        return $xml;
     }
 }

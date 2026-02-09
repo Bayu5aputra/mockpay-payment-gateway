@@ -376,4 +376,64 @@ class PaymentService
             throw $e;
         }
     }
+
+    public function switchPaymentMethod(Transaction $transaction, string $paymentMethod, string $paymentChannelCode): Transaction
+    {
+        if ($transaction->status !== Transaction::STATUS_PENDING) {
+            throw new \Exception('Only pending transactions can change payment method');
+        }
+
+        $paymentChannel = PaymentChannel::where('code', $paymentChannelCode)
+            ->where('is_active', true)
+            ->firstOrFail();
+
+        $channelTypeMap = [
+            Transaction::METHOD_BANK_TRANSFER => 'bank_transfer',
+            Transaction::METHOD_EWALLET => 'ewallet',
+            Transaction::METHOD_CREDIT_CARD => 'card',
+            Transaction::METHOD_QRIS => 'qris',
+            Transaction::METHOD_RETAIL => 'retail',
+        ];
+
+        $expectedType = $channelTypeMap[$paymentMethod] ?? null;
+        if ($expectedType === null || $paymentChannel->type !== $expectedType) {
+            throw new \Exception('Selected channel does not match payment method');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $this->deletePaymentDetails($transaction);
+
+            $fee = $this->calculateFee((float) $transaction->amount, $paymentChannel);
+            $totalAmount = (float) $transaction->amount + $fee;
+
+            $transaction->update([
+                'payment_channel_id' => $paymentChannel->id,
+                'payment_type' => $paymentChannel->type,
+                'payment_method' => $paymentMethod,
+                'payment_channel' => $paymentChannel->code,
+                'fee' => $fee,
+                'total_amount' => $totalAmount,
+            ]);
+
+            $this->createPaymentDetail($transaction->fresh(), $paymentChannel);
+
+            DB::commit();
+
+            return $transaction->fresh();
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
+    protected function deletePaymentDetails(Transaction $transaction): void
+    {
+        $transaction->virtualAccount()?->delete();
+        $transaction->ewallet()?->delete();
+        $transaction->creditCard()?->delete();
+        $transaction->qris()?->delete();
+        $transaction->retail()?->delete();
+    }
 }

@@ -57,7 +57,9 @@
                         <div class="md:col-span-6 flex flex-wrap items-center gap-3">
                             <button class="rounded-2xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white">Apply Filters</button>
                             <a href="{{ route('client.transactions.export', request()->query()) }}" class="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Export CSV</a>
+                            <a href="{{ route('client.transactions.export.excel', request()->query()) }}" class="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Export Excel</a>
                             <a href="{{ route('client.transactions.webhooks.export', request()->query()) }}" class="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Export Webhook Logs</a>
+                            <a href="{{ route('client.transactions.webhooks.export.excel', request()->query()) }}" class="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Webhook Logs Excel</a>
                         </div>
                     </form>
                 </div>

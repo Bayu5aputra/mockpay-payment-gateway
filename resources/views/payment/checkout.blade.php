@@ -11,6 +11,17 @@
     <div class="max-w-6xl mx-auto px-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 space-y-6">
+                @if(session('success'))
+                    <div class="rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4">
+                        <p class="text-emerald-800 font-medium">{{ session('success') }}</p>
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="rounded-2xl border border-rose-200 bg-rose-50/80 p-4">
+                        <p class="text-rose-800 font-medium">{{ session('error') }}</p>
+                    </div>
+                @endif
+
                 <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70">
                     <div class="flex items-center justify-between">
                         <div>
@@ -33,6 +44,32 @@
                             <p class="font-semibold text-slate-900">Rp {{ number_format($transaction->total_amount ?? $transaction->amount, 0, ',', '.') }}</p>
                         </div>
                     </div>
+                </div>
+
+                <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70 space-y-4">
+                    <h2 class="text-lg font-semibold text-slate-900">Choose Payment Method</h2>
+                    <form method="POST" action="{{ route('payment.select-method', $transaction->transaction_id) }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        @csrf
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Method</label>
+                            <select id="switchMethod" name="payment_method" class="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700">
+                                <option value="bank_transfer" @selected($transaction->payment_method === 'bank_transfer')>Bank Transfer</option>
+                                <option value="ewallet" @selected($transaction->payment_method === 'ewallet')>E-Wallet</option>
+                                <option value="credit_card" @selected($transaction->payment_method === 'credit_card')>Credit Card</option>
+                                <option value="qris" @selected($transaction->payment_method === 'qris')>QRIS</option>
+                                <option value="retail" @selected($transaction->payment_method === 'retail')>Retail</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Channel</label>
+                            <select id="switchChannel" name="payment_channel" class="w-full rounded-2xl border border-slate-200 bg-white/90 px-4 py-2 text-sm text-slate-700"></select>
+                        </div>
+                        <div class="flex items-end">
+                            <button class="w-full rounded-2xl border border-slate-200 px-6 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+                                Update Method
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
                 <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70 space-y-4">
@@ -142,6 +179,7 @@
         const amount = '{{ $transaction->total_amount ?? $transaction->amount }}';
         const paymentDetail = @json($paymentDetail);
         const expiresAt = @json($expiresAt);
+        const methodChannels = @json($methodChannels ?? []);
 
         function formatCountdown(ms) {
             if (ms <= 0) {
@@ -174,6 +212,28 @@
         function copyText(text) {
             navigator.clipboard.writeText(text);
         }
+
+        function updateChannelOptions() {
+            const method = document.getElementById('switchMethod').value;
+            const channelSelect = document.getElementById('switchChannel');
+            const currentChannel = '{{ $transaction->payment_channel }}';
+            const channels = methodChannels[method] ?? [];
+
+            channelSelect.innerHTML = '';
+
+            channels.forEach((channel) => {
+                const option = document.createElement('option');
+                option.value = channel.code;
+                option.textContent = `${channel.name} (${channel.code})`;
+                if (channel.code === currentChannel) {
+                    option.selected = true;
+                }
+                channelSelect.appendChild(option);
+            });
+        }
+
+        document.getElementById('switchMethod').addEventListener('change', updateChannelOptions);
+        updateChannelOptions();
 
         async function postJson(url, payload) {
             const response = await fetch(url, {

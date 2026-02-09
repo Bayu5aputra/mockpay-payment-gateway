@@ -85,6 +85,12 @@ class LoginRequest extends FormRequest
         $user = User::where('email', $email)->first();
         
         if ($user && Hash::check($password, $user->password)) {
+            if ($user->isSuspended()) {
+                throw ValidationException::withMessages([
+                    'email' => 'Your account has been suspended. Please contact support.',
+                ]);
+            }
+
             // Logout from merchant guard if previously logged in (prevent dual auth)
             if (Auth::guard('merchant')->check()) {
                 Auth::guard('merchant')->logout();

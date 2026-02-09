@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Middleware;
 
 use Closure;
@@ -9,23 +11,23 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckMerchantStatus
 {
-    /**
-     * Handle an incoming request.
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        $merchant = Auth::user();
+        $merchant = Auth::guard('merchant')->user();
 
         if (!$merchant) {
-            return redirect('/login');
+            return redirect()->route('login');
         }
 
-        if (!$merchant->is_active) {
-            Auth::logout();
+        if (!$merchant->isActive()) {
+            Auth::guard('merchant')->logout();
+
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect('/login')->with('error', 'Your account has been deactivated. Please contact support.');
+            return redirect()
+                ->route('login')
+                ->withErrors(['email' => 'Your merchant account is not active. Please contact support.']);
         }
 
         return $next($request);

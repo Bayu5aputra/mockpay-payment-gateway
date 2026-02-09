@@ -41,6 +41,9 @@
                         <button @click="activeTab = 'python'" :class="activeTab === 'python' ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 hover:bg-slate-50'" class="px-6 py-3 rounded-2xl font-semibold shadow-sm transition-all duration-200">
                             Python
                         </button>
+                        <button @click="activeTab = 'go'" :class="activeTab === 'go' ? 'bg-slate-900 text-white' : 'bg-white text-slate-700 hover:bg-slate-50'" class="px-6 py-3 rounded-2xl font-semibold shadow-sm transition-all duration-200">
+                            Go
+                        </button>
                     </div>
 
                     <div x-show="activeTab === 'php'" x-cloak class="space-y-6">
@@ -85,6 +88,22 @@
                                 <div class="p-6">
                                     <div class="bg-slate-900 rounded-2xl overflow-hidden">
                                         <pre class="p-4 overflow-x-auto"><code id="python-{{ $key }}" class="text-sky-300 text-xs">{{ $example['code'] }}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div x-show="activeTab === 'go'" x-cloak class="space-y-6">
+                        @foreach($examples['go']['examples'] as $key => $example)
+                            <div class="bg-white rounded-[28px] shadow-sm border border-white/70 overflow-hidden">
+                                <div class="bg-slate-900 px-6 py-4 flex items-center justify-between">
+                                    <h3 class="text-lg font-semibold text-white">{{ $example['title'] }}</h3>
+                                    <button onclick="copyCode('go-{{ $key }}')" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-xl text-xs font-semibold transition-colors">Copy</button>
+                                </div>
+                                <div class="p-6">
+                                    <div class="bg-slate-900 rounded-2xl overflow-hidden">
+                                        <pre class="p-4 overflow-x-auto"><code id="go-{{ $key }}" class="text-emerald-200 text-xs">{{ $example['code'] }}</code></pre>
                                     </div>
                                 </div>
                             </div>

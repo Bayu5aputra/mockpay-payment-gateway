@@ -21,6 +21,7 @@ use App\Http\Controllers\Client\ApiKeyController as ClientApiKeyController;
 use App\Http\Controllers\Client\DeveloperToolsController as ClientDeveloperToolsController;
 use App\Http\Controllers\Client\SettingController as ClientSettingController;
 use App\Http\Controllers\Client\TransactionController as ClientTransactionController;
+use App\Http\Controllers\Dashboard\MerchantInvitationController as DashboardMerchantInvitationController;
 use App\Http\Controllers\MerchantInvitationController;
 
 // ==========================================
@@ -69,6 +70,7 @@ Route::prefix('payment')->name('payment.')->group(function () {
     Route::get('/{transaction_id}/failed', [CheckoutController::class, 'failed'])->name('failed');
     Route::get('/{transaction_id}/status', [CheckoutController::class, 'checkStatus'])->name('status');
     Route::get('/{transaction_id}/instructions', [CheckoutController::class, 'instructions'])->name('instructions');
+    Route::post('/{transaction_id}/select-method', [CheckoutController::class, 'selectMethod'])->name('select-method');
 
     // Credit Card Payment
     Route::get('/credit-card/{transaction_id}', [CreditCardController::class, 'form'])->name('credit-card.form');
@@ -126,7 +128,7 @@ Route::prefix('payment/simulate')->name('payment.simulate.')->group(function () 
 // CLIENT/USER DASHBOARD ROUTES (PROTECTED)
 // ==========================================
 
-Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(function () {
+Route::middleware(['auth:web', 'user.active'])->prefix('client')->name('client.')->group(function () {
     // Client Dashboard Home
     Route::get('/dashboard', [ClientDashboardController::class, 'index'])->name('dashboard');
 
@@ -137,6 +139,7 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
         Route::get('/api-docs', [ClientDeveloperToolsController::class, 'apiDocs'])->name('api-docs');
         Route::get('/code-examples', [ClientDeveloperToolsController::class, 'codeExamples'])->name('code-examples');
         Route::get('/simulator', [ClientDeveloperToolsController::class, 'simulator'])->name('simulator');
+        Route::get('/payload-generator', [ClientDeveloperToolsController::class, 'payloadGenerator'])->name('payload-generator');
         Route::get('/api-logs', [ClientDeveloperToolsController::class, 'apiLogs'])->name('api-logs');
     });
 
@@ -155,7 +158,9 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
         Route::get('/{transaction_id}/download/json', [ClientTransactionController::class, 'downloadJson'])->name('download.json');
         Route::get('/{transaction_id}/download/pdf', [ClientTransactionController::class, 'downloadPdf'])->name('download.pdf');
         Route::get('/export/csv', [ClientTransactionController::class, 'export'])->name('export');
+        Route::get('/export/excel', [ClientTransactionController::class, 'exportExcel'])->name('export.excel');
         Route::get('/webhooks/export/csv', [ClientTransactionController::class, 'exportWebhookLogs'])->name('webhooks.export');
+        Route::get('/webhooks/export/excel', [ClientTransactionController::class, 'exportWebhookLogsExcel'])->name('webhooks.export.excel');
     });
 
     Route::prefix('settings')->name('settings.')->group(function () {
@@ -186,12 +191,37 @@ Route::middleware(['auth:web'])->prefix('client')->name('client.')->group(functi
     });
 });
 
+Route::middleware(['auth:web', 'user.active'])
+    ->get('/dashboard-home', function () {
+        return redirect()->route('client.dashboard');
+    })
+    ->name('dashboard');
+
 // ==========================================
 // MERCHANT DASHBOARD ROUTES (PROTECTED)
 // ==========================================
 
-Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
+Route::middleware(['auth:merchant', 'verified:merchant', 'merchant.status'])->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [PlatformDashboardController::class, 'index'])->name('index');
+
+    Route::prefix('invitations')->name('invitations.')->group(function () {
+        Route::get('/', [DashboardMerchantInvitationController::class, 'index'])->name('index');
+        Route::post('/', [DashboardMerchantInvitationController::class, 'store'])->name('store');
+        Route::post('/test-email', [DashboardMerchantInvitationController::class, 'testEmail'])->name('test-email');
+        Route::post('/{invitation}/delete', [DashboardMerchantInvitationController::class, 'destroy'])->name('delete');
+    });
+
+    Route::prefix('tenants')->name('tenants.')->group(function () {
+        Route::get('/', [PlatformDashboardController::class, 'tenants'])->name('index');
+        Route::patch('/{user}/status', [PlatformDashboardController::class, 'updateTenantStatus'])->name('status.update');
+        Route::patch('/{user}/plan', [PlatformDashboardController::class, 'updateTenantPlan'])->name('plan.update');
+    });
+
+    Route::prefix('settings/global')->name('settings.global.')->group(function () {
+        Route::get('/', [PlatformDashboardController::class, 'globalSettings'])->name('index');
+        Route::patch('/defaults', [PlatformDashboardController::class, 'updateDefaults'])->name('defaults.update');
+        Route::patch('/channels/{paymentChannel}', [PlatformDashboardController::class, 'updateChannel'])->name('channels.update');
+    });
 
     Route::prefix('upgrade-requests')->name('upgrade-requests.')->group(function () {
         Route::get('/', [DashboardUpgradeRequestController::class, 'index'])->name('index');
@@ -206,7 +236,7 @@ Route::middleware(['auth:merchant', 'verified'])->prefix('dashboard')->name('das
 // ==========================================
 // PROFILE (User Account)
 // ==========================================
-Route::middleware(['auth:web'])->group(function () {
+Route::middleware(['auth:web', 'user.active'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

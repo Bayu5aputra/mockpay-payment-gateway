@@ -50,7 +50,7 @@ class SendWebhookJob implements ShouldQueue
                 'attempt' => $this->attempt,
             ]);
 
-            $result = $webhookService->sendWebhook($this->transaction, false);
+            $result = $webhookService->sendWebhook($this->transaction, false, $this->attempt);
 
             if ($result) {
                 Log::info('Webhook sent successfully', [

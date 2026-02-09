@@ -66,8 +66,9 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         
         // Custom Middleware
-        'api.key' => \App\Http\Middleware\ApiKeyAuthenticate::class,
+        'api.key' => \App\Http\Middleware\ApiKeyAuthentication::class,
         'log.api' => \App\Http\Middleware\LogApiRequest::class,
         'merchant.status' => \App\Http\Middleware\CheckMerchantStatus::class,
+        'user.active' => \App\Http\Middleware\EnsureUserIsActive::class,
     ];
 }

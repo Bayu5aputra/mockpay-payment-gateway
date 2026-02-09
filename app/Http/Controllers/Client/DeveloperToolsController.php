@@ -190,6 +190,14 @@ class DeveloperToolsController extends Controller
                     ],
                 ],
             ],
+            'go' => [
+                'examples' => [
+                    'create_payment' => [
+                        'title' => 'Create Payment',
+                        'code' => file_get_contents(resource_path('examples/go/create-payment.go')),
+                    ],
+                ],
+            ],
         ];
 
         foreach ($examples as $language => $group) {
@@ -224,6 +232,20 @@ class DeveloperToolsController extends Controller
             ->first();
 
         return view('client.developers.simulator', compact('sandboxKey'));
+    }
+
+    public function payloadGenerator()
+    {
+        $user = Auth::user();
+
+        $sandboxKey = ClientApiKey::where('user_id', $user->id)
+            ->where('environment', 'sandbox')
+            ->active()
+            ->notExpired()
+            ->latest()
+            ->first();
+
+        return view('client.developers.payload-generator', compact('sandboxKey'));
     }
 
     public function apiLogs(Request $request)

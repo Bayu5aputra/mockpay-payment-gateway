@@ -25,6 +25,7 @@ class ApiKeyController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'environment' => 'required|in:sandbox,production',
+            'expires_at' => 'nullable|date|after:now',
         ]);
 
         $user = Auth::user();
@@ -35,6 +36,7 @@ class ApiKeyController extends Controller
                 'key_name' => $request->name,
                 'environment' => $request->environment,
                 'is_active' => true,
+                'expires_at' => $request->filled('expires_at') ? $request->date('expires_at') : null,
             ]);
 
             return redirect()->back()->with([
