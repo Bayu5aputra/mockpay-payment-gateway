@@ -191,10 +191,8 @@ Route::middleware(['auth:web', 'user.active'])->prefix('client')->name('client.'
     });
 });
 
-Route::middleware(['auth:web', 'user.active'])
-    ->get('/dashboard-home', function () {
-        return redirect()->route('client.dashboard');
-    })
+Route::redirect('/dashboard-home', '/client/dashboard')
+    ->middleware(['auth:web', 'user.active'])
     ->name('dashboard');
 
 // ==========================================
@@ -208,6 +206,7 @@ Route::middleware(['auth:merchant', 'verified:merchant', 'merchant.status'])->pr
         Route::get('/', [DashboardMerchantInvitationController::class, 'index'])->name('index');
         Route::post('/', [DashboardMerchantInvitationController::class, 'store'])->name('store');
         Route::post('/test-email', [DashboardMerchantInvitationController::class, 'testEmail'])->name('test-email');
+        Route::post('/{invitation}/resend-verification', [DashboardMerchantInvitationController::class, 'resendVerification'])->name('resend-verification');
         Route::post('/{invitation}/delete', [DashboardMerchantInvitationController::class, 'destroy'])->name('delete');
     });
 

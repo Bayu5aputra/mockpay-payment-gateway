@@ -18,6 +18,15 @@
                         <p class="text-rose-800 font-medium">{{ session('error') }}</p>
                     </div>
                 @endif
+                @if($errors->any())
+                    <div class="rounded-2xl border border-rose-200 bg-rose-50/80 p-4">
+                        <ul class="text-sm text-rose-800 space-y-1">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <div class="rounded-[28px] bg-white p-6 shadow-sm border border-white/70 space-y-5">
                     <form method="POST" action="{{ route('dashboard.invitations.store') }}" class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4">
@@ -53,13 +62,28 @@
                     </div>
                     <div class="divide-y divide-slate-200">
                         @forelse($invitations as $invitation)
+                            @php
+                                $invitedMerchant = $invitedMerchants[$invitation->email] ?? null;
+                            @endphp
                             <div class="p-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                                 <div>
                                     <p class="font-semibold text-slate-900">{{ $invitation->email }}</p>
                                     <p class="text-sm text-slate-500">
                                         Status: <span class="font-medium">{{ ucfirst($invitation->status) }}</span>
                                         @if($invitation->expires_at)
-                                            â€¢ Expires {{ $invitation->expires_at->format('d M Y') }}
+                                            • Expires {{ $invitation->expires_at->format('d M Y') }}
+                                        @endif
+                                    </p>
+                                    <p class="text-xs text-slate-500 mt-1">
+                                        Account:
+                                        <span class="font-medium text-slate-700">
+                                            {{ $invitedMerchant ? 'Created' : 'Not created' }}
+                                        </span>
+                                        @if($invitedMerchant)
+                                            • Verification:
+                                            <span class="font-medium {{ $invitedMerchant->hasVerifiedEmail() ? 'text-emerald-700' : 'text-amber-700' }}">
+                                                {{ $invitedMerchant->hasVerifiedEmail() ? 'Verified' : 'Pending' }}
+                                            </span>
                                         @endif
                                     </p>
                                 </div>
@@ -72,6 +96,14 @@
                                             value="{{ route('merchant-invitations.accept', $invitation->token) }}"
                                             onclick="this.select();"
                                         >
+                                    @endif
+                                    @if($invitedMerchant && !$invitedMerchant->hasVerifiedEmail())
+                                        <form method="POST" action="{{ route('dashboard.invitations.resend-verification', $invitation) }}">
+                                            @csrf
+                                            <button class="px-4 py-2 text-xs font-semibold text-amber-700 border border-amber-200 rounded-2xl hover:bg-amber-50">
+                                                Resend Verification
+                                            </button>
+                                        </form>
                                     @endif
                                     <form method="POST" action="{{ route('dashboard.invitations.delete', $invitation) }}">
                                         @csrf

@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\API\MetaController;
 use App\Http\Controllers\API\PaymentController;
-use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\RefundController;
 use App\Http\Controllers\API\SettlementController;
+use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\WebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -80,33 +81,10 @@ Route::prefix('v1')->middleware(['api.key', 'log.api'])->group(function () {
 // HEALTH CHECK (No Auth Required)
 // ==========================================
 
-Route::get('/health', function () {
-    return response()->json([
-        'status' => 'ok',
-        'service' => 'MockPay API',
-        'version' => '1.0.0',
-        'timestamp' => now()->toIso8601String(),
-    ]);
-})->name('api.health');
+Route::get('/health', [MetaController::class, 'health'])->name('api.health');
 
 // ==========================================
 // API DOCUMENTATION ENDPOINT (No Auth Required)
 // ==========================================
 
-Route::get('/docs', function () {
-    return response()->json([
-        'message' => 'MockPay API Documentation',
-        'documentation_url' => url('/docs/api-reference'),
-        'version' => 'v1',
-        'endpoints' => [
-            'POST /api/v1/payment/create' => 'Create new payment transaction',
-            'GET /api/v1/payment/channels' => 'Get available payment channels',
-            'GET /api/v1/transaction/{id}' => 'Get transaction details',
-            'GET /api/v1/transactions' => 'Get transaction list',
-            'POST /api/v1/transaction/{id}/cancel' => 'Cancel transaction',
-            'POST /api/v1/refund' => 'Create refund request',
-            'GET /api/v1/settlements' => 'Get settlement list',
-            'GET /api/v1/webhook/logs/{transaction_id}' => 'Get webhook logs',
-        ],
-    ]);
-})->name('api.docs');
+Route::get('/docs', [MetaController::class, 'docs'])->name('api.docs');

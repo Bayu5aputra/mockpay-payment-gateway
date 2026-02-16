@@ -148,3 +148,67 @@ Dokumentasi lengkap tersedia di:
 ```bash
 php artisan test
 ```
+
+---
+
+## Deploy ke cPanel (Production)
+
+Checklist ini mengikuti rekomendasi deployment Laravel production.
+
+1. Upload source code ke server.
+2. Pastikan domain/subdomain document root diarahkan ke folder `public` aplikasi ini.
+3. Install dependency production di server:
+
+```bash
+composer install --no-dev --optimize-autoloader
+```
+
+4. Buat file `.env` production (jangan pakai nilai local/dev):
+
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://domain-anda.com
+```
+
+5. Set key aplikasi dan jalankan migrasi:
+
+```bash
+php artisan key:generate --force
+php artisan migrate --force
+```
+
+6. Build asset frontend:
+
+```bash
+npm ci
+npm run build
+```
+
+7. Buat symbolic link storage:
+
+```bash
+php artisan storage:link
+```
+
+8. Optimasi cache production:
+
+```bash
+php artisan optimize
+```
+
+9. Set Cron Job scheduler cPanel (setiap menit):
+
+```bash
+* * * * * cd /home/USER/path-project && php artisan schedule:run >> /dev/null 2>&1
+```
+
+10. Jika queue dipakai, jalankan worker berkelanjutan (disarankan Supervisor). Jika Supervisor tidak tersedia di hosting, buat cron queue worker dengan interval pendek.
+
+Tambahan saat deploy update kode:
+
+```bash
+php artisan queue:restart
+php artisan optimize:clear
+php artisan optimize
+```

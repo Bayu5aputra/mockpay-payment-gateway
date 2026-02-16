@@ -1,15 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Dashboard;
 
+use App\Mail\MerchantInvitationMail;
 use App\Http\Controllers\Controller;
+use App\Models\Merchant;
 use App\Models\MerchantInvitation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use App\Mail\MerchantInvitationMail;
 
 class MerchantInvitationController extends Controller
 {
@@ -20,7 +23,12 @@ class MerchantInvitationController extends Controller
             ->orderByDesc('created_at')
             ->get();
 
-        return view('dashboard.invitations.index', compact('merchant', 'invitations'));
+        $invitedMerchants = Merchant::query()
+            ->whereIn('email', $invitations->pluck('email')->unique()->values())
+            ->get()
+            ->keyBy('email');
+
+        return view('dashboard.invitations.index', compact('merchant', 'invitations', 'invitedMerchants'));
     }
 
     public function store(Request $request)
@@ -109,5 +117,28 @@ class MerchantInvitationController extends Controller
         }
 
         return redirect()->back()->with('success', 'Test email sent successfully.');
+    }
+
+    public function resendVerification(MerchantInvitation $invitation)
+    {
+        $merchant = Auth::guard('merchant')->user();
+
+        if ($invitation->invited_by !== $merchant->id) {
+            abort(403);
+        }
+
+        $invitedMerchant = Merchant::where('email', $invitation->email)->first();
+
+        if (!$invitedMerchant) {
+            return redirect()->back()->with('error', 'Account for this invitation has not been created yet.');
+        }
+
+        if ($invitedMerchant->hasVerifiedEmail()) {
+            return redirect()->back()->with('success', 'This platform admin is already verified.');
+        }
+
+        $invitedMerchant->sendEmailVerificationNotification();
+
+        return redirect()->back()->with('success', 'Verification email resent successfully.');
     }
 }

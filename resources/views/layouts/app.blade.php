@@ -4,6 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('logo.png') }}">
 
         <title>{{ config('app.name', 'MockPay') }}</title>
 
@@ -211,6 +213,7 @@
                                     <nav class="hidden lg:flex items-center gap-5 text-sm text-white/70">
                                         @auth('merchant')
                                             <a href="{{ route('dashboard.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.index') ? 'text-white' : '' }}">Dashboard</a>
+                                            <a href="{{ route('dashboard.invitations.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.invitations.*') ? 'text-white' : '' }}">Invitations</a>
                                             <a href="{{ route('dashboard.upgrade-requests.index') }}" class="hover:text-white {{ request()->routeIs('dashboard.upgrade-requests.*') ? 'text-white' : '' }}">Upgrade Requests</a>
                                         @endauth
                                         @auth('web')
@@ -261,6 +264,9 @@
                                             @auth('merchant')
                                                 <a href="{{ route('dashboard.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
                                                     Dashboard
+                                                </a>
+                                                <a href="{{ route('dashboard.invitations.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200">
+                                                    Invitations
                                                 </a>
                                             @endauth
                                             @auth('web')

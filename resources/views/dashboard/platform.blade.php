@@ -82,6 +82,7 @@
 
                 <div class="flex flex-wrap gap-3">
                     <a href="{{ route('dashboard.tenants.index') }}" class="rounded-2xl bg-slate-900 text-white px-5 py-2 text-sm font-semibold hover:bg-slate-800 transition">Manage Tenants</a>
+                    <a href="{{ route('dashboard.invitations.index') }}" class="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Invite Platform Admin</a>
                     <a href="{{ route('dashboard.settings.global.index') }}" class="rounded-2xl border border-slate-200 px-5 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">Global Settings</a>
                 </div>
 
